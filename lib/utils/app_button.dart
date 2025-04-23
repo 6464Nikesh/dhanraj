@@ -39,9 +39,9 @@ class AppButton {
         borderRadius: BorderRadius.circular(8),
         color: isActive ? color : color.withOpacity(0.5),
       ),
-      width: MediaQuery.of(context).size.width,
+
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 13),
+        padding: const EdgeInsets.symmetric(vertical: 13,horizontal: 40),
         child: Center(
           child: Text(
             text,

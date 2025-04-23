@@ -1,3 +1,4 @@
+import 'package:dhanraj/arguments/global_search_arg.dart';
 import 'package:dhanraj/pages/auth/login.dart';
 import 'package:dhanraj/pages/auth/sign_up.dart';
 import 'package:dhanraj/pages/dashboard.dart';
@@ -39,7 +40,8 @@ class RouteGenerator {
       case AppRoutes.historyTradeDetails:
         return buildRoute(const HistoryTradeDetails(), settings: settings);
       case AppRoutes.globalSearch:
-        return buildRoute(const GlobalSearch(), settings: settings);
+        final arguments = settings.arguments as GlobalSearchArg;
+        return buildRoute(GlobalSearch(globalSearchArg: arguments), settings: settings);
       default:
         return _errorRoute();
     }

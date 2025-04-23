@@ -1,4 +1,6 @@
+import 'package:dhanraj/provider/bottom_sheet_provider.dart';
 import 'package:dhanraj/provider/provider_dashboard.dart';
+import 'package:dhanraj/provider/provider_global_search.dart';
 import 'package:dhanraj/provider/provider_login.dart';
 import 'package:dhanraj/provider/provider_settings.dart';
 import 'package:dhanraj/provider/provider_watchlist.dart';
@@ -24,15 +26,17 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => ProviderSettings()),
         ChangeNotifierProvider(create: (context) => ProviderDashboard()),
         ChangeNotifierProvider(create: (context) => ProviderWatchlist()),
+        ChangeNotifierProvider(create: (context) => ProviderGlobalSearch()),
+
+        /// Bottom sheet Provider
+        ChangeNotifierProvider(create: (context) => BottomSheetProvider())
       ],
       child: const MaterialApp(
         title: 'Dhanraj : A paper trading app',
         debugShowCheckedModeBanner: false,
-        initialRoute: AppRoutes.login,
+        initialRoute: AppRoutes.splash,
         onGenerateRoute: RouteGenerator.generateRoute,
       ),
     );
   }
 }
-
-

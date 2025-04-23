@@ -1,7 +1,10 @@
+import 'package:dhanraj/provider/bottom_sheet_provider.dart';
 import 'package:dhanraj/utils/app_button.dart';
 import 'package:dhanraj/utils/app_colors.dart';
 import 'package:dhanraj/utils/app_strings.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 class DepositWithdrawal extends StatefulWidget {
   const DepositWithdrawal({super.key});
@@ -20,213 +23,333 @@ class _DepositWithdrawalState extends State<DepositWithdrawal> {
       ),
       child: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-              child: Text(
-                "${AppStrings.deposit}/${AppStrings.withdrawal}",
-                style: TextStyle(
-                  fontFamily: "roboto",
-                  fontSize: 18,
-                  color: AppColors.navyBlue,
-                  fontWeight: FontWeight.w600,
+        child: Consumer<BottomSheetProvider>(builder: (context, bsp, child) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                child: Text(
+                  "${AppStrings.deposit}/${AppStrings.withdrawal}",
+                  style: TextStyle(
+                    fontFamily: "roboto",
+                    fontSize: 18,
+                    color: AppColors.navyBlue,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
-            ),
-            const Divider(),
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: AppButton.colorButton(
-                      text: AppStrings.deposit,
-                      context: context,
-                      color: AppColors.green,
-                      isActive: true,
-                      textColor: Colors.white,
+              const Divider(),
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          bsp.changePage(value: "deposit");
+                        },
+                        child: AppButton.colorButton(
+                          text: AppStrings.deposit,
+                          context: context,
+                          color: bsp.selectedPage == "deposit" ? AppColors.green : AppColors.green.withOpacity(0.2),
+                          isActive: true,
+                          textColor: Colors.white,
+                        ),
+                      ),
                     ),
-                  ),
-                  const SizedBox(
-                    width: 20,
-                  ),
-                  Expanded(
-                    child: AppButton.colorButton(
-                      text: AppStrings.withdrawal,
-                      context: context,
-                      color: AppColors.red,
-                      isActive: true,
-                      textColor: Colors.white,
+                    const SizedBox(
+                      width: 20,
                     ),
-                  ),
-                ],
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          bsp.changePage(value: "withdrawal");
+                        },
+                        child: AppButton.colorButton(
+                          text: AppStrings.withdrawal,
+                          context: context,
+                          color: bsp.selectedPage == "deposit" ? AppColors.red.withOpacity(0.2) : AppColors.red,
+                          isActive: true,
+                          textColor: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                children: [
-                  const Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          cursorColor: AppColors.grey,
-                          decoration: InputDecoration(
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: AppColors.grey),
-                            ),
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: AppColors.grey),
-                            ),
-                            hintText: AppStrings.funds,
-                            hintStyle: TextStyle(
-                              fontSize: 14,
-                              fontFamily: "roboto",
-                              fontWeight: FontWeight.w400,
-                              color: AppColors.grey,
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 20,
-                      ),
-                      Expanded(
-                        child: TextField(
-                          cursorColor: AppColors.grey,
-                          decoration: InputDecoration(
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: AppColors.grey),
-                            ),
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: AppColors.grey),
-                            ),
-                            hintText: AppStrings.username,
-                            hintStyle: TextStyle(
-                              fontSize: 14,
-                              fontFamily: "roboto",
-                              fontWeight: FontWeight.w400,
-                              color: AppColors.grey,
-                            ),
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  const Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          cursorColor: AppColors.grey,
-                          decoration: InputDecoration(
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: AppColors.grey),
-                            ),
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: AppColors.grey),
-                            ),
-                            hintText: AppStrings.transactionType,
-                            hintStyle: TextStyle(
-                              fontSize: 14,
-                              fontFamily: "roboto",
-                              fontWeight: FontWeight.w400,
-                              color: AppColors.grey,
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 20,
-                      ),
-                      Expanded(
-                        child: TextField(
-                          cursorColor: AppColors.grey,
-                          decoration: InputDecoration(
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: AppColors.grey),
-                            ),
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: AppColors.grey),
-                            ),
-                            hintText: AppStrings.transactionID,
-                            hintStyle: TextStyle(
-                              fontSize: 14,
-                              fontFamily: "roboto",
-                              fontWeight: FontWeight.w400,
-                              color: AppColors.grey,
-                            ),
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  const TextField(
-                    cursorColor: AppColors.grey,
-                    decoration: InputDecoration(
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: AppColors.grey),
-                      ),
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: AppColors.grey),
-                      ),
-                      hintText: AppStrings.notes,
-                      hintStyle: TextStyle(
-                        fontSize: 14,
-                        fontFamily: "roboto",
-                        fontWeight: FontWeight.w400,
-                        color: AppColors.grey,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 40,
-                  ),
-                  const Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+              bsp.selectedPage == "deposit"
+                  ? Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Column(
                         children: [
                           Row(
                             children: [
-                              Text(AppStrings.availableBalance),
-                              Text(" : "),
-                              Text("10000.000"),
+                              Expanded(
+                                child: TextField(
+                                  controller: bsp.depositFundsController,
+                                  cursorColor: AppColors.grey,
+                                  inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly],
+                                  decoration: const InputDecoration(
+                                    focusedBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(color: AppColors.grey),
+                                    ),
+                                    enabledBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(color: AppColors.grey),
+                                    ),
+                                    hintText: AppStrings.funds,
+                                    hintStyle: TextStyle(
+                                      fontSize: 14,
+                                      fontFamily: "roboto",
+                                      fontWeight: FontWeight.w400,
+                                      color: AppColors.grey,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 20,
+                              ),
+                              const Expanded(
+                                child: TextField(
+                                  cursorColor: AppColors.grey,
+                                  decoration: InputDecoration(
+                                    focusedBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(color: AppColors.grey),
+                                    ),
+                                    enabledBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(color: AppColors.grey),
+                                    ),
+                                    hintText: AppStrings.screenShot,
+                                    hintStyle: TextStyle(
+                                      fontSize: 14,
+                                      fontFamily: "roboto",
+                                      fontWeight: FontWeight.w400,
+                                      color: AppColors.grey,
+                                    ),
+                                  ),
+                                ),
+                              )
                             ],
                           ),
-                          Row(
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          const Row(
                             children: [
-                              Text(AppStrings.charges),
-                              Text(" : "),
-                              Text("100.000"),
+                              Expanded(
+                                child: TextField(
+                                  cursorColor: AppColors.grey,
+                                  decoration: InputDecoration(
+                                    focusedBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(color: AppColors.grey),
+                                    ),
+                                    enabledBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(color: AppColors.grey),
+                                    ),
+                                    hintText: AppStrings.transactionType,
+                                    hintStyle: TextStyle(
+                                      fontSize: 14,
+                                      fontFamily: "roboto",
+                                      fontWeight: FontWeight.w400,
+                                      color: AppColors.grey,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 20,
+                              ),
+                              Expanded(
+                                child: TextField(
+                                  cursorColor: AppColors.grey,
+                                  decoration: InputDecoration(
+                                    focusedBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(color: AppColors.grey),
+                                    ),
+                                    enabledBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(color: AppColors.grey),
+                                    ),
+                                    hintText: AppStrings.transactionID,
+                                    hintStyle: TextStyle(
+                                      fontSize: 14,
+                                      fontFamily: "roboto",
+                                      fontWeight: FontWeight.w400,
+                                      color: AppColors.grey,
+                                    ),
+                                  ),
+                                ),
+                              )
                             ],
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          TextField(
+                            controller: bsp.depositNoteController,
+                            cursorColor: AppColors.grey,
+                            decoration: const InputDecoration(
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: AppColors.grey),
+                              ),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: AppColors.grey),
+                              ),
+                              hintText: AppStrings.notes,
+                              hintStyle: TextStyle(
+                                fontSize: 14,
+                                fontFamily: "roboto",
+                                fontWeight: FontWeight.w400,
+                                color: AppColors.grey,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 40,
+                          ),
+                          const Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Text(AppStrings.availableBalance),
+                                      Text(" : "),
+                                      Text("10000.000"),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(AppStrings.charges),
+                                      Text(" : "),
+                                      Text("100.000"),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              Icon(Icons.refresh)
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          GestureDetector(
+                              onTap: () {
+                                bsp.addFunds(context: context);
+                              },
+                              child: AppButton.button(
+                                text: AppStrings.submit,
+                                context: context,
+                              )),
+                          const SizedBox(
+                            height: 20,
                           ),
                         ],
                       ),
-                      Icon(Icons.refresh)
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  AppButton.button(text: AppStrings.submit, context: context),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                ],
-              ),
-            )
-          ],
-        ),
+                    )
+                  : Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                  inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly],
+                                  cursorColor: AppColors.grey,
+                                  controller: bsp.withdrawalFundsController,
+                                  decoration: const InputDecoration(
+                                    focusedBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(color: AppColors.grey),
+                                    ),
+                                    enabledBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(color: AppColors.grey),
+                                    ),
+                                    hintText: AppStrings.funds,
+                                    hintStyle: TextStyle(
+                                      fontSize: 14,
+                                      fontFamily: "roboto",
+                                      fontWeight: FontWeight.w400,
+                                      color: AppColors.grey,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          TextField(
+                            controller: bsp.withdrawalNoteController,
+                            cursorColor: AppColors.grey,
+                            decoration: const InputDecoration(
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: AppColors.grey),
+                              ),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: AppColors.grey),
+                              ),
+                              hintText: AppStrings.notes,
+                              hintStyle: TextStyle(
+                                fontSize: 14,
+                                fontFamily: "roboto",
+                                fontWeight: FontWeight.w400,
+                                color: AppColors.grey,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 40,
+                          ),
+                          const Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Text(AppStrings.availableBalance),
+                                      Text(" : "),
+                                      Text("10000.000"),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(AppStrings.charges),
+                                      Text(" : "),
+                                      Text("100.000"),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              Icon(Icons.refresh)
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          GestureDetector(
+                              onTap: () {
+                                bsp.withdrawalFunds(context: context);
+                              },
+                              child: AppButton.button(
+                                text: AppStrings.submit,
+                                context: context,
+                              )),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                        ],
+                      ),
+                    )
+            ],
+          );
+        }),
       ),
     );
   }

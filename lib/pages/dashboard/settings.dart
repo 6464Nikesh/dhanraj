@@ -1,8 +1,13 @@
+import 'package:dhanraj/pages/dailogs/confirmation_dialog.dart';
+import 'package:dhanraj/provider/provider_settings.dart';
 import 'package:dhanraj/utils/app_assets.dart';
+import 'package:dhanraj/utils/app_button.dart';
 import 'package:dhanraj/utils/app_colors.dart';
 import 'package:dhanraj/utils/app_route.dart';
 import 'package:dhanraj/utils/app_strings.dart';
+import 'package:dhanraj/utils/app_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class Settings extends StatefulWidget {
   const Settings({super.key});
@@ -42,9 +47,9 @@ class _SettingsState extends State<Settings> {
             ),
           ),
         ),
-        title: Text(
+        title: const Text(
           AppStrings.settings,
-          style: const TextStyle(
+          style: TextStyle(
             fontFamily: "roboto",
             color: AppColors.navyBlue,
             fontWeight: FontWeight.w700,
@@ -52,144 +57,178 @@ class _SettingsState extends State<Settings> {
         ),
       ),
       backgroundColor: Colors.white,
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 30),
-        child: Column(
-          children: [
-            Card(
-              elevation: 4,
-              color: Colors.white,
-              child: Column(
+      body: Consumer<ProviderSettings>(builder: (context, ps, child) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 30),
+          child: Column(
+            children: [
+              Card(
+                elevation: 4,
+                color: Colors.white,
+                child: Column(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pushNamed(context, AppRoutes.profile);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                        child: Row(
+                          children: [
+                            Image.asset(
+                              AppAssets.profile,
+                              scale: 3,
+                            ),
+                            const SizedBox(
+                              width: 20,
+                            ),
+                            const Expanded(
+                              child: Text(
+                                AppStrings.profile,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontFamily: "roboto",
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ),
+                            const Icon(Icons.arrow_forward_ios)
+                          ],
+                        ),
+                      ),
+                    ),
+                    const Divider(),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pushNamed(context, AppRoutes.funds);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                        child: Row(
+                          children: [
+                            Image.asset(
+                              AppAssets.funds,
+                              scale: 3,
+                            ),
+                            const SizedBox(
+                              width: 20,
+                            ),
+                            const Expanded(
+                              child: Text(
+                                AppStrings.funds,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontFamily: "roboto",
+                                  color: AppColors.navyBlue,
+                                ),
+                              ),
+                            ),
+                            const Icon(Icons.arrow_forward_ios)
+                          ],
+                        ),
+                      ),
+                    ),
+                    const Divider(),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pushNamed(context, AppRoutes.tradingTerms);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                        child: Row(
+                          children: [
+                            Image.asset(
+                              AppAssets.trading,
+                              scale: 3,
+                            ),
+                            const SizedBox(
+                              width: 20,
+                            ),
+                            const Expanded(
+                              child: Text(
+                                AppStrings.tradingTerms,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontFamily: "roboto",
+                                  color: AppColors.navyBlue,
+                                ),
+                              ),
+                            ),
+                            const Icon(Icons.arrow_forward_ios)
+                          ],
+                        ),
+                      ),
+                    ),
+                    const Divider(),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pushNamed(context, AppRoutes.changePassword);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                        child: Row(
+                          children: [
+                            Image.asset(
+                              AppAssets.lock,
+                              scale: 3,
+                            ),
+                            const SizedBox(
+                              width: 20,
+                            ),
+                            const Expanded(
+                              child: Text(
+                                AppStrings.changePassword,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontFamily: "roboto",
+                                  color: AppColors.navyBlue,
+                                ),
+                              ),
+                            ),
+                            const Icon(Icons.arrow_forward_ios)
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   GestureDetector(
                     onTap: () {
-                      Navigator.pushNamed(context, AppRoutes.profile);
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return ConfirmationDialog(
+                            title: 'Log-out',
+                            subtitle: "Are you sure you want to log-out.",
+                            onTap: () {
+                              ps.logOut(context);
+                              return null;
+                            },
+                          );
+                        },
+                      );
                     },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                      child: Row(
-                        children: [
-                          Image.asset(
-                            AppAssets.profile,
-                            scale: 3,
-                          ),
-                          const SizedBox(
-                            width: 20,
-                          ),
-                          const Expanded(
-                            child: Text(
-                              AppStrings.profile,
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontFamily: "roboto",
-                                color: Colors.black,
-                              ),
-                            ),
-                          ),
-                          const Icon(Icons.arrow_forward_ios)
-                        ],
-                      ),
-                    ),
-                  ),
-                  const Divider(),
-                  GestureDetector(
-                    onTap: (){
-                      Navigator.pushNamed(context, AppRoutes.funds);
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                      child: Row(
-                        children: [
-                          Image.asset(
-                            AppAssets.funds,
-                            scale: 3,
-                          ),
-                          const SizedBox(
-                            width: 20,
-                          ),
-                          const Expanded(
-                            child: Text(
-                              AppStrings.funds,
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontFamily: "roboto",
-                                color: AppColors.navyBlue,
-                              ),
-                            ),
-                          ),
-                          const Icon(Icons.arrow_forward_ios)
-                        ],
-                      ),
-                    ),
-                  ),
-                  const Divider(),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pushNamed(context, AppRoutes.tradingTerms);
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                      child: Row(
-                        children: [
-                          Image.asset(
-                            AppAssets.trading,
-                            scale: 3,
-                          ),
-                          const SizedBox(
-                            width: 20,
-                          ),
-                          const Expanded(
-                            child: Text(
-                              AppStrings.tradingTerms,
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontFamily: "roboto",
-                                color: AppColors.navyBlue,
-                              ),
-                            ),
-                          ),
-                          const Icon(Icons.arrow_forward_ios)
-                        ],
-                      ),
-                    ),
-                  ),
-                  const Divider(),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pushNamed(context, AppRoutes.changePassword);
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                      child: Row(
-                        children: [
-                          Image.asset(
-                            AppAssets.lock,
-                            scale: 3,
-                          ),
-                          const SizedBox(
-                            width: 20,
-                          ),
-                          const Expanded(
-                            child: Text(
-                              AppStrings.changePassword,
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontFamily: "roboto",
-                                color: AppColors.navyBlue,
-                              ),
-                            ),
-                          ),
-                          const Icon(Icons.arrow_forward_ios)
-                        ],
-                      ),
+                    child: AppButton.colorButton(
+                      text: AppStrings.logout,
+                      context: context,
+                      color: AppColors.red,
+                      textColor: Colors.white,
+                      isActive: true,
                     ),
                   ),
                 ],
-              ),
-            )
-          ],
-        ),
-      ),
+              )
+            ],
+          ),
+        );
+      }),
     );
   }
 }

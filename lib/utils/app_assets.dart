@@ -5,4 +5,5 @@ class AppAssets {
   static const String lock = 'assets/images/lock.png';
   static const String noData = 'assets/images/nodata.png';
   static const String whatsapp = 'assets/images/whatsapp.png';
+  static const String emptyBox = "assets/images/empty_box.png";
 }

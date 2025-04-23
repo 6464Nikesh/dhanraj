@@ -22,6 +22,10 @@ class _FundsState extends State<Funds> {
         onPressed: () {
           showModalBottomSheet(
             context: context,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(10.0)),
+            ),
+            backgroundColor: Colors.white,
             isScrollControlled: true,
             builder: (context) {
               return Padding(

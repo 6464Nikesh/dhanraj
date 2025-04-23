@@ -1,4 +1,13 @@
+import 'dart:async';
+import 'dart:convert';
+
+import 'package:dhanraj/model/login_model.dart';
+import 'package:dhanraj/utils/app_colors.dart';
+import 'package:dhanraj/utils/app_route.dart';
+import 'package:dhanraj/utils/app_strings.dart';
+import 'package:dhanraj/utils/preference_key.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Splash extends StatefulWidget {
   const Splash({super.key});
@@ -8,8 +17,67 @@ class Splash extends StatefulWidget {
 }
 
 class _SplashState extends State<Splash> {
+  SharedPreferences? sp;
+  LoginModel? loginModel;
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback(
+      (timeStamp) async {
+        sp = await SharedPreferences.getInstance();
+        String data = sp?.getString(PreferenceKey.loginData) ?? "";
+
+        if(data.isNotEmpty){
+          loginModel = LoginModel.fromJson(jsonDecode(sp?.getString(PreferenceKey.loginData) ?? ""));
+        }
+
+        await Future.delayed(
+          const Duration(seconds: 1),
+          () {
+            if (loginModel != null) {
+              Navigator.pushNamed(context, AppRoutes.dashboard);
+            } else {
+              Navigator.pushNamed(context, AppRoutes.login);
+            }
+          },
+        );
+      },
+    );
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Scaffold(
+      backgroundColor: AppColors.blue,
+      appBar: AppBar(
+        leading: Container(),
+        backgroundColor: AppColors.blue,
+      ),
+      body: const Column(
+        children: [
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "DHANRAJ",
+                  style: TextStyle(fontWeight: FontWeight.w900, color: Colors.white, fontFamily: "roboto", fontSize: 30),
+                ),
+              ],
+            ),
+          ),
+          Center(
+            child: Text(
+              AppStrings.aPaperTradingApp,
+              style: TextStyle(color: Colors.white, fontFamily: "roboto"),
+            ),
+          ),
+          SizedBox(
+            height: 30,
+          ),
+        ],
+      ),
+    );
   }
 }

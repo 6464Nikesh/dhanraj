@@ -2,12 +2,15 @@ import 'package:dhanraj/pages/dashboard/history.dart';
 import 'package:dhanraj/pages/dashboard/position.dart';
 import 'package:dhanraj/pages/dashboard/settings.dart';
 import 'package:dhanraj/pages/dashboard/watchlist.dart';
+import 'package:dhanraj/utils/app_route.dart';
 import 'package:dhanraj/utils/app_strings.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProviderDashboard extends ChangeNotifier {
   int currentIndex = 0;
   String title = AppStrings.watchlist;
+  SharedPreferences? sp;
 
   List<Widget> pages = [
     const Watchlist(),
@@ -15,6 +18,12 @@ class ProviderDashboard extends ChangeNotifier {
     const History(),
     const Settings(),
   ];
+
+  logOut(BuildContext context) async {
+    sp = await SharedPreferences.getInstance();
+    sp?.clear();
+    Navigator.pushNamedAndRemoveUntil(context, AppRoutes.login, (Route<dynamic> route) => false);
+  }
 
   changePages({required int val}) {
     setTitle(val: val);

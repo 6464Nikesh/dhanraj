@@ -2,7 +2,7 @@ import 'package:dhanraj/utils/app_button.dart';
 import 'package:dhanraj/utils/app_colors.dart';
 import 'package:dhanraj/utils/app_route.dart';
 import 'package:dhanraj/utils/app_strings.dart';
-import 'package:dhanraj/utils/app_widgets.dart';
+import 'package:dhanraj/utils/app_widget.dart';
 import 'package:flutter/material.dart';
 
 class ModifyTrade extends StatefulWidget {

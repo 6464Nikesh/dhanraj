@@ -1,7 +1,7 @@
 import 'package:dhanraj/utils/app_colors.dart';
 import 'package:dhanraj/utils/app_route.dart';
 import 'package:dhanraj/utils/app_strings.dart';
-import 'package:dhanraj/utils/app_widgets.dart';
+import 'package:dhanraj/utils/app_widget.dart';
 import 'package:flutter/material.dart';
 
 class Position extends StatefulWidget {
@@ -42,9 +42,9 @@ class _PositionState extends State<Position> {
             ),
           ),
         ),
-        title: Text(
+        title: const Text(
           AppStrings.position,
-          style: const TextStyle(
+          style: TextStyle(
             fontFamily: "roboto",
             color: AppColors.navyBlue,
             fontWeight: FontWeight.w700,
