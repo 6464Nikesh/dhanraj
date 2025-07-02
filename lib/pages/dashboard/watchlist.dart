@@ -75,7 +75,6 @@ class _WatchlistState extends State<Watchlist> {
                           ),
                         ),
                       ),
-                      const Icon(Icons.arrow_downward_outlined)
                     ],
                   ),
                   Container(
@@ -95,7 +94,9 @@ class _WatchlistState extends State<Watchlist> {
                         Expanded(
                           child: TextField(
                             onTap: () {
-                              GlobalSearchArg arg = GlobalSearchArg(watchListId: pw.selectedWatchList?.watchlistId ?? "");
+                              GlobalSearchArg arg = GlobalSearchArg(
+                                watchListId: pw.selectedWatchList?.watchlistId ?? "",
+                              );
                               Navigator.pushNamed(context, AppRoutes.globalSearch, arguments: arg).then(
                                 (value) {
                                   pw.getSymbolsList(context: context);
@@ -146,8 +147,7 @@ class _WatchlistState extends State<Watchlist> {
                                 var data = pw.watchLists?[index];
                                 return GestureDetector(
                                   onTap: () {
-                                    pw.selSelectedWatchList(selectedWatchList: data);
-                                    pw.getSymbolsList(context: context);
+                                    pw.selSelectedWatchList(selectedWatchList: data, context: context);
                                   },
                                   child: Padding(
                                     padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -311,12 +311,14 @@ class _WatchlistState extends State<Watchlist> {
                                                   ),
                                                   IconButton(
                                                       onPressed: () {
+
+
                                                         showDialog(
                                                           context: context,
                                                           builder: (context) {
                                                             return AppDeleteDialogs(
                                                               onTap: () {
-                                                                pw.deleteWatchListItem(context: context, id: data?.symbol?.symbolId ?? "");
+                                                                pw.deleteWatchListItem(context: context, id: data?.watchlistItemId ?? "");
                                                               },
                                                             );
                                                           },
@@ -359,7 +361,9 @@ class _WatchlistState extends State<Watchlist> {
                                 children: [
                                   GestureDetector(
                                     onTap: () {
-                                      GlobalSearchArg arg = GlobalSearchArg(watchListId: pw.selectedWatchList?.watchlistId ?? "");
+                                      GlobalSearchArg arg = GlobalSearchArg(
+                                        watchListId: pw.selectedWatchList?.watchlistId ?? "",
+                                      );
                                       Navigator.pushNamed(context, AppRoutes.globalSearch, arguments: arg).then(
                                         (value) {
                                           pw.getSymbolsList(context: context);

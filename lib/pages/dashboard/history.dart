@@ -42,29 +42,13 @@ class _HistoryState extends State<History> {
             ),
           ),
         ),
-        title: Text(
+        title: const Text(
           AppStrings.history,
-          style: const TextStyle(
+          style: TextStyle(
             fontFamily: "roboto",
             color: AppColors.navyBlue,
             fontWeight: FontWeight.w700,
           ),
-        ),
-        actions: [
-          IconButton(
-            color: AppColors.navyBlue,
-            onPressed: () {},
-            icon: const Icon(Icons.arrow_downward),
-          )
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        shape: const CircleBorder(),
-        onPressed: () {},
-        backgroundColor: AppColors.darkBlue,
-        child: const Icon(
-          Icons.edit_document,
-          color: Colors.white,
         ),
       ),
       backgroundColor: Colors.white,

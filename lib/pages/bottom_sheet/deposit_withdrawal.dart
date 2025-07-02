@@ -1,7 +1,10 @@
-import 'package:dhanraj/provider/bottom_sheet_provider.dart';
+import 'dart:io';
+
+import 'package:dhanraj/provider/deposit_withdrawal_sheet_provider.dart';
 import 'package:dhanraj/utils/app_button.dart';
 import 'package:dhanraj/utils/app_colors.dart';
 import 'package:dhanraj/utils/app_strings.dart';
+import 'package:dhanraj/utils/choose_image_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -23,7 +26,7 @@ class _DepositWithdrawalState extends State<DepositWithdrawal> {
       ),
       child: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
-        child: Consumer<BottomSheetProvider>(builder: (context, bsp, child) {
+        child: Consumer<DepositWithdrawalSheetProvider>(builder: (context, bsp, child) {
           return Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -91,6 +94,7 @@ class _DepositWithdrawalState extends State<DepositWithdrawal> {
                                   controller: bsp.depositFundsController,
                                   cursorColor: AppColors.grey,
                                   inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly],
+                                  keyboardType: TextInputType.number,
                                   decoration: const InputDecoration(
                                     focusedBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(color: AppColors.grey),
@@ -98,7 +102,7 @@ class _DepositWithdrawalState extends State<DepositWithdrawal> {
                                     enabledBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(color: AppColors.grey),
                                     ),
-                                    hintText: AppStrings.funds,
+                                    hintText: AppStrings.amount,
                                     hintStyle: TextStyle(
                                       fontSize: 14,
                                       fontFamily: "roboto",
@@ -111,75 +115,45 @@ class _DepositWithdrawalState extends State<DepositWithdrawal> {
                               const SizedBox(
                                 width: 20,
                               ),
-                              const Expanded(
-                                child: TextField(
-                                  cursorColor: AppColors.grey,
-                                  decoration: InputDecoration(
-                                    focusedBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(color: AppColors.grey),
-                                    ),
-                                    enabledBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(color: AppColors.grey),
-                                    ),
-                                    hintText: AppStrings.screenShot,
-                                    hintStyle: TextStyle(
-                                      fontSize: 14,
-                                      fontFamily: "roboto",
-                                      fontWeight: FontWeight.w400,
-                                      color: AppColors.grey,
-                                    ),
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          const Row(
-                            children: [
                               Expanded(
-                                child: TextField(
-                                  cursorColor: AppColors.grey,
-                                  decoration: InputDecoration(
-                                    focusedBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(color: AppColors.grey),
+                                child: Consumer<ChooseImageProvider>(builder: (context, cip, child) {
+                                  return TextField(
+                                    readOnly: true,
+                                    onTap: () {
+                                      cip.showBottomSheetChooseFile(context: context).then(
+                                        (value) {
+                                          if (value != null) {
+                                            bsp.selSelectedFile(value as File);
+                                          }
+                                        },
+                                      );
+                                    },
+                                    cursorColor: AppColors.grey,
+                                    controller: bsp.fileController,
+                                    decoration: InputDecoration(
+                                      suffixIcon: bsp.selectedFile != null
+                                          ? GestureDetector(
+                                              onTap: () {
+                                                bsp.removeSelectedFile();
+                                              },
+                                              child: const Icon(Icons.cancel_outlined))
+                                          : const Icon(Icons.upload),
+                                      focusedBorder: const UnderlineInputBorder(
+                                        borderSide: BorderSide(color: AppColors.grey),
+                                      ),
+                                      enabledBorder: const UnderlineInputBorder(
+                                        borderSide: BorderSide(color: AppColors.grey),
+                                      ),
+                                      hintText: AppStrings.screenShot,
+                                      hintStyle: const TextStyle(
+                                        fontSize: 14,
+                                        fontFamily: "roboto",
+                                        fontWeight: FontWeight.w400,
+                                        color: AppColors.grey,
+                                      ),
                                     ),
-                                    enabledBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(color: AppColors.grey),
-                                    ),
-                                    hintText: AppStrings.transactionType,
-                                    hintStyle: TextStyle(
-                                      fontSize: 14,
-                                      fontFamily: "roboto",
-                                      fontWeight: FontWeight.w400,
-                                      color: AppColors.grey,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                width: 20,
-                              ),
-                              Expanded(
-                                child: TextField(
-                                  cursorColor: AppColors.grey,
-                                  decoration: InputDecoration(
-                                    focusedBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(color: AppColors.grey),
-                                    ),
-                                    enabledBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(color: AppColors.grey),
-                                    ),
-                                    hintText: AppStrings.transactionID,
-                                    hintStyle: TextStyle(
-                                      fontSize: 14,
-                                      fontFamily: "roboto",
-                                      fontWeight: FontWeight.w400,
-                                      color: AppColors.grey,
-                                    ),
-                                  ),
-                                ),
+                                  );
+                                }),
                               )
                             ],
                           ),
@@ -206,34 +180,6 @@ class _DepositWithdrawalState extends State<DepositWithdrawal> {
                             ),
                           ),
                           const SizedBox(
-                            height: 40,
-                          ),
-                          const Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Text(AppStrings.availableBalance),
-                                      Text(" : "),
-                                      Text("10000.000"),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      Text(AppStrings.charges),
-                                      Text(" : "),
-                                      Text("100.000"),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              Icon(Icons.refresh)
-                            ],
-                          ),
-                          const SizedBox(
                             height: 15,
                           ),
                           GestureDetector(
@@ -258,9 +204,10 @@ class _DepositWithdrawalState extends State<DepositWithdrawal> {
                             children: [
                               Expanded(
                                 child: TextField(
-                                  inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly],
-                                  cursorColor: AppColors.grey,
                                   controller: bsp.withdrawalFundsController,
+                                  cursorColor: AppColors.grey,
+                                  inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly],
+                                  keyboardType: TextInputType.number,
                                   decoration: const InputDecoration(
                                     focusedBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(color: AppColors.grey),
@@ -268,7 +215,7 @@ class _DepositWithdrawalState extends State<DepositWithdrawal> {
                                     enabledBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(color: AppColors.grey),
                                     ),
-                                    hintText: AppStrings.funds,
+                                    hintText: AppStrings.amount,
                                     hintStyle: TextStyle(
                                       fontSize: 14,
                                       fontFamily: "roboto",

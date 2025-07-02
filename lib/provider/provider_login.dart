@@ -53,6 +53,8 @@ class ProviderLogin extends ChangeNotifier with Networking {
             LoginModel loginModel = LoginModel.fromJson(value);
             if (loginModel.result?.user?.roleType == "CLIENT" && loginModel.result?.user?.accountStatus == "ACTIVE") {
               sp?.setString(PreferenceKey.token, loginModel.result?.token ?? "");
+
+              print(loginModel.result?.token ?? "");
               sp?.setString(PreferenceKey.loginData, json.encode(loginModel.result));
               Navigator.pushNamed(context, AppRoutes.dashboard);
             } else {

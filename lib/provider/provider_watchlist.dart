@@ -1,8 +1,6 @@
 import 'package:dhanraj/model/get_watchlist_items_model.dart';
 import 'package:dhanraj/model/watchlists_model.dart';
 import 'package:dhanraj/pages/bottom_sheet/create_watchlists_model.dart';
-import 'package:dhanraj/pages/watchlist/bank_nifty.dart';
-import 'package:dhanraj/pages/watchlist/nifty.dart';
 import 'package:dhanraj/services/networking.dart';
 import 'package:dhanraj/utils/app_api_end_point.dart';
 import 'package:dhanraj/utils/app_colors.dart';
@@ -17,8 +15,7 @@ class ProviderWatchlist extends ChangeNotifier {
   WatchLists? selectedWatchList;
 
   deleteWatchListItem({required BuildContext context, required String id}) {
-    print("Nikesh");
-    Networking().delete(context: context, endPoint: AppApiEndPoint.itemRemove, id: id, isLoaderShow: false).then(
+    Networking().delete(context: context, endPoint: AppApiEndPoint.itemRemove, id: id, isLoaderShow: true).then(
       (value) {
         if (value != null) {
           Navigator.pop(context, true);
@@ -34,6 +31,7 @@ class ProviderWatchlist extends ChangeNotifier {
           WatchListsModel watchListsModel = WatchListsModel.fromJson(value);
           if (watchListsModel.statusCode == 200) {
             watchLists = watchListsModel.result?.watchLists ?? [];
+            selSelectedWatchList(selectedWatchList: watchLists?.first, context: context);
             notifyListeners();
           }
         }
@@ -41,8 +39,9 @@ class ProviderWatchlist extends ChangeNotifier {
     );
   }
 
-  selSelectedWatchList({required WatchLists? selectedWatchList}) {
+  selSelectedWatchList({required WatchLists? selectedWatchList, required BuildContext context}) {
     this.selectedWatchList = selectedWatchList;
+    getSymbolsList(context: context);
     notifyListeners();
   }
 
@@ -82,16 +81,5 @@ class ProviderWatchlist extends ChangeNotifier {
         },
       );
     }
-  }
-
-  List<Widget> watchlistTab = [
-    const BankNifty(),
-    const Nifty(),
-  ];
-  int tabIndex = 0;
-
-  changePage(int val) {
-    tabIndex = val;
-    notifyListeners();
   }
 }

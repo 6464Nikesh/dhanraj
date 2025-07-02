@@ -66,11 +66,12 @@ mixin class Networking {
         }
 
         var data = json.decode(response.body);
+        print(data);
         if (isLoaderShow && context.mounted) {
           if (fromBottomSheet) {
-            AppWidget().snackBarTop(context, data["message"], AppColors.red, Colors.white);
+            AppWidget().snackBarTop(context, data["message"] ?? "", AppColors.red, Colors.white);
           } else {
-            AppWidget().snackBar(context, data["message"], AppColors.red, Colors.white);
+            AppWidget().snackBar(context, data["message"] ?? "", AppColors.red, Colors.white);
           }
         }
 
@@ -83,9 +84,9 @@ mixin class Networking {
         var data = json.decode(response.body);
         if (isLoaderShow && context.mounted) {
           if (fromBottomSheet) {
-            AppWidget().snackBarTop(context, data["message"], AppColors.red, Colors.white);
+            AppWidget().snackBarTop(context, data["message"] ?? "", AppColors.red, Colors.white);
           } else {
-            AppWidget().snackBar(context, data["message"], AppColors.red, Colors.white);
+            AppWidget().snackBarTop(context, data["message"] ?? "", AppColors.red, Colors.white);
           }
         }
 
@@ -98,9 +99,9 @@ mixin class Networking {
         var data = json.decode(response.body);
         if (isLoaderShow && context.mounted) {
           if (fromBottomSheet) {
-            AppWidget().snackBarTop(context, data["message"], AppColors.red, Colors.white);
+            AppWidget().snackBarTop(context, data["message"] ?? "", AppColors.red, Colors.white);
           } else {
-            AppWidget().snackBar(context, data["message"], AppColors.red, Colors.white);
+            AppWidget().snackBarTop(context, data["message"] ?? "", AppColors.red, Colors.white);
           }
         }
         return null;
@@ -111,9 +112,9 @@ mixin class Networking {
         var data = json.decode(response.body);
         if (isLoaderShow && context.mounted) {
           if (fromBottomSheet) {
-            AppWidget().snackBarTop(context, data["message"], AppColors.red, Colors.white);
+            AppWidget().snackBarTop(context, data["message"] ?? "", AppColors.red, Colors.white);
           } else {
-            AppWidget().snackBar(context, data["message"], AppColors.red, Colors.white);
+            AppWidget().snackBarTop(context, data["message"] ?? "", AppColors.red, Colors.white);
           }
         }
         return null;
@@ -265,6 +266,10 @@ mixin class Networking {
       );
     }
     final url = Uri.parse("${AppApiEndPoint.baseUrl}$endPoint/$id");
+
+    print(url);
+    print("Bearer ${sp?.getString(PreferenceKey.token)}");
+
     try {
       final response = await http.delete(
         url,
@@ -275,6 +280,7 @@ mixin class Networking {
         },
       );
 
+      print(response.body);
       if (response.statusCode == 200) {
         if (isLoaderShow && context.mounted) {
           Navigator.pop(context);
@@ -295,7 +301,7 @@ mixin class Networking {
 
         var data = json.decode(response.body);
         if (isLoaderShow && context.mounted) {
-          AppWidget().snackBar(context, data["message"], AppColors.red, Colors.white);
+          AppWidget().snackBarTop(context, data["message"] ?? "", AppColors.red, Colors.white);
         }
 
         return null;
@@ -306,7 +312,7 @@ mixin class Networking {
 
         var data = json.decode(response.body);
         if (isLoaderShow && context.mounted) {
-          AppWidget().snackBar(context, data["message"], AppColors.red, Colors.white);
+          AppWidget().snackBarTop(context, data["message"] ?? "", AppColors.red, Colors.white);
         }
 
         return null;
@@ -317,7 +323,7 @@ mixin class Networking {
 
         var data = json.decode(response.body);
         if (isLoaderShow && context.mounted) {
-          AppWidget().snackBar(context, data["message"], AppColors.red, Colors.white);
+          AppWidget().snackBarTop(context, data["message"] ?? "", AppColors.red, Colors.white);
         }
         return null;
       } else if (response.statusCode == 404) {
@@ -326,7 +332,7 @@ mixin class Networking {
         }
         var data = json.decode(response.body);
         if (isLoaderShow && context.mounted) {
-          AppWidget().snackBar(context, data["message"], AppColors.red, Colors.white);
+          AppWidget().snackBarTop(context, data["message"] ?? "", AppColors.red, Colors.white);
         }
         return null;
       } else if (response.statusCode == 403) {
@@ -495,7 +501,7 @@ mixin class Networking {
         var data = json.decode(response.body);
 
         if (context.mounted) {
-          AppWidget().snackBar(context, data["message"], AppColors.red, Colors.white);
+          AppWidget().snackBarTop(context, data["message"] ?? "", AppColors.red, Colors.white);
         }
 
         Provider.of<ProviderDashboard>(context, listen: false).logOut(context);
@@ -507,7 +513,7 @@ mixin class Networking {
         }
         var data = json.decode(response.body);
         if (context.mounted) {
-          AppWidget().snackBar(context, data["message"], AppColors.red, Colors.white);
+          AppWidget().snackBarTop(context, data["message"] ?? "", AppColors.red, Colors.white);
         }
         return null;
       } else if (response.statusCode == 404) {
@@ -518,7 +524,7 @@ mixin class Networking {
         var data = json.decode(response.body);
 
         if (context.mounted) {
-          AppWidget().snackBar(context, data["message"], AppColors.red, Colors.white);
+          AppWidget().snackBarTop(context, data["message"] ?? "", AppColors.red, Colors.white);
         }
         return null;
       } else if (response.statusCode == 403) {
@@ -690,7 +696,7 @@ mixin class Networking {
         var data = json.decode(response.body);
 
         if (context.mounted) {
-          AppWidget().snackBar(context, data["message"], AppColors.red, Colors.white);
+          AppWidget().snackBarTop(context, data["message"] ?? "", AppColors.red, Colors.white);
         }
 
         Provider.of<ProviderDashboard>(context, listen: false).logOut(context);
@@ -702,7 +708,7 @@ mixin class Networking {
         }
         var data = json.decode(response.body);
         if (context.mounted) {
-          AppWidget().snackBar(context, data["message"], AppColors.red, Colors.white);
+          AppWidget().snackBarTop(context, data["message"] ?? "", AppColors.red, Colors.white);
         }
         return null;
       } else if (response.statusCode == 404) {
@@ -713,7 +719,7 @@ mixin class Networking {
         var data = json.decode(response.body);
 
         if (context.mounted) {
-          AppWidget().snackBar(context, data["message"], AppColors.red, Colors.white);
+          AppWidget().snackBarTop(context, data["message"] ?? "", AppColors.red, Colors.white);
         }
         return null;
       } else if (response.statusCode == 403) {

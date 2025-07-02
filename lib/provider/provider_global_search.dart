@@ -1,10 +1,12 @@
 import 'package:dhanraj/model/add_watch_list_items_model.dart';
 import 'package:dhanraj/model/symbols_model.dart' as symbol;
+import 'package:dhanraj/provider/provider_watchlist.dart';
 import 'package:dhanraj/services/networking.dart';
 import 'package:dhanraj/utils/app_api_end_point.dart';
 import 'package:dhanraj/utils/app_colors.dart';
 import 'package:dhanraj/utils/app_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ProviderGlobalSearch extends ChangeNotifier {
   List<symbol.Symbol> symbolsList = [];
@@ -43,6 +45,7 @@ class ProviderGlobalSearch extends ChangeNotifier {
 
           if (addWatchListItemsModel.statusCode == 201) {
             AppWidget().snackBar(context, addWatchListItemsModel.message ?? "", AppColors.green, Colors.white);
+            Provider.of<ProviderWatchlist>(context, listen: false).getSymbolsList(context: context);
           }
         }
       },

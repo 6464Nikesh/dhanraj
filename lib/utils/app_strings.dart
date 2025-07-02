@@ -2,6 +2,7 @@ class AppStrings {
   static const String signIn = "Sign In";
   static const String signUp = "Sign Up";
   static const String aPaperTradingApp = "A paper trading app";
+  static const String youExceedLimit = "You exceed limit";
   static const String youAreNotAllowedToLogin = "You are not allowed to login.";
   static const String alreadyHaveAnAccount = "Already have an account?";
   static const String dontHaveAnAccount = "Don't have an account?";
@@ -12,6 +13,7 @@ class AppStrings {
   static const String close = "Close";
   static const String login = "Log in";
   static const String logout = "Logout";
+
   static const String editProfile = "Edit Profile";
   static const String username = "Username";
   static const String current = "Current";
@@ -54,12 +56,14 @@ class AppStrings {
   static const String searchAndAdd = "Search and Add";
   static const String position = "Positions";
   static const String history = "History";
+  static const String browse = "Browse";
   static const String settings = "Settings";
   static const String verify = "Verify";
   static const String trader = "Trader";
   static const String totalPortfolio = "Total Portfolio";
   static const String profile = "Profile";
   static const String funds = "Funds";
+  static const String amount = "Amount";
   static const String quantity = "Quantity";
   static const String entryPrice = "Entry Price";
   static const String timeFrame = "Time Frame";
@@ -85,4 +89,7 @@ class AppStrings {
   static const String changePassword = "Change Password";
   static const String forgetYourPassword = "Forget Your Password?";
   static const String registerWithYourPersonalDetailsToUseAllOfSiteFeatures = "Register with your personal details to use all of site features";
+  static const camaraPermissionDenied = "Camara Permission Denied";
+  static const thisAppNeedsCamaraPermissionToAccessYourCurrentLocationPleaseEnableItInYourSettings =
+      "\"DHANRAJ\" app needs camara permission to access your current location. Please enable it in your settings.";
 }

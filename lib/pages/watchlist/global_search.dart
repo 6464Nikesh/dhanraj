@@ -1,5 +1,6 @@
 import 'package:dhanraj/arguments/global_search_arg.dart';
 import 'package:dhanraj/provider/provider_global_search.dart';
+import 'package:dhanraj/provider/provider_watchlist.dart';
 import 'package:dhanraj/utils/app_appbar.dart';
 import 'package:dhanraj/utils/app_colors.dart';
 import 'package:dhanraj/utils/app_strings.dart';
@@ -153,19 +154,28 @@ class _GlobalSearchState extends State<GlobalSearch> {
                                                     ],
                                                   ),
                                                 ),
-                                                GestureDetector(
-                                                  onTap: () {
-                                                    pds.addSymbolsInWatchList(watchlistId: widget.globalSearchArg.watchListId, s: data, context: context);
-                                                  },
-                                                  child: Container(
-                                                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: AppColors.grey),
-                                                    child: const Icon(
-                                                      Icons.add,
-                                                      color: Colors.white,
-                                                      size: 20,
+                                                Consumer<ProviderWatchlist>(builder: (context, pw, child) {
+                                                  return GestureDetector(
+                                                    onTap: () {
+
+                                                      print(pw.items?.length ?? 0);
+
+                                                      if (10 >= (pw.items?.length ?? 0)) {
+                                                        pds.addSymbolsInWatchList(watchlistId: widget.globalSearchArg.watchListId, s: data, context: context);
+                                                      } else {
+                                                        AppWidget().snackBar(context, AppStrings.youExceedLimit, Colors.redAccent, Colors.white);
+                                                      }
+                                                    },
+                                                    child: Container(
+                                                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: AppColors.grey),
+                                                      child: const Icon(
+                                                        Icons.add,
+                                                        color: Colors.white,
+                                                        size: 20,
+                                                      ),
                                                     ),
-                                                  ),
-                                                ),
+                                                  );
+                                                }),
                                               ],
                                             ),
                                             (pds.symbolsList.length - 1 == index)
@@ -241,19 +251,25 @@ class _GlobalSearchState extends State<GlobalSearch> {
                                                       ],
                                                     ),
                                                   ),
-                                                  GestureDetector(
-                                                    onTap: () {
-                                                      pds.addSymbolsInWatchList(watchlistId: widget.globalSearchArg.watchListId, s: data, context: context);
-                                                    },
-                                                    child: Container(
-                                                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: AppColors.grey),
-                                                      child: const Icon(
-                                                        Icons.add,
-                                                        color: Colors.white,
-                                                        size: 20,
+                                                  Consumer<ProviderWatchlist>(builder: (context, pw, child) {
+                                                    return GestureDetector(
+                                                      onTap: () {
+                                                        if (10 > (pw.items?.length ?? 0)) {
+                                                          pds.addSymbolsInWatchList(watchlistId: widget.globalSearchArg.watchListId, s: data, context: context);
+                                                        } else {
+                                                          AppWidget().snackBar(context, AppStrings.youExceedLimit, Colors.redAccent, Colors.white);
+                                                        }
+                                                      },
+                                                      child: Container(
+                                                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: AppColors.grey),
+                                                        child: const Icon(
+                                                          Icons.add,
+                                                          color: Colors.white,
+                                                          size: 20,
+                                                        ),
                                                       ),
-                                                    ),
-                                                  ),
+                                                    );
+                                                  }),
                                                 ],
                                               ),
                                               (pds.filteredSymbolsList.length - 1 == index)

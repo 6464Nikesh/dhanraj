@@ -1,10 +1,12 @@
-import 'package:dhanraj/provider/bottom_sheet_provider.dart';
+import 'package:dhanraj/provider/deposit_withdrawal_sheet_provider.dart';
 import 'package:dhanraj/provider/provider_dashboard.dart';
+import 'package:dhanraj/provider/provider_funds.dart';
 import 'package:dhanraj/provider/provider_global_search.dart';
 import 'package:dhanraj/provider/provider_login.dart';
 import 'package:dhanraj/provider/provider_settings.dart';
 import 'package:dhanraj/provider/provider_watchlist.dart';
 import 'package:dhanraj/utils/app_route.dart';
+import 'package:dhanraj/utils/choose_image_provider.dart';
 import 'package:dhanraj/utils/route_generator.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -27,9 +29,11 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => ProviderDashboard()),
         ChangeNotifierProvider(create: (context) => ProviderWatchlist()),
         ChangeNotifierProvider(create: (context) => ProviderGlobalSearch()),
+        ChangeNotifierProvider(create: (context) => ProviderFunds()),
+        ChangeNotifierProvider(create: (context) => ChooseImageProvider()),
 
         /// Bottom sheet Provider
-        ChangeNotifierProvider(create: (context) => BottomSheetProvider())
+        ChangeNotifierProvider(create: (context) => DepositWithdrawalSheetProvider())
       ],
       child: const MaterialApp(
         title: 'Dhanraj : A paper trading app',
