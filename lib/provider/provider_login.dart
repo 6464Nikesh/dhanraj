@@ -16,7 +16,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class ProviderLogin extends ChangeNotifier with Networking {
   TextEditingController userName = TextEditingController();
   TextEditingController password = TextEditingController();
-  bool isPasswordShow = false;
+  bool isPasswordShow = true;
   SharedPreferences? sp;
 
   setVisibility() {

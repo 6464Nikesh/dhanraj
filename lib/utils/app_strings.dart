@@ -66,11 +66,15 @@ class AppStrings {
   static const String amount = "Amount";
   static const String quantity = "Quantity";
   static const String entryPrice = "Entry Price";
+  static const String entryTarget = "Entry Target";
+  static const String enterStopLoss = "Enter Stop-loss";
+  static const String price = "Price";
   static const String timeFrame = "Time Frame";
   static const String stopLoss = "Stop-loss";
   static const String areYouSureYouWantToDelete = "Are you sure you want to delete?";
   static const String target = "Target";
   static const String delete = "Delete";
+  static const String totalQty = "Total Qty";
   static const String globalSearch = "Global Search";
   static const String noOpenPositions = "No open positions";
   static const String toSubmitATradeTapOn = "To submit a trade tap on +";
@@ -84,6 +88,7 @@ class AppStrings {
   static const String watchlistName = "Watchlist Name";
   static const String enterName = "Enter Name";
   static const String enter = "Enter";
+  static const String enterTradeLot = "Enter Trade Lot";
   static const String description = "Description";
   static const String tradingTerms = "Trading Terms";
   static const String changePassword = "Change Password";

@@ -72,37 +72,37 @@ class _CreateNewWatchlistBottomSheetState extends State<CreateNewWatchlistBottom
                       ),
                     ),
                   ),
-                  const SizedBox(
-                    height: 16,
-                  ),
-                  const Text(
-                    "${AppStrings.description} :",
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontFamily: "roboto",
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.grey,
-                    ),
-                  ),
-                  TextField(
-                    controller: Provider.of<ProviderWatchlist>(context, listen: false).description,
-                    cursorColor: AppColors.grey,
-                    decoration: const InputDecoration(
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: AppColors.grey),
-                      ),
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: AppColors.grey),
-                      ),
-                      hintText: "${AppStrings.enter} ${AppStrings.description}",
-                      hintStyle: TextStyle(
-                        fontSize: 10,
-                        fontFamily: "roboto",
-                        fontWeight: FontWeight.w400,
-                        color: AppColors.grey,
-                      ),
-                    ),
-                  ),
+                  // const SizedBox(
+                  //   height: 16,
+                  // ),
+                  // const Text(
+                  //   "${AppStrings.description} :",
+                  //   style: TextStyle(
+                  //     fontSize: 14,
+                  //     fontFamily: "roboto",
+                  //     fontWeight: FontWeight.w700,
+                  //     color: AppColors.grey,
+                  //   ),
+                  // ),
+                  // TextField(
+                  //   controller: Provider.of<ProviderWatchlist>(context, listen: false).description,
+                  //   cursorColor: AppColors.grey,
+                  //   decoration: const InputDecoration(
+                  //     focusedBorder: UnderlineInputBorder(
+                  //       borderSide: BorderSide(color: AppColors.grey),
+                  //     ),
+                  //     enabledBorder: UnderlineInputBorder(
+                  //       borderSide: BorderSide(color: AppColors.grey),
+                  //     ),
+                  //     hintText: "${AppStrings.enter} ${AppStrings.description}",
+                  //     hintStyle: TextStyle(
+                  //       fontSize: 10,
+                  //       fontFamily: "roboto",
+                  //       fontWeight: FontWeight.w400,
+                  //       color: AppColors.grey,
+                  //     ),
+                  //   ),
+                  // ),
                   const SizedBox(
                     height: 40,
                   ),

@@ -10,21 +10,11 @@ import 'package:provider/provider.dart';
 
 class ProviderGlobalSearch extends ChangeNotifier {
   List<symbol.Symbol> symbolsList = [];
-  List<symbol.Symbol> filteredSymbolsList = [];
   TextEditingController searchController = TextEditingController();
 
-  filter(String value) {
-    filteredSymbolsList.clear();
-    for (var i = 0; i < symbolsList.length; ++i) {
-      if ((symbolsList[i].name?.contains(value) ?? false) || (symbolsList[i].tradingsymbol?.contains(value) ?? false)) {
-        filteredSymbolsList.add(symbolsList[i]);
-      }
-    }
-    notifyListeners();
-  }
-
-  filterClear() {
-    filteredSymbolsList.clear();
+  clear() {
+    searchController.clear();
+    symbolsList.clear();
     notifyListeners();
   }
 
@@ -52,15 +42,21 @@ class ProviderGlobalSearch extends ChangeNotifier {
     );
   }
 
+  String removeTrailingZeros(String value) {
+    double val = double.tryParse(value) ?? 0.0;
+
+    if (val == 0) return '';
+    if (value.contains('.')) {
+      // Remove trailing zeros and dot if nothing remains after dot
+      value = value.replaceFirst(RegExp(r'\.0+$'), ''); // e.g., 12.0000 -> 12
+    }
+    return value;
+  }
+
   selectSymbols(String symbolsId, bool value) {
     for (var i = 0; i < symbolsList.length; ++i) {
       if (symbolsList[i].symbolId == symbolsId) {
         symbolsList[i].isSelected = value;
-      }
-    }
-    for (var i = 0; i < filteredSymbolsList.length; ++i) {
-      if (filteredSymbolsList[i].symbolId == symbolsId) {
-        filteredSymbolsList[i].isSelected = value;
       }
     }
 
@@ -68,7 +64,6 @@ class ProviderGlobalSearch extends ChangeNotifier {
   }
 
   getSymbols({required BuildContext context}) {
-    symbolsList.clear();
     Networking().get(context: context, endPoint: AppApiEndPoint.getAllSymbols, isShowLoader: true).then(
       (value) {
         if (value != null) {
@@ -78,5 +73,25 @@ class ProviderGlobalSearch extends ChangeNotifier {
         }
       },
     );
+  }
+
+  void fetchSymbols({required BuildContext context, required String search, int page = 1}) {
+    symbolsList.clear();
+    String urlParams = '?search=$search&page=$page';
+
+    Networking()
+        .getWithParams(
+      context: context,
+      endPoint: AppApiEndPoint.getAllSymbols,
+      isShowLoader: false,
+      params: urlParams,
+    )
+        .then((response) {
+      if (response != null) {
+        symbol.SymbolsModel symbolsModel = symbol.SymbolsModel.fromJson(response);
+        symbolsList.addAll(symbolsModel.result?.symbols ?? []);
+        notifyListeners();
+      }
+    });
   }
 }

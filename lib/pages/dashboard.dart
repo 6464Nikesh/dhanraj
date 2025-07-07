@@ -1,4 +1,5 @@
 import 'package:dhanraj/provider/provider_dashboard.dart';
+import 'package:dhanraj/services/web_socket_service.dart';
 import 'package:dhanraj/utils/app_colors.dart';
 import 'package:dhanraj/utils/app_strings.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,14 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      Provider.of<ProviderDashboard>(context, listen: false).init(context: context);
+    });
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Consumer<ProviderDashboard>(builder: (context, pd, child) {
       return PopScope(
@@ -26,7 +35,7 @@ class _DashboardState extends State<Dashboard> {
             },
             type: BottomNavigationBarType.fixed,
             backgroundColor: Colors.white,
-            unselectedItemColor: AppColors.grey,
+            unselectedItemColor: AppColors.grey.withOpacity(0.3),
             selectedItemColor: AppColors.darkBlue,
             showUnselectedLabels: true,
             currentIndex: pd.currentIndex,

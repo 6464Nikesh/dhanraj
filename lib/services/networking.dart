@@ -47,6 +47,8 @@ mixin class Networking {
         },
       );
 
+      print(response.body);
+
       if (response.statusCode == 200) {
         if (isLoaderShow && context.mounted) {
           Navigator.pop(context);
@@ -682,7 +684,6 @@ mixin class Networking {
           'Accept': 'application/json',
         },
       );
-
       if (response.statusCode == 200) {
         if (isShowLoader && context.mounted) {
           Navigator.pop(context);

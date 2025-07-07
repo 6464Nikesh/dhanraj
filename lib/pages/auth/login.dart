@@ -3,6 +3,7 @@ import 'package:dhanraj/utils/app_colors.dart';
 import 'package:dhanraj/utils/app_route.dart';
 import 'package:dhanraj/utils/app_strings.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 class Login extends StatefulWidget {
@@ -80,6 +81,11 @@ class _LoginState extends State<Login> {
                           TextField(
                             controller: pl.userName,
                             cursorColor: AppColors.grey,
+                            textCapitalization: TextCapitalization.characters,
+                            // Makes keyboard uppercase
+                            inputFormatters: [
+                              UpperCaseTextFormatter(),
+                            ],
                             decoration: const InputDecoration(
                               focusedBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(color: AppColors.grey),
@@ -275,6 +281,18 @@ class _LoginState extends State<Login> {
           );
         },
       ),
+    );
+  }
+}
+class UpperCaseTextFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue,
+      TextEditingValue newValue,
+      ) {
+    return newValue.copyWith(
+      text: newValue.text.toUpperCase(),
+      selection: newValue.selection,
     );
   }
 }

@@ -65,6 +65,7 @@ class Result {
 
 class Items {
   String? watchlistItemId;
+
   String? watchlistId;
   String? symbolId;
   int? sortOrder;
@@ -97,6 +98,7 @@ class Items {
 
   Items.fromJson(Map<String, dynamic> json) {
     watchlistItemId = json['watchlist_item_id'];
+
     watchlistId = json['watchlist_id'];
     symbolId = json['symbol_id'];
     sortOrder = json['sort_order'];
@@ -115,6 +117,7 @@ class Items {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['watchlist_item_id'] = watchlistItemId;
+
     data['watchlist_id'] = watchlistId;
     data['symbol_id'] = symbolId;
     data['sort_order'] = sortOrder;
@@ -138,6 +141,8 @@ class Items {
 
 class Symbol {
   String? symbolId;
+  String? strike;
+  String? instrumentToken;
   String? tradingsymbol;
   String? name;
   String? lastPrice;
@@ -146,12 +151,14 @@ class Symbol {
   String? instrumentType;
   String? expiry;
 
-  Symbol({this.symbolId, this.tradingsymbol, this.name, this.lastPrice, this.exchange, this.segment, this.instrumentType, this.expiry});
+  Symbol({this.symbolId, this.strike, this.instrumentToken, this.tradingsymbol, this.name, this.lastPrice, this.exchange, this.segment, this.instrumentType, this.expiry});
 
   Symbol.fromJson(Map<String, dynamic> json) {
     symbolId = json['symbol_id'];
+    instrumentToken = json['instrument_token'];
     tradingsymbol = json['tradingsymbol'];
     name = json['name'];
+    strike = json['strike'];
     lastPrice = json['last_price'];
     exchange = json['exchange'];
     segment = json['segment'];
@@ -162,7 +169,9 @@ class Symbol {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['symbol_id'] = symbolId;
+    data['strike'] = strike;
     data['tradingsymbol'] = tradingsymbol;
+    data['instrument_token'] = instrumentToken;
     data['name'] = name;
     data['last_price'] = lastPrice;
     data['exchange'] = exchange;

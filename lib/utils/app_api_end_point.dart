@@ -11,4 +11,5 @@ class AppApiEndPoint {
   static const String addFunds = "transaction-service/add-funds";
   static const String withdrawalRequest = "transaction-service/withdrawal-request";
   static const String transactionServiceHistory = "transaction-service/history";
+  static const String position = "trade-service/trades";
 }

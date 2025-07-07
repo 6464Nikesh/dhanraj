@@ -40,6 +40,9 @@ class Miscellaneous {
   }
 
   static String dateConverterToDDMMMYYYY(String date) {
+    if(date.isEmpty){
+      return "";
+    }
     DateTime dateTime = DateTime.parse(date);
     return DateFormat('dd-MMM-yyyy').format(dateTime);
   }
