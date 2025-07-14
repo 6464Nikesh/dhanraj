@@ -14,6 +14,8 @@ import 'package:dhanraj/pages/watchlist/global_search.dart';
 import 'package:dhanraj/utils/app_route.dart';
 import 'package:flutter/material.dart';
 
+import '../arguments/trade_detail_arg.dart';
+
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -34,7 +36,8 @@ class RouteGenerator {
       case AppRoutes.funds:
         return buildRoute(const Funds(), settings: settings);
       case AppRoutes.tradeDetails:
-        return buildRoute(const TradeDetails(), settings: settings);
+        final arguments = settings.arguments as TradeDetailArg;
+        return buildRoute(TradeDetails(arg: arguments), settings: settings);
       case AppRoutes.modifyTarget:
         return buildRoute(const ModifyTarget(), settings: settings);
       case AppRoutes.historyTradeDetails:

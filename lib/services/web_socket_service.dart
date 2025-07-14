@@ -6,6 +6,7 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 class WebSocketService with ChangeNotifier {
   WebSocketChannel? _channel;
   int _currentWatchlistId = 0;
+  bool _marketClosed = false;
 
   final Map<int, Map<String, dynamic>> _instrumentData = {};
 
@@ -27,6 +28,20 @@ class WebSocketService with ChangeNotifier {
   }
 
   void _handleMessage(dynamic data) {
+
+    final m = jsonDecode(data);
+
+    // Check for market closed info
+    if (m['type'] == 'info' && m['message'] == 'Market is closed') {
+      _marketClosed = true;
+      notifyListeners(); // So UI or provider can react
+      debugPrint("Market is closed. Stopping socket actions.");
+      _channel?.sink.close(); // Optional: close connection early
+      return;
+    }
+
+    if (_marketClosed) return; // Don't process any further messages
+
     final jsonData = jsonDecode(data);
     if (jsonData['type'] == 'tick' && jsonData['payload'] != null) {
       final payload = jsonData['payload'];
@@ -37,6 +52,12 @@ class WebSocketService with ChangeNotifier {
   }
 
   void subscribe(int watchListId) {
+    if (_marketClosed) {
+      debugPrint("Market is closed. Skipping subscription.");
+      return;
+    }
+
+
     if (_currentWatchlistId == watchListId) return;
 
     // Unsubscribe previous
@@ -70,6 +91,10 @@ class WebSocketService with ChangeNotifier {
   }
 
   void _reconnect(String tokan) {
+    if (_marketClosed) {
+      debugPrint("Market is closed. Not reconnecting.");
+      return;
+    }
     _channel = null;
     Future.delayed(const Duration(seconds: 3), () {
       connect(tokan);

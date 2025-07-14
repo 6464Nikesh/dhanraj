@@ -18,6 +18,11 @@ class ProviderGlobalSearch extends ChangeNotifier {
     notifyListeners();
   }
 
+  setSelectedSymbols({required int index, required bool val}) {
+    symbolsList[index].isSelected = val;
+    notifyListeners();
+  }
+
   addSymbolsInWatchList({required String watchlistId, required symbol.Symbol s, required BuildContext context}) {
     var map = {
       "watchlist_id": watchlistId,
@@ -75,6 +80,16 @@ class ProviderGlobalSearch extends ChangeNotifier {
     );
   }
 
+  bool preSelectedItems({required BuildContext context, required String id}) {
+    bool isSelected = false;
+    for (var i = 0; i < (Provider.of<ProviderWatchlist>(context, listen: false).items?.length ?? 0); ++i) {
+      if (id == Provider.of<ProviderWatchlist>(context, listen: false).items?[i].symbolId) {
+        isSelected = true;
+      }
+    }
+    return isSelected;
+  }
+
   void fetchSymbols({required BuildContext context, required String search, int page = 1}) {
     symbolsList.clear();
     String urlParams = '?search=$search&page=$page';
@@ -90,6 +105,11 @@ class ProviderGlobalSearch extends ChangeNotifier {
       if (response != null) {
         symbol.SymbolsModel symbolsModel = symbol.SymbolsModel.fromJson(response);
         symbolsList.addAll(symbolsModel.result?.symbols ?? []);
+
+        for (var i = 0; i < symbolsList.length; ++i) {
+          symbolsList[i].isSelected = preSelectedItems(context: context, id: symbolsList[i].symbolId ?? "");
+        }
+
         notifyListeners();
       }
     });

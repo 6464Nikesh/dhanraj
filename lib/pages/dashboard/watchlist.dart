@@ -12,6 +12,8 @@ import 'package:dhanraj/utils/app_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../utils/miscellaneous.dart';
+
 class Watchlist extends StatefulWidget {
   const Watchlist({super.key});
 
@@ -61,7 +63,7 @@ class _WatchlistState extends State<Watchlist> {
           ),
         ),
         title: const Text(
-          AppStrings.position,
+          AppStrings.watchlist,
           style: TextStyle(
             fontFamily: "roboto",
             color: AppColors.navyBlue,
@@ -107,6 +109,7 @@ class _WatchlistState extends State<Watchlist> {
                           },
                           style: Theme.of(context).textTheme.labelLarge,
                           keyboardType: TextInputType.name,
+                          readOnly: true,
                           decoration: InputDecoration(
                             floatingLabelBehavior: FloatingLabelBehavior.always,
                             hintText: AppStrings.searchAndAdd,
@@ -215,13 +218,6 @@ class _WatchlistState extends State<Watchlist> {
                         color: AppColors.navyBlue,
                       ),
                     ),
-                    const SizedBox(
-                      width: 8,
-                    ),
-                    const Icon(
-                      Icons.more_vert,
-                      color: AppColors.navyBlue,
-                    ),
                   ],
                 ),
                 Expanded(
@@ -239,7 +235,6 @@ class _WatchlistState extends State<Watchlist> {
                                 String lastPrice = '00.00';
                                 String changePercent = '00.00';
                                 Color priceColor = Colors.black;
-                                IconData? arrow;
 
                                 if (socketData != null && socketData['instrument_token'] == instrumentToken) {
                                   num price = socketData['last_price'] ?? 0;
@@ -253,10 +248,8 @@ class _WatchlistState extends State<Watchlist> {
 
                                   if (change > 0) {
                                     priceColor = Colors.green;
-                                    arrow = Icons.arrow_upward;
                                   } else if (change < 0) {
                                     priceColor = Colors.red;
-                                    arrow = Icons.arrow_downward;
                                   } else {
                                     priceColor = Colors.grey;
                                   }
@@ -382,12 +375,34 @@ class _WatchlistState extends State<Watchlist> {
                                                         const SizedBox(
                                                           height: 4,
                                                         ),
-                                                        Text(
-                                                          "${data?.symbol?.exchange} | ${data?.symbol?.segment}",
-                                                          style: const TextStyle(
-                                                            fontFamily: "roboto",
-                                                            fontSize: 8,
-                                                          ),
+                                                        Row(
+                                                          children: [
+                                                            Container(
+                                                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(2), color: AppColors.grey.withOpacity(0.1)),
+                                                              child: Padding(
+                                                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                                                child: Text(
+                                                                  "${data?.symbol?.segment}",
+                                                                  style: const TextStyle(
+                                                                    fontFamily: "roboto",
+                                                                    fontSize: 8,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            const SizedBox(
+                                                              width: 10,
+                                                            ),
+                                                            (data?.symbol?.expiry != null)
+                                                                ? Text(
+                                                                    Miscellaneous.dateConverterToDDMMMYYYY(data?.symbol?.expiry ?? ""),
+                                                                    style: const TextStyle(
+                                                                      fontFamily: "roboto",
+                                                                      fontSize: 8,
+                                                                    ),
+                                                                  )
+                                                                : Container(),
+                                                          ],
                                                         ),
                                                       ],
                                                     ),

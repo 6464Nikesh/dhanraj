@@ -48,7 +48,9 @@ class ProviderWatchlist extends ChangeNotifier {
           if (watchListsModel.statusCode == 200) {
             watchLists = watchListsModel.result?.watchLists ?? [];
 
-            selSelectedWatchList(selectedWatchList: watchLists?.first, context: context);
+            if (selectedWatchList == null) {
+              selSelectedWatchList(selectedWatchList: watchLists?.first, context: context);
+            }
             notifyListeners();
           }
         }
@@ -57,14 +59,13 @@ class ProviderWatchlist extends ChangeNotifier {
   }
 
   selSelectedWatchList({required WatchLists? selectedWatchList, required BuildContext context}) {
-    print(selectedWatchList?.watchlistId);
     this.selectedWatchList = selectedWatchList;
     getSymbolsList(context: context);
     notifyListeners();
   }
 
-  getSymbolsList({required BuildContext context}) {
-    Networking().getWithParams(context: context, endPoint: AppApiEndPoint.getWatchListItems, isShowLoader: true, params: '?watchlist_id=${selectedWatchList?.watchlistId}').then(
+  Future <void> getSymbolsList({required BuildContext context}) async {
+    await Networking().getWithParams(context: context, endPoint: AppApiEndPoint.getWatchListItems, isShowLoader: true, params: '?watchlist_id=${selectedWatchList?.watchlistId}').then(
       (value) {
         if (value != null) {
           GetWatchlistItemsModel getWatchlistItemsModel = GetWatchlistItemsModel.fromJson(value);
@@ -84,7 +85,7 @@ class ProviderWatchlist extends ChangeNotifier {
   createNewWatchList({required BuildContext context}) {
     if (name.text.isEmpty) {
       AppWidget().snackBarTop(context, "Please enter name.", AppColors.red, Colors.white);
-    }  else {
+    } else {
       var mapData = {"watchlist_name": name.text, "description": "DI", "category": "EQUITY"};
 
       Networking().post(context: context, mapData: mapData, endPoint: AppApiEndPoint.createWatchList, isLoaderShow: true, fromBottomSheet: false).then(

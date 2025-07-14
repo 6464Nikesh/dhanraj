@@ -4,10 +4,18 @@ import 'package:dhanraj/utils/app_assets.dart';
 import 'package:dhanraj/utils/app_button.dart';
 import 'package:dhanraj/utils/app_colors.dart';
 import 'package:dhanraj/utils/app_strings.dart';
+import 'package:dhanraj/utils/miscellaneous.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../arguments/trade_detail_arg.dart';
+import '../../model/position_model.dart';
+import '../../provider/position_provider.dart';
 
 class TradeDetails extends StatefulWidget {
-  const TradeDetails({super.key});
+  final TradeDetailArg arg;
+
+  const TradeDetails({super.key, required this.arg});
 
   @override
   State<TradeDetails> createState() => _TradeDetailsState();
@@ -83,10 +91,10 @@ class _TradeDetailsState extends State<TradeDetails> {
                     const SizedBox(
                       height: 20,
                     ),
-                    const Row(
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
+                        const Text(
                           "Instrument",
                           style: TextStyle(
                             fontFamily: "roboto",
@@ -95,8 +103,8 @@ class _TradeDetailsState extends State<TradeDetails> {
                           ),
                         ),
                         Text(
-                          "NIFTY 05DEC24 24400 CE",
-                          style: TextStyle(
+                          "${widget.arg.trades?.symbolName}${Provider.of<PositionProvider>(context, listen: false).removeTrailingZeros(widget.arg.trades?.strike ?? "")} ${widget.arg.trades?.instrumentType ?? ""}",
+                          style: const TextStyle(
                             fontFamily: "roboto",
                             color: AppColors.navyBlue,
                             fontSize: 14,
@@ -108,10 +116,10 @@ class _TradeDetailsState extends State<TradeDetails> {
                     const SizedBox(
                       height: 10,
                     ),
-                    const Row(
+                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
+                        const Text(
                           "Status",
                           style: TextStyle(
                             fontFamily: "roboto",
@@ -120,8 +128,8 @@ class _TradeDetailsState extends State<TradeDetails> {
                           ),
                         ),
                         Text(
-                          "Active",
-                          style: TextStyle(
+                          "${widget.arg.trades?.status}",
+                          style: const TextStyle(
                             fontFamily: "roboto",
                             color: AppColors.navyBlue,
                             fontSize: 14,
@@ -133,7 +141,7 @@ class _TradeDetailsState extends State<TradeDetails> {
                     const SizedBox(
                       height: 10,
                     ),
-                    const Row(
+                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
@@ -145,7 +153,7 @@ class _TradeDetailsState extends State<TradeDetails> {
                           ),
                         ),
                         Text(
-                          "+100",
+                          "${widget.arg.trades?.symbolLotSize}",
                           style: TextStyle(
                             fontFamily: "roboto",
                             color: AppColors.navyBlue,
@@ -158,7 +166,7 @@ class _TradeDetailsState extends State<TradeDetails> {
                     const SizedBox(
                       height: 10,
                     ),
-                    const Row(
+                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
@@ -170,7 +178,7 @@ class _TradeDetailsState extends State<TradeDetails> {
                           ),
                         ),
                         Text(
-                          "149.80 (-3.29%)",
+                          "NEED TO ASK",
                           style: TextStyle(
                             fontFamily: "roboto",
                             color: AppColors.navyBlue,
@@ -183,7 +191,7 @@ class _TradeDetailsState extends State<TradeDetails> {
                     const SizedBox(
                       height: 10,
                     ),
-                    const Row(
+                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
@@ -195,7 +203,7 @@ class _TradeDetailsState extends State<TradeDetails> {
                           ),
                         ),
                         Text(
-                          "149.50",
+                          "${widget.arg.trades?.openPrice}",
                           style: TextStyle(
                             fontFamily: "roboto",
                             color: AppColors.navyBlue,
@@ -208,7 +216,7 @@ class _TradeDetailsState extends State<TradeDetails> {
                     const SizedBox(
                       height: 10,
                     ),
-                    const Row(
+                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
@@ -220,7 +228,7 @@ class _TradeDetailsState extends State<TradeDetails> {
                           ),
                         ),
                         Text(
-                          "--",
+                          "${widget.arg.trades?.stoplossPrice}",
                           style: TextStyle(
                             fontFamily: "roboto",
                             color: AppColors.navyBlue,
@@ -262,7 +270,7 @@ class _TradeDetailsState extends State<TradeDetails> {
                     const SizedBox(
                       height: 10,
                     ),
-                    const Row(
+                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
@@ -274,7 +282,7 @@ class _TradeDetailsState extends State<TradeDetails> {
                           ),
                         ),
                         Text(
-                          "5 Dec 24, 3:20 PM",
+                          "${Miscellaneous.dateConverterToDDMMMYYYY(widget.arg.trades?.expiry ?? "")}",
                           style: TextStyle(
                             fontFamily: "roboto",
                             color: AppColors.navyBlue,
@@ -400,7 +408,7 @@ class _TradeDetailsState extends State<TradeDetails> {
                           backgroundColor: Colors.transparent,
                           context: context,
                           builder: (context) {
-                            return ModifyTrade();
+                            return const ModifyTrade();
                           },
                         );
                       },

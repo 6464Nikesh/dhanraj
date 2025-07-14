@@ -5,6 +5,7 @@ import 'package:dhanraj/utils/app_appbar.dart';
 import 'package:dhanraj/utils/app_colors.dart';
 import 'package:dhanraj/utils/app_strings.dart';
 import 'package:dhanraj/utils/app_widget.dart';
+import 'package:dhanraj/utils/miscellaneous.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -93,93 +94,130 @@ class _GlobalSearchState extends State<GlobalSearch> {
                         child: pds.symbolsList.isNotEmpty
                             ? SingleChildScrollView(
                                 child: Column(
-                                children: List.generate(
-                                  pds.symbolsList.length,
-                                  (index) {
-                                    var data = pds.symbolsList[index];
-                                    return Column(
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Expanded(
-                                              child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  Row(
-                                                    children: [
-                                                      Text(
-                                                        "${data.name ?? ""} ${pds.removeTrailingZeros(data.strike ?? "")}",
-                                                        style: const TextStyle(
-                                                          fontFamily: "roboto",
-                                                          fontWeight: FontWeight.w600,
-                                                          fontSize: 12,
+                                  children: List.generate(
+                                    pds.symbolsList.length,
+                                    (index) {
+                                      var data = pds.symbolsList[index];
+                                      return Column(
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Row(
+                                                      children: [
+                                                        Text(
+                                                          "${data.name ?? ""} ${pds.removeTrailingZeros(data.strike ?? "")}",
+                                                          style: const TextStyle(
+                                                            fontFamily: "roboto",
+                                                            fontWeight: FontWeight.w600,
+                                                            fontSize: 12,
+                                                          ),
                                                         ),
-                                                      ),
-                                                      const SizedBox(
-                                                        width: 8,
-                                                      ),
-                                                      Container(
-                                                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(2), color: AppColors.grey.withOpacity(0.1)),
-                                                        child: Padding(
-                                                          padding: const EdgeInsets.all(4),
-                                                          child: Text(
-                                                            "${data.instrumentType}",
-                                                            style: const TextStyle(
-                                                              fontFamily: "roboto",
-                                                              fontSize: 8,
+                                                        const SizedBox(
+                                                          width: 8,
+                                                        ),
+                                                        Container(
+                                                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(2), color: AppColors.grey.withOpacity(0.1)),
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.all(4),
+                                                            child: Text(
+                                                              "${data.instrumentType}",
+                                                              style: const TextStyle(
+                                                                fontFamily: "roboto",
+                                                                fontSize: 8,
+                                                              ),
                                                             ),
                                                           ),
                                                         ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  const SizedBox(
-                                                    height: 4,
-                                                  ),
-                                                  Text(
-                                                    "${data.exchange} | ${data.segment}",
-                                                    style: const TextStyle(
-                                                      fontFamily: "roboto",
-                                                      fontSize: 8,
+                                                      ],
                                                     ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            Consumer<ProviderWatchlist>(builder: (context, pw, child) {
-                                              return GestureDetector(
-                                                onTap: () {
-                                                  print(pw.items?.length ?? 0);
-
-                                                  if (10 >= (pw.items?.length ?? 0)) {
-                                                    pds.addSymbolsInWatchList(watchlistId: widget.globalSearchArg.watchListId, s: data, context: context);
-                                                  } else {
-                                                    AppWidget().snackBar(context, AppStrings.youExceedLimit, Colors.redAccent, Colors.white);
-                                                  }
-                                                },
-                                                child: Container(
-                                                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: AppColors.grey),
-                                                  child: const Icon(
-                                                    Icons.add,
-                                                    color: Colors.white,
-                                                    size: 20,
-                                                  ),
+                                                    const SizedBox(
+                                                      height: 4,
+                                                    ),
+                                                    Row(
+                                                      children: [
+                                                        Container(
+                                                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(2), color: AppColors.grey.withOpacity(0.1)),
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                                            child: Text(
+                                                              "${data.segment}",
+                                                              style: const TextStyle(
+                                                                fontFamily: "roboto",
+                                                                fontSize: 8,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        const SizedBox(
+                                                          width: 10,
+                                                        ),
+                                                        (data.expiry != null)
+                                                            ? Text(
+                                                                Miscellaneous.dateConverterToDDMMMYYYY(data.expiry ?? ""),
+                                                                style: const TextStyle(
+                                                                  fontFamily: "roboto",
+                                                                  fontSize: 8,
+                                                                ),
+                                                              )
+                                                            : Container(),
+                                                      ],
+                                                    ),
+                                                  ],
                                                 ),
-                                              );
-                                            }),
-                                          ],
-                                        ),
-                                        (pds.symbolsList.length - 1 == index)
-                                            ? Container()
-                                            : const Padding(
-                                                padding: EdgeInsets.symmetric(vertical: 10),
-                                                child: Divider(),
                                               ),
-                                      ],
-                                    );
-                                  },
+                                              Consumer<ProviderWatchlist>(
+                                                builder: (context, pw, child) {
+                                                  return GestureDetector(
+                                                    onTap: () {
+                                                      if (10 > (pw.items?.length ?? 0)) {
+                                                        pds.addSymbolsInWatchList(
+                                                          watchlistId: widget.globalSearchArg.watchListId,
+                                                          s: data,
+                                                          context: context,
+                                                        );
+                                                        pds.setSelectedSymbols(index: index, val: true);
+                                                      } else {
+                                                        AppWidget().snackBar(context, AppStrings.youExceedLimit, Colors.redAccent, Colors.white);
+                                                      }
+                                                    },
+                                                    child: (data.isSelected ?? false)
+                                                        ? Container(
+                                                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: AppColors.green),
+                                                            child: const Icon(
+                                                              Icons.done,
+                                                              color: Colors.white,
+                                                              size: 20,
+                                                            ),
+                                                          )
+                                                        : Container(
+                                                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: AppColors.grey),
+                                                            child: const Icon(
+                                                              Icons.add,
+                                                              color: Colors.white,
+                                                              size: 20,
+                                                            ),
+                                                          ),
+                                                  );
+                                                },
+                                              ),
+                                            ],
+                                          ),
+                                          (pds.symbolsList.length - 1 == index)
+                                              ? Container()
+                                              : const Padding(
+                                                  padding: EdgeInsets.symmetric(vertical: 10),
+                                                  child: Divider(),
+                                                ),
+                                        ],
+                                      );
+                                    },
+                                  ),
                                 ),
-                              ))
+                              )
                             : AppWidget.noDataFound(context),
                       ),
                     )

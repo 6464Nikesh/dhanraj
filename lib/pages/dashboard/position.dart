@@ -7,6 +7,8 @@ import 'package:dhanraj/utils/miscellaneous.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../arguments/trade_detail_arg.dart';
+
 class Position extends StatefulWidget {
   const Position({super.key});
 
@@ -63,15 +65,6 @@ class _PositionState extends State<Position> {
               color: AppColors.navyBlue,
               fontWeight: FontWeight.w700,
             ),
-          ),
-        ),
-        floatingActionButton: FloatingActionButton(
-          shape: const CircleBorder(),
-          onPressed: () {},
-          backgroundColor: AppColors.darkBlue,
-          child: const Icon(
-            Icons.edit_document,
-            color: Colors.white,
           ),
         ),
         backgroundColor: Colors.white,
@@ -197,7 +190,9 @@ class _PositionState extends State<Position> {
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: GestureDetector(
                         onTap: () {
-                          Navigator.pushNamed(context, AppRoutes.tradeDetails);
+                          TradeDetailArg arg = TradeDetailArg(trades: data);
+
+                          Navigator.pushNamed(context, AppRoutes.tradeDetails, arguments: arg);
                         },
                         child: Container(
                           decoration: BoxDecoration(
@@ -231,7 +226,7 @@ class _PositionState extends State<Position> {
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      "${data.symbolName}${pp.removeTrailingZeros(data?.strike ?? "")} ${data?.instrumentType ?? ""}",
+                                      "${data.symbolName}${pp.removeTrailingZeros(data.strike ?? "")} ${data.instrumentType ?? ""}",
                                       style: const TextStyle(
                                         fontFamily: "roboto",
                                         fontSize: 14,

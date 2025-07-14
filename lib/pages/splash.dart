@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:dhanraj/model/login_model.dart';
+import 'package:dhanraj/utils/app_assets.dart';
 import 'package:dhanraj/utils/app_colors.dart';
 import 'package:dhanraj/utils/app_route.dart';
 import 'package:dhanraj/utils/app_strings.dart';
@@ -22,55 +23,52 @@ class _SplashState extends State<Splash> {
 
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback(
-      (timeStamp) async {
-        sp = await SharedPreferences.getInstance();
-        String data = sp?.getString(PreferenceKey.loginData) ?? "";
+     WidgetsBinding.instance.addPostFrameCallback(
+       (timeStamp) async {
+         sp = await SharedPreferences.getInstance();
+         String data = sp?.getString(PreferenceKey.loginData) ?? "";
 
-        if(data.isNotEmpty){
-          loginModel = LoginModel.fromJson(jsonDecode(sp?.getString(PreferenceKey.loginData) ?? ""));
-        }
+         if(data.isNotEmpty){
+           loginModel = LoginModel.fromJson(jsonDecode(sp?.getString(PreferenceKey.loginData) ?? ""));
+         }
 
-        await Future.delayed(
-          const Duration(seconds: 1),
-          () {
-            if (loginModel != null) {
-              Navigator.pushNamed(context, AppRoutes.dashboard);
-            } else {
-              Navigator.pushNamed(context, AppRoutes.login);
-            }
-          },
-        );
-      },
-    );
+         await Future.delayed(
+           const Duration(seconds: 1),
+           () {
+             if (loginModel != null) {
+               Navigator.pushNamed(context, AppRoutes.dashboard);
+             } else {
+               Navigator.pushNamed(context, AppRoutes.login);
+             }
+           },
+         );
+       },
+     );
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.blue,
+      backgroundColor: Colors.white,
       appBar: AppBar(
         leading: Container(),
-        backgroundColor: AppColors.blue,
+        backgroundColor: Colors.white,
       ),
-      body: const Column(
+      body:  Column(
         children: [
           Expanded(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  "DHANRAJ",
-                  style: TextStyle(fontWeight: FontWeight.w900, color: Colors.white, fontFamily: "roboto", fontSize: 30),
-                ),
+                Image.asset(AppAssets.logo,scale: 4,)
               ],
             ),
           ),
           Center(
             child: Text(
               AppStrings.aPaperTradingApp,
-              style: TextStyle(color: Colors.white, fontFamily: "roboto"),
+              style: TextStyle(color: AppColors.grey, fontFamily: "roboto"),
             ),
           ),
           SizedBox(
