@@ -44,37 +44,37 @@ class _LoginState extends State<Login> {
                               color: Colors.black,
                             ),
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Text(
-                                AppStrings.dontHaveAnAccount,
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontFamily: "roboto",
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.black,
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 5,
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.pushNamed(context, AppRoutes.signUp);
-                                },
-                                child: const Text(
-                                  AppStrings.createAccount,
-                                  style: TextStyle(
-                                    decoration: TextDecoration.underline,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                          // Row(
+                          //   mainAxisAlignment: MainAxisAlignment.center,
+                          //   children: [
+                          //     const Text(
+                          //       AppStrings.dontHaveAnAccount,
+                          //       style: TextStyle(
+                          //         fontSize: 14,
+                          //         fontFamily: "roboto",
+                          //         fontWeight: FontWeight.w500,
+                          //         color: Colors.black,
+                          //       ),
+                          //     ),
+                          //     const SizedBox(
+                          //       width: 5,
+                          //     ),
+                          //     GestureDetector(
+                          //       onTap: () {
+                          //         Navigator.pushNamed(context, AppRoutes.signUp);
+                          //       },
+                          //       child: const Text(
+                          //         AppStrings.createAccount,
+                          //         style: TextStyle(
+                          //           decoration: TextDecoration.underline,
+                          //           fontSize: 14,
+                          //           fontWeight: FontWeight.w500,
+                          //           color: Colors.black,
+                          //         ),
+                          //       ),
+                          //     ),
+                          //   ],
+                          // ),
                           const SizedBox(
                             height: 19,
                           ),
