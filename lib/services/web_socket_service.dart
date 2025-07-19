@@ -14,6 +14,7 @@ class WebSocketService with ChangeNotifier {
 
   void connect(String token) {
     final url = 'wss://dhanrajtrading.in/api/v1/market-data/live-stream?token=$token';
+
     _channel = WebSocketChannel.connect(Uri.parse(url));
     _channel!.stream.listen(
       _handleMessage,
@@ -28,7 +29,6 @@ class WebSocketService with ChangeNotifier {
   }
 
   void _handleMessage(dynamic data) {
-
     final m = jsonDecode(data);
 
     // Check for market closed info
@@ -56,7 +56,6 @@ class WebSocketService with ChangeNotifier {
       debugPrint("Market is closed. Skipping subscription.");
       return;
     }
-
 
     if (_currentWatchlistId == watchListId) return;
 
