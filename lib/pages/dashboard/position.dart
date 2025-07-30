@@ -24,9 +24,7 @@ class _PositionState extends State<Position> {
     WidgetsBinding.instance.addPostFrameCallback(
       (timeStamp) {
         Provider.of<WebSocketService>(context, listen: false).subscribeToOpenTrades();
-        Provider.of<PositionProvider>(context, listen: false).getPrefData();
-        Provider.of<PositionProvider>(context, listen: false).getPositionList(context: context);
-        Provider.of<PositionProvider>(context, listen: false).totalMargins(context: context);
+        Provider.of<PositionProvider>(context, listen: false).getPrefData(context: context);
       },
     );
     super.initState();
@@ -50,16 +48,18 @@ class _PositionState extends State<Position> {
                 shape: BoxShape.circle,
                 color: AppColors.darkBlue,
               ),
-              child:  Center(
-                child: Text(
-                  Provider.of<ProviderDashboard>(context, listen: false).customerInitial ?? "",
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontFamily: "roboto",
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
+              child: Center(
+                child: Consumer<ProviderDashboard>(builder: (context, pd, child) {
+                  return Text(
+                    pd.customerInitial ?? "",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontFamily: "roboto",
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  );
+                }),
               ),
             ),
           ),
@@ -86,7 +86,7 @@ class _PositionState extends State<Position> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
-                          pp.latestBalance.toStringAsFixed(2),
+                          "${pp.margin} (${pp.latestBalance.toStringAsFixed(2)})",
                           style: TextStyle(
                             fontFamily: "roboto",
                             fontSize: 18,
@@ -124,7 +124,7 @@ class _PositionState extends State<Position> {
               ),
               Container(
                 decoration: BoxDecoration(color: AppColors.blue, borderRadius: BorderRadius.circular(8)),
-                child:  Padding(
+                child: Padding(
                   padding: EdgeInsets.all(12),
                   child: Column(
                     children: [

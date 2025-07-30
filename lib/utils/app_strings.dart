@@ -58,6 +58,7 @@ class AppStrings {
   static const String position = "Positions";
   static const String history = "History";
   static const String browse = "Browse";
+  static const String margin = "Margin";
   static const String settings = "Settings";
   static const String verify = "Verify";
   static const String trader = "Trader";

@@ -31,10 +31,9 @@ class ProviderDashboard extends ChangeNotifier {
   getPrefData() async {
     sp = await SharedPreferences.getInstance();
     String data = sp?.getString(PreferenceKey.loginData) ?? "";
-    if (data.isNotEmpty) {
-      loginModel = LoginModel.fromJson(jsonDecode(sp?.getString(PreferenceKey.loginData) ?? ""));
 
-    }
+    loginModel = LoginModel.fromJson(jsonDecode(data));
+
     customerInitial = loginModel?.result?.user?.userName?[0];
     notifyListeners();
   }

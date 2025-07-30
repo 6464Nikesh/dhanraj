@@ -14,6 +14,7 @@ class PositionProvider extends ChangeNotifier {
   SharedPreferences? sp;
   LoginModel? loginModel;
   num latestBalance = 0;
+  num margin = 0;
 
   Map<String, int> commodityMultipliers = {
     'GOLD': 100,
@@ -35,13 +36,17 @@ class PositionProvider extends ChangeNotifier {
     trades.clear();
   }
 
-  getPrefData() async {
+  getPrefData({required BuildContext context}) async {
     sp = await SharedPreferences.getInstance();
     String data = sp?.getString(PreferenceKey.loginData) ?? "";
-    if (data.isNotEmpty) {
-      loginModel = LoginModel.fromJson(jsonDecode(sp?.getString(PreferenceKey.loginData) ?? ""));
-      notifyListeners();
-    }
+    loginModel = LoginModel.fromJson(jsonDecode(data));
+    notifyListeners();
+    initData(context: context);
+  }
+
+  Future<void> initData({required BuildContext context}) async {
+    await getPositionList(context: context);
+    await totalMargins(context: context);
   }
 
   String removeTrailingZeros(String value) {
@@ -60,9 +65,13 @@ class PositionProvider extends ChangeNotifier {
       (value) {
         if (value != null) {
           PositionModel positionModel = PositionModel.fromJson(value);
-
+          totalMargins(context: context);
           if (positionModel.statusCode == 200) {
             trades = positionModel.result?.trades ?? [];
+
+            for (var i = 0; i < trades.length; ++i) {
+              margin = margin + (trades[i].requiredMargin ?? 0);
+            }
             notifyListeners();
           }
         }

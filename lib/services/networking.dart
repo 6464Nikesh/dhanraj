@@ -667,8 +667,6 @@ mixin class Networking {
     required String params,
     required bool isShowLoader,
   }) async {
-    print(params);
-
     sp = await SharedPreferences.getInstance();
 
     if (isShowLoader && context.mounted) {
@@ -682,7 +680,8 @@ mixin class Networking {
 
     final url = Uri.parse("${AppApiEndPoint.baseUrl}$endPoint$params");
 
-    print(url);
+
+
 
     try {
       final response = await http.get(
@@ -693,6 +692,8 @@ mixin class Networking {
           'Accept': 'application/json',
         },
       );
+
+
       if (response.statusCode == 200) {
         if (isShowLoader && context.mounted) {
           Navigator.pop(context);

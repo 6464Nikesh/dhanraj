@@ -46,14 +46,18 @@ class _HistoryState extends State<History> {
                 color: AppColors.darkBlue,
               ),
               child:  Center(
-                child: Text(
-                  Provider.of<ProviderDashboard>(context, listen: false).customerInitial ?? "",
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontFamily: "roboto",
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700,
-                  ),
+                child: Consumer<ProviderDashboard>(
+                    builder: (context,pd,child) {
+                      return Text(
+                        pd.customerInitial ?? "",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontFamily: "roboto",
+                          color: Colors.white,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      );
+                    }
                 ),
               ),
             ),
