@@ -1,5 +1,6 @@
 import 'package:dhanraj/provider/deposit_withdrawal_sheet_provider.dart';
 import 'package:dhanraj/provider/position_provider.dart';
+import 'package:dhanraj/provider/provider_change_password.dart';
 import 'package:dhanraj/provider/provider_dashboard.dart';
 import 'package:dhanraj/provider/provider_funds.dart';
 import 'package:dhanraj/provider/provider_global_search.dart';
@@ -7,10 +8,9 @@ import 'package:dhanraj/provider/provider_history.dart';
 import 'package:dhanraj/provider/provider_login.dart';
 import 'package:dhanraj/provider/provider_settings.dart';
 import 'package:dhanraj/provider/provider_watchlist.dart';
-import 'package:dhanraj/services/web_socket_service.dart';
+import 'package:dhanraj/provider/web_socket_service.dart';
 import 'package:dhanraj/utils/app_route.dart';
 import 'package:dhanraj/utils/choose_image_provider.dart';
-import 'package:dhanraj/utils/preference_key.dart';
 import 'package:dhanraj/utils/route_generator.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -54,8 +54,9 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (context) => ProviderFunds()),
         ChangeNotifierProvider(create: (context) => ChooseImageProvider()),
         ChangeNotifierProvider(create: (context) => PositionProvider()),
-        ChangeNotifierProvider(create: (context) => WebSocketService()),
+        ChangeNotifierProvider(create: (context) => ProviderChangePassword()),
         ChangeNotifierProvider(create: (context) => ProviderHistory()),
+        ChangeNotifierProvider(create: (context) => WebSocketService()),
 
         /// Bottom sheet Provider
         ChangeNotifierProvider(create: (context) => DepositWithdrawalSheetProvider())

@@ -20,6 +20,7 @@ class AppStrings {
   static const String confirm = "Confirm";
   static const String newPassword = "New Password";
   static const String password = "Password";
+  static const String notMatched = "not matched";
   static const String pleaseEnterPassword = "Please enter password";
   static const String pleaseEnterUsername = "Please enter username";
   static const String mobileNo = "Mobile No.";

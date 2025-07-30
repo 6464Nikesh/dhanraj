@@ -2,7 +2,6 @@ import 'package:dhanraj/arguments/global_search_arg.dart';
 import 'package:dhanraj/pages/bottom_sheet/create_new_watchlist_bottom_sheet.dart';
 import 'package:dhanraj/pages/watchlist/trade_bottom_sheet.dart';
 import 'package:dhanraj/provider/provider_watchlist.dart';
-import 'package:dhanraj/services/web_socket_service.dart';
 import 'package:dhanraj/utils/app_assets.dart';
 import 'package:dhanraj/utils/app_button.dart';
 import 'package:dhanraj/utils/app_colors.dart';
@@ -12,6 +11,8 @@ import 'package:dhanraj/utils/app_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../provider/provider_dashboard.dart';
+import '../../provider/web_socket_service.dart';
 import '../../utils/miscellaneous.dart';
 
 class Watchlist extends StatefulWidget {
@@ -49,9 +50,9 @@ class _WatchlistState extends State<Watchlist> {
               shape: BoxShape.circle,
               color: AppColors.darkBlue,
             ),
-            child: const Center(
+            child: Center(
               child: Text(
-                "S",
+                Provider.of<ProviderDashboard>(context, listen: false).customerInitial ?? "",
                 style: TextStyle(
                   fontSize: 20,
                   fontFamily: "roboto",
@@ -229,21 +230,23 @@ class _WatchlistState extends State<Watchlist> {
                               pw.items?.length ?? 0,
                               (index) {
                                 var data = pw.items?[index];
-
                                 int? instrumentToken = int.tryParse(data?.symbol?.instrumentToken ?? '');
-                                var socketData = ws.instrumentData[instrumentToken];
+                                var socketData = ws.latestData[SubscriptionType.watchlist]![instrumentToken];
+
                                 String lastPrice = '00.00';
                                 String changePercent = '00.00';
+                                num change = 0;
+
                                 Color priceColor = Colors.black;
 
                                 if (socketData != null && socketData['instrument_token'] == instrumentToken) {
                                   num price = socketData['last_price'] ?? 0;
-                                  num prevClose = socketData['prev_close_price'] ?? 0;
+                                  num prevClose = socketData['ohlc']['close'] ?? 0;
 
-                                  num change = price - prevClose;
-                                  num percent = (prevClose > 0) ? (change / prevClose) * 100 : 0;
+                                  change = price - prevClose;
+                                  num percent = (prevClose > 0) ? ((change / prevClose) * 100) : 0;
 
-                                  lastPrice = price.toStringAsFixed(2);
+                                  lastPrice = price.toString();
                                   changePercent = '${percent.toStringAsFixed(2)}%';
 
                                   if (change > 0) {
@@ -423,13 +426,25 @@ class _WatchlistState extends State<Watchlist> {
                                                               fontWeight: FontWeight.bold,
                                                             ),
                                                           ),
-                                                          Text(
-                                                            changePercent,
-                                                            style: TextStyle(
-                                                              fontFamily: "roboto",
-                                                              fontSize: 10,
-                                                              color: priceColor,
-                                                            ),
+                                                          Row(
+                                                            children: [
+                                                              Text(
+                                                                change.toStringAsFixed(2),
+                                                                style: TextStyle(
+                                                                  fontFamily: "roboto",
+                                                                  fontSize: 10,
+                                                                  color: priceColor,
+                                                                ),
+                                                              ),
+                                                              Text(
+                                                                " ($changePercent)",
+                                                                style: TextStyle(
+                                                                  fontFamily: "roboto",
+                                                                  fontSize: 10,
+                                                                  color: priceColor,
+                                                                ),
+                                                              ),
+                                                            ],
                                                           ),
                                                         ],
                                                       ),

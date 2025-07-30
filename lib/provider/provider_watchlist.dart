@@ -3,13 +3,13 @@ import 'dart:convert';
 import 'package:dhanraj/model/get_watchlist_items_model.dart';
 import 'package:dhanraj/model/watchlists_model.dart';
 import 'package:dhanraj/pages/bottom_sheet/create_watchlists_model.dart';
+import 'package:dhanraj/provider/web_socket_service.dart';
 import 'package:dhanraj/services/networking.dart';
 import 'package:dhanraj/utils/app_api_end_point.dart';
 import 'package:dhanraj/utils/app_colors.dart';
 import 'package:dhanraj/utils/app_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../services/web_socket_service.dart';
 
 class ProviderWatchlist extends ChangeNotifier {
   List<WatchLists>? watchLists = [];
@@ -17,7 +17,6 @@ class ProviderWatchlist extends ChangeNotifier {
   TextEditingController description = TextEditingController();
   List<Items>? items = [];
   WatchLists? selectedWatchList;
-  final Set<int> watchlistIds = {};
 
   deleteWatchListItem({required BuildContext context, required String id}) {
     Networking().delete(context: context, endPoint: AppApiEndPoint.itemRemove, id: id, isLoaderShow: true).then(
@@ -64,15 +63,22 @@ class ProviderWatchlist extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future <void> getSymbolsList({required BuildContext context}) async {
-    await Networking().getWithParams(context: context, endPoint: AppApiEndPoint.getWatchListItems, isShowLoader: true, params: '?watchlist_id=${selectedWatchList?.watchlistId}').then(
+  Future<void> getSymbolsList({required BuildContext context}) async {
+    final webSocketService = Provider.of<WebSocketService>(context, listen: false);
+    await Networking()
+        .getWithParams(context: context, endPoint: AppApiEndPoint.getWatchListItems, isShowLoader: true, params: '?watchlist_id=${selectedWatchList?.watchlistId}')
+        .then(
       (value) {
         if (value != null) {
           GetWatchlistItemsModel getWatchlistItemsModel = GetWatchlistItemsModel.fromJson(value);
           if (getWatchlistItemsModel.statusCode == 200) {
             items = getWatchlistItemsModel.result?.items ?? [];
-            for (var i = 0; i < (items?.length ?? 0); ++i) {
-              Provider.of<WebSocketService>(context, listen: false).subscribe(int.parse(selectedWatchList?.watchlistId.toString() ?? ""));
+
+            final watchlistId = selectedWatchList?.watchlistId?.toString();
+            if (watchlistId != null) {
+              webSocketService.subscribeToWatchlist(
+                int.parse(watchlistId),
+              );
             }
             notifyListeners();
           }

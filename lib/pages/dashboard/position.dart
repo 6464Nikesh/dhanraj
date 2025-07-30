@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../arguments/trade_detail_arg.dart';
+import '../../provider/provider_dashboard.dart';
+import '../../provider/web_socket_service.dart';
 
 class Position extends StatefulWidget {
   const Position({super.key});
@@ -21,7 +23,10 @@ class _PositionState extends State<Position> {
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback(
       (timeStamp) {
+        Provider.of<WebSocketService>(context, listen: false).subscribeToOpenTrades();
+        Provider.of<PositionProvider>(context, listen: false).getPrefData();
         Provider.of<PositionProvider>(context, listen: false).getPositionList(context: context);
+        Provider.of<PositionProvider>(context, listen: false).totalMargins(context: context);
       },
     );
     super.initState();
@@ -45,9 +50,9 @@ class _PositionState extends State<Position> {
                 shape: BoxShape.circle,
                 color: AppColors.darkBlue,
               ),
-              child: const Center(
+              child:  Center(
                 child: Text(
-                  "S",
+                  Provider.of<ProviderDashboard>(context, listen: false).customerInitial ?? "",
                   style: TextStyle(
                     fontSize: 20,
                     fontFamily: "roboto",
@@ -72,7 +77,7 @@ class _PositionState extends State<Position> {
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
-              const Padding(
+              Padding(
                 padding: EdgeInsets.symmetric(vertical: 18),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -81,7 +86,7 @@ class _PositionState extends State<Position> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
-                          "₹ 10,63,917.80",
+                          pp.latestBalance.toStringAsFixed(2),
                           style: TextStyle(
                             fontFamily: "roboto",
                             fontSize: 18,
@@ -111,28 +116,6 @@ class _PositionState extends State<Position> {
                         ),
                       ],
                     ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          "₹ 00.00",
-                          style: TextStyle(
-                            fontFamily: "roboto",
-                            fontSize: 18,
-                            color: AppColors.navyBlue,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        Text(
-                          'Net Unrealised P&L',
-                          style: TextStyle(
-                            fontFamily: "roboto",
-                            fontSize: 12,
-                            color: AppColors.grey,
-                          ),
-                        ),
-                      ],
-                    ),
                   ],
                 ),
               ),
@@ -141,7 +124,7 @@ class _PositionState extends State<Position> {
               ),
               Container(
                 decoration: BoxDecoration(color: AppColors.blue, borderRadius: BorderRadius.circular(8)),
-                child: const Padding(
+                child:  Padding(
                   padding: EdgeInsets.all(12),
                   child: Column(
                     children: [
@@ -153,7 +136,7 @@ class _PositionState extends State<Position> {
                             style: TextStyle(fontFamily: "roboto", fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600),
                           ),
                           Text(
-                            "₹10,63,917.80",
+                            pp.latestBalance.toStringAsFixed(2),
                             style: TextStyle(fontFamily: "roboto", fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600),
                           ),
                         ],
@@ -186,6 +169,11 @@ class _PositionState extends State<Position> {
                   pp.trades.length,
                   (index) {
                     var data = pp.trades[index];
+                    // PnL Calculation Logic
+                    final symbol = data.symbolName?.toUpperCase() ?? '';
+                    final multiplier = pp.commodityMultipliers[symbol] ?? 1;
+                    final isBuy = data.tradeType == "BUY";
+
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: GestureDetector(

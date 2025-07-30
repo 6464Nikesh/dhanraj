@@ -36,6 +36,11 @@ mixin class Networking {
     }
     final url = Uri.parse("${AppApiEndPoint.baseUrl}$endPoint");
 
+
+    print(url);
+    print(mapData);
+    print(sp?.getString(PreferenceKey.token));
+
     try {
       final response = await http.post(
         url,
@@ -662,6 +667,8 @@ mixin class Networking {
     required String params,
     required bool isShowLoader,
   }) async {
+    print(params);
+
     sp = await SharedPreferences.getInstance();
 
     if (isShowLoader && context.mounted) {
@@ -674,6 +681,8 @@ mixin class Networking {
     }
 
     final url = Uri.parse("${AppApiEndPoint.baseUrl}$endPoint$params");
+
+    print(url);
 
     try {
       final response = await http.get(

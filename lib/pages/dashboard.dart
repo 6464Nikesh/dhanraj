@@ -1,9 +1,10 @@
 import 'package:dhanraj/provider/provider_dashboard.dart';
-import 'package:dhanraj/services/web_socket_service.dart';
 import 'package:dhanraj/utils/app_colors.dart';
 import 'package:dhanraj/utils/app_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import '../provider/web_socket_service.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
@@ -15,9 +16,17 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      Provider.of<ProviderDashboard>(context, listen: false).init(context: context);
-    });
+    WidgetsBinding.instance.addPostFrameCallback(
+      (timeStamp) {
+        Provider.of<ProviderDashboard>(context, listen: false).getPrefData();
+
+        Future.microtask(() {
+          final webSocketService = Provider.of<WebSocketService>(context, listen: false);
+          webSocketService.connect(); // Open WebSocket connection here
+        });
+      },
+    );
+
     super.initState();
   }
 
@@ -31,7 +40,7 @@ class _DashboardState extends State<Dashboard> {
           bottomNavigationBar: BottomNavigationBar(
             elevation: 4,
             onTap: (val) {
-              pd.changePages(val: val);
+              pd.changePages(val: val, context: context);
             },
             type: BottomNavigationBarType.fixed,
             backgroundColor: Colors.white,

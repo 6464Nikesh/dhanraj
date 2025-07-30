@@ -7,6 +7,8 @@ import 'package:dhanraj/utils/miscellaneous.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../provider/provider_dashboard.dart';
+
 class History extends StatefulWidget {
   const History({super.key});
 
@@ -43,9 +45,9 @@ class _HistoryState extends State<History> {
                 shape: BoxShape.circle,
                 color: AppColors.darkBlue,
               ),
-              child: const Center(
+              child:  Center(
                 child: Text(
-                  "S",
+                  Provider.of<ProviderDashboard>(context, listen: false).customerInitial ?? "",
                   style: TextStyle(
                     fontSize: 20,
                     fontFamily: "roboto",

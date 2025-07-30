@@ -9,6 +9,8 @@ import 'package:dhanraj/utils/app_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../provider/provider_dashboard.dart';
+
 class Settings extends StatefulWidget {
   const Settings({super.key});
 
@@ -34,9 +36,9 @@ class _SettingsState extends State<Settings> {
               shape: BoxShape.circle,
               color: AppColors.darkBlue,
             ),
-            child: const Center(
+            child:  Center(
               child: Text(
-                "S",
+                Provider.of<ProviderDashboard>(context, listen: false).customerInitial ?? "",
                 style: TextStyle(
                   fontSize: 20,
                   fontFamily: "roboto",

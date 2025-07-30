@@ -42,10 +42,11 @@ class ProviderLogin extends ChangeNotifier with Networking {
   login({required BuildContext context}) async {
     sp = await SharedPreferences.getInstance();
     if (validation(context)) {
+      final isMobile = userName.text.length == 10 && RegExp(r'^\d{10}$').hasMatch(userName.text);
       Map<String, dynamic> postMap = {
-        "usernameoremail": userName.text.trim(),
+        "usernameormobail": userName.text.trim(),
         "password": password.text.trim(),
-        "loginType": "username",
+        "loginType": isMobile ? "mobile" : "username",
       };
       post(context: context, mapData: postMap, endPoint: AppApiEndPoint.loginUser, isLoaderShow: true, fromBottomSheet: false).then(
         (value) {
@@ -53,9 +54,7 @@ class ProviderLogin extends ChangeNotifier with Networking {
             LoginModel loginModel = LoginModel.fromJson(value);
             if (loginModel.result?.user?.roleType == "CLIENT" && loginModel.result?.user?.accountStatus == "ACTIVE") {
               sp?.setString(PreferenceKey.token, loginModel.result?.token ?? "");
-
-              print(loginModel.result?.token ?? "");
-              sp?.setString(PreferenceKey.loginData, json.encode(loginModel.result));
+              sp?.setString(PreferenceKey.loginData, json.encode(loginModel));
               Navigator.pushNamed(context, AppRoutes.dashboard);
             } else {
               AppWidget().snackBar(context, AppStrings.youAreNotAllowedToLogin, AppColors.red, Colors.white);

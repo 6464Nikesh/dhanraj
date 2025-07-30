@@ -30,6 +30,7 @@ class _SplashState extends State<Splash> {
 
          if(data.isNotEmpty){
            loginModel = LoginModel.fromJson(jsonDecode(sp?.getString(PreferenceKey.loginData) ?? ""));
+           print(loginModel?.toJson());
          }
 
          await Future.delayed(

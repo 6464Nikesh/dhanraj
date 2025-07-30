@@ -57,18 +57,6 @@ class _ModifyTradeState extends State<ModifyTrade> {
                       ),
                     ),
                   ),
-                  Divider(),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10),
-                    child: Text(
-                      AppStrings.extendTime,
-                      style: TextStyle(
-                        fontFamily: "roboto",
-                        fontSize: 18,
-                        color: AppColors.navyBlue,
-                      ),
-                    ),
-                  ),
                 ],
               ),
             ),

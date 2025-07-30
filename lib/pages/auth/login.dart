@@ -5,6 +5,9 @@ import 'package:dhanraj/utils/app_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../utils/preference_key.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -284,12 +287,13 @@ class _LoginState extends State<Login> {
     );
   }
 }
+
 class UpperCaseTextFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue,
-      TextEditingValue newValue,
-      ) {
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
     return newValue.copyWith(
       text: newValue.text.toUpperCase(),
       selection: newValue.selection,

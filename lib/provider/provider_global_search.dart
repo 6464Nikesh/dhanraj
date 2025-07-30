@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 class ProviderGlobalSearch extends ChangeNotifier {
   List<symbol.Symbol> symbolsList = [];
   TextEditingController searchController = TextEditingController();
+  bool fatching = false;
 
   clear() {
     searchController.clear();
@@ -91,6 +92,11 @@ class ProviderGlobalSearch extends ChangeNotifier {
   }
 
   void fetchSymbols({required BuildContext context, required String search, int page = 1}) {
+    fatching = true;
+    notifyListeners();
+
+    print(fatching);
+
     symbolsList.clear();
     String urlParams = '?search=$search&page=$page';
 
@@ -110,6 +116,7 @@ class ProviderGlobalSearch extends ChangeNotifier {
           symbolsList[i].isSelected = preSelectedItems(context: context, id: symbolsList[i].symbolId ?? "");
         }
 
+        fatching = false;
         notifyListeners();
       }
     });
