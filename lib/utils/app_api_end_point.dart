@@ -14,4 +14,6 @@ class AppApiEndPoint {
   static const String transactionServiceHistory = "transaction-service/history";
   static const String position = "trade-service/trades";
   static const String totalMargins = "margin-service/total-margins";
+  static const String removeWatchlist = "watch-list-service/remove-watchlist";
+  static const String requiredMargins = "margin-service/required-margins";
 }

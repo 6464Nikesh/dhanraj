@@ -57,6 +57,12 @@ class ProviderWatchlist extends ChangeNotifier {
     );
   }
 
+  Future<void> deleteWatchList({required BuildContext context}) async {
+    await Networking().delete(context: context, endPoint: AppApiEndPoint.removeWatchlist, id: selectedWatchList?.watchlistId ?? "", isLoaderShow: true).then(
+          (value) {},
+        );
+  }
+
   selSelectedWatchList({required WatchLists? selectedWatchList, required BuildContext context}) {
     this.selectedWatchList = selectedWatchList;
     getSymbolsList(context: context);

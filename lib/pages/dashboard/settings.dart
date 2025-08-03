@@ -22,46 +22,6 @@ class _SettingsState extends State<Settings> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        elevation: 2,
-        surfaceTintColor: Colors.white,
-        shadowColor: Colors.white,
-        foregroundColor: Colors.white,
-        backgroundColor: Colors.white,
-        centerTitle: false,
-        leading: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: Container(
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-              color: AppColors.darkBlue,
-            ),
-            child:  Center(
-              child: Consumer<ProviderDashboard>(
-                builder: (context,pd,child) {
-                  return Text(
-                    pd.customerInitial ?? "",
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontFamily: "roboto",
-                      color: Colors.white,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  );
-                }
-              ),
-            ),
-          ),
-        ),
-        title: const Text(
-          AppStrings.settings,
-          style: TextStyle(
-            fontFamily: "roboto",
-            color: AppColors.navyBlue,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-      ),
       backgroundColor: Colors.white,
       body: Consumer<ProviderSettings>(builder: (context, ps, child) {
         return Padding(

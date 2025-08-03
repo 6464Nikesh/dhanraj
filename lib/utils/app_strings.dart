@@ -12,6 +12,8 @@ class AppStrings {
   static const String cancel = "Cancel";
   static const String close = "Close";
   static const String login = "Log in";
+  static const String brokerage = "Brokerage";
+  static const String requiredMargin = "Required Margin";
   static const String logout = "Logout";
 
   static const String editProfile = "Edit Profile";
@@ -46,6 +48,7 @@ class AppStrings {
   static const String modifyStopLoss = "Modify Stop-loss";
   static const String extendTime = "Extend Time";
   static const String exitTrade = "Exit Trade";
+  static const String exit = "Exit";
   static const String charges = "Charges";
   static const String bySigningUpYouAgreeToThe = "By signing up you agree to the";
   static const String termsAndCondition = "Terms & Conditions";
@@ -74,6 +77,7 @@ class AppStrings {
   static const String timeFrame = "Time Frame";
   static const String stopLoss = "Stop-loss";
   static const String areYouSureYouWantToDelete = "Are you sure you want to delete?";
+  static const String areYouSureYouWantToExit = "Are you sure you want to exit?";
   static const String target = "Target";
   static const String delete = "Delete";
   static const String totalQty = "Total Qty";
@@ -91,6 +95,7 @@ class AppStrings {
   static const String enterName = "Enter Name";
   static const String enter = "Enter";
   static const String enterTradeLot = "Enter Trade Lot";
+  static const String tradeLot = "Trade Lot";
   static const String description = "Description";
   static const String tradingTerms = "Trading Terms";
   static const String changePassword = "Change Password";

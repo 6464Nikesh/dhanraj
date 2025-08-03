@@ -10,8 +10,6 @@ import 'package:dhanraj/utils/app_route.dart';
 import 'package:dhanraj/utils/app_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import '../../provider/provider_dashboard.dart';
 import '../../provider/web_socket_service.dart';
 import '../../utils/miscellaneous.dart';
 
@@ -36,46 +34,6 @@ class _WatchlistState extends State<Watchlist> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        elevation: 2,
-        surfaceTintColor: Colors.white,
-        shadowColor: Colors.white,
-        foregroundColor: Colors.white,
-        backgroundColor: Colors.white,
-        centerTitle: false,
-        leading: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: Container(
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-              color: AppColors.darkBlue,
-            ),
-            child:  Center(
-              child: Consumer<ProviderDashboard>(
-                  builder: (context,pd,child) {
-                    return Text(
-                      pd.customerInitial ?? "",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontFamily: "roboto",
-                        color: Colors.white,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    );
-                  }
-              ),
-            ),
-          ),
-        ),
-        title: const Text(
-          AppStrings.watchlist,
-          style: TextStyle(
-            fontFamily: "roboto",
-            color: AppColors.navyBlue,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-      ),
       backgroundColor: Colors.white,
       body: Consumer2<ProviderWatchlist, WebSocketService>(
         builder: (context, pw, ws, child) {
@@ -85,7 +43,7 @@ class _WatchlistState extends State<Watchlist> {
               children: [
                 Container(
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(4),
                     border: Border.all(color: Colors.grey.shade100),
                   ),
                   child: Row(
@@ -195,6 +153,38 @@ class _WatchlistState extends State<Watchlist> {
                     ),
                     GestureDetector(
                       onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AppDeleteDialogs(
+                              onTap: () {
+                                Navigator.pop(context);
+                                pw.deleteWatchList(context: context).then(
+                                  (value) {
+                                    pw.getWatchList(context: context);
+                                  },
+                                );
+                              },
+                            );
+                          },
+                        ).then(
+                          (value) {
+                            if (value == true) {
+                              pw.getSymbolsList(context: context);
+                            }
+                          },
+                        );
+                      },
+                      child: const Icon(
+                        Icons.delete,
+                        color: AppColors.grey,
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 16,
+                    ),
+                    GestureDetector(
+                      onTap: () {
                         showModalBottomSheet(
                           context: context,
                           shape: const RoundedRectangleBorder(
@@ -220,10 +210,13 @@ class _WatchlistState extends State<Watchlist> {
                       },
                       child: const Icon(
                         Icons.add_circle_outline,
-                        color: AppColors.navyBlue,
+                        color: AppColors.grey,
                       ),
                     ),
                   ],
+                ),
+                const SizedBox(
+                  height: 10,
                 ),
                 Expanded(
                   child: (pw.items?.isNotEmpty ?? false)
@@ -235,7 +228,7 @@ class _WatchlistState extends State<Watchlist> {
                               (index) {
                                 var data = pw.items?[index];
                                 int? instrumentToken = int.tryParse(data?.symbol?.instrumentToken ?? '');
-                                var socketData = ws.latestData[SubscriptionType.watchlist]![instrumentToken];
+                                var socketData = ws.latestData[SubscriptionType.data]![instrumentToken];
 
                                 String lastPrice = '00.00';
                                 String changePercent = '00.00';
@@ -263,7 +256,7 @@ class _WatchlistState extends State<Watchlist> {
                                 }
 
                                 return Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                                  padding: const EdgeInsets.symmetric(vertical: 4),
                                   child: Dismissible(
                                     key: Key(data?.watchlistItemId ?? ""),
                                     direction: DismissDirection.endToStart,
@@ -351,33 +344,14 @@ class _WatchlistState extends State<Watchlist> {
                                                     child: Column(
                                                       crossAxisAlignment: CrossAxisAlignment.start,
                                                       children: [
-                                                        Row(
-                                                          children: [
-                                                            Text(
-                                                              "${data?.symbol?.name ?? ""}${pw.removeTrailingZeros(data?.symbol?.strike ?? "")}",
-                                                              style: const TextStyle(
-                                                                fontFamily: "roboto",
-                                                                fontWeight: FontWeight.w600,
-                                                                fontSize: 12,
-                                                              ),
-                                                            ),
-                                                            const SizedBox(
-                                                              width: 8,
-                                                            ),
-                                                            Container(
-                                                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(2), color: AppColors.grey.withOpacity(0.1)),
-                                                              child: Padding(
-                                                                padding: const EdgeInsets.all(4),
-                                                                child: Text(
-                                                                  "${data?.symbol?.instrumentType}",
-                                                                  style: const TextStyle(
-                                                                    fontFamily: "roboto",
-                                                                    fontSize: 8,
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ],
+                                                        Text(
+                                                          "${data?.symbol?.name ?? ""}${pw.removeTrailingZeros(data?.symbol?.strike ?? "")} ${data?.symbol?.instrumentType}",
+                                                          style: const TextStyle(
+                                                            fontFamily: "roboto",
+                                                            fontWeight: FontWeight.w600,
+                                                            fontSize: 14,
+                                                            color: AppColors.navyBlue,
+                                                          ),
                                                         ),
                                                         const SizedBox(
                                                           height: 4,
@@ -392,7 +366,7 @@ class _WatchlistState extends State<Watchlist> {
                                                                   "${data?.symbol?.segment}",
                                                                   style: const TextStyle(
                                                                     fontFamily: "roboto",
-                                                                    fontSize: 8,
+                                                                    fontSize: 12,
                                                                   ),
                                                                 ),
                                                               ),
@@ -405,7 +379,7 @@ class _WatchlistState extends State<Watchlist> {
                                                                     Miscellaneous.dateConverterToDDMMMYYYY(data?.symbol?.expiry ?? ""),
                                                                     style: const TextStyle(
                                                                       fontFamily: "roboto",
-                                                                      fontSize: 8,
+                                                                      fontSize: 12,
                                                                     ),
                                                                   )
                                                                 : Container(),

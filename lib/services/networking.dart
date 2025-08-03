@@ -36,11 +36,6 @@ mixin class Networking {
     }
     final url = Uri.parse("${AppApiEndPoint.baseUrl}$endPoint");
 
-
-    print(url);
-    print(mapData);
-    print(sp?.getString(PreferenceKey.token));
-
     try {
       final response = await http.post(
         url,
@@ -73,7 +68,237 @@ mixin class Networking {
         }
 
         var data = json.decode(response.body);
-        print(data);
+        if (isLoaderShow && context.mounted) {
+          if (fromBottomSheet) {
+            AppWidget().snackBarTop(context, data["message"] ?? "", AppColors.red, Colors.white);
+          } else {
+            AppWidget().snackBar(context, data["message"] ?? "", AppColors.red, Colors.white);
+          }
+        }
+
+        return null;
+      } else if (response.statusCode == 401) {
+        if (isLoaderShow && context.mounted) {
+          Navigator.pop(context);
+        }
+
+        var data = json.decode(response.body);
+        if (isLoaderShow && context.mounted) {
+          if (fromBottomSheet) {
+            AppWidget().snackBarTop(context, data["message"] ?? "", AppColors.red, Colors.white);
+          } else {
+            AppWidget().snackBarTop(context, data["message"] ?? "", AppColors.red, Colors.white);
+          }
+        }
+
+        return null;
+      } else if (response.statusCode == 422) {
+        if (isLoaderShow && context.mounted) {
+          Navigator.pop(context);
+        }
+
+        var data = json.decode(response.body);
+        if (isLoaderShow && context.mounted) {
+          if (fromBottomSheet) {
+            AppWidget().snackBarTop(context, data["message"] ?? "", AppColors.red, Colors.white);
+          } else {
+            AppWidget().snackBarTop(context, data["message"] ?? "", AppColors.red, Colors.white);
+          }
+        }
+        return null;
+      } else if (response.statusCode == 404) {
+        if (isLoaderShow && context.mounted) {
+          Navigator.pop(context);
+        }
+        var data = json.decode(response.body);
+        if (isLoaderShow && context.mounted) {
+          if (fromBottomSheet) {
+            AppWidget().snackBarTop(context, data["message"] ?? "", AppColors.red, Colors.white);
+          } else {
+            AppWidget().snackBarTop(context, data["message"] ?? "", AppColors.red, Colors.white);
+          }
+        }
+        return null;
+      } else if (response.statusCode == 403) {
+        if (isLoaderShow && context.mounted) {
+          Navigator.pop(context);
+        }
+
+        if (context.mounted) {
+          showDialog(
+            barrierDismissible: false,
+            context: context,
+            builder: (context) {
+              return HttpErrorDialog(
+                msg: "Permission have changed, Please contact to HR Manager.",
+                onTap: () {
+                  return null;
+                },
+              );
+            },
+          );
+        }
+        return null;
+      } else if (response.statusCode == 503) {
+        if (isLoaderShow && context.mounted) {
+          Navigator.pop(context);
+          if (fromBottomSheet) {
+            AppWidget().snackBarTop(context, "Server is under maintenance,Try again later.", AppColors.red, Colors.white);
+          } else {
+            AppWidget().snackBar(context, "Server is under maintenance,Try again later.", AppColors.red, Colors.white);
+          }
+        }
+        return null;
+      } else if (response.statusCode == 500) {
+        if (isLoaderShow && context.mounted) {
+          Navigator.pop(context);
+          if (fromBottomSheet) {
+            AppWidget().snackBarTop(context, "Service is unavailable,Try again later.", AppColors.red, Colors.white);
+          } else {
+            AppWidget().snackBar(context, "Service is unavailable,Try again later.", AppColors.red, Colors.white);
+          }
+        }
+
+        return null;
+      }
+    } on SocketException catch (e) {
+      if (isLoaderShow && context.mounted) {
+        Navigator.pop(context);
+        showDialog(
+          context: context,
+          builder: (context) {
+            return HttpErrorDialog(
+              msg: e.message,
+              onTap: () {
+                Navigator.pop(context);
+                return null;
+              },
+            );
+          },
+        );
+      }
+      return null;
+    } on HttpException catch (e) {
+      if (isLoaderShow && context.mounted) {
+        Navigator.pop(context);
+        showDialog(
+          context: context,
+          builder: (context) {
+            return HttpErrorDialog(
+              msg: e.message,
+              onTap: () {
+                Navigator.pop(context);
+                return null;
+              },
+            );
+          },
+        );
+      }
+      return null;
+    } on FormatException catch (e) {
+      if (isLoaderShow && context.mounted) {
+        Navigator.pop(context);
+        showDialog(
+          context: context,
+          builder: (context) {
+            return HttpErrorDialog(
+              msg: e.message,
+              onTap: () {
+                Navigator.pop(context);
+                return null;
+              },
+            );
+          },
+        );
+      }
+      return null;
+    } on TimeoutException catch (e) {
+      if (isLoaderShow && context.mounted) {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return HttpErrorDialog(
+              msg: e.message,
+              onTap: () {
+                Navigator.pop(context);
+                return null;
+              },
+            );
+          },
+        );
+      }
+      return null;
+    } on Exception catch (_, e) {
+      if (isLoaderShow && context.mounted) {
+        Navigator.pop(context);
+        showDialog(
+          context: context,
+          builder: (context) {
+            return HttpErrorDialog(
+              msg: "$e",
+              onTap: () {
+                Navigator.pop(context);
+                return null;
+              },
+            );
+          },
+        );
+      }
+      return null;
+    }
+    return null;
+  }
+
+  Future<Map<String, dynamic>?> postParams({
+    required BuildContext context,
+    required Map<String, dynamic> mapData,
+    required String endPoint,
+    required bool isLoaderShow,
+    required String params,
+    required bool fromBottomSheet,
+  }) async {
+    sp = await SharedPreferences.getInstance();
+
+    if (isLoaderShow && context.mounted) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AppWidget().loader(context);
+        },
+      );
+    }
+    final url = Uri.parse("${AppApiEndPoint.baseUrl}$endPoint$params");
+
+    try {
+      final response = await http.post(
+        url,
+        body: jsonEncode(mapData),
+        headers: {
+          'Authorization': "Bearer ${sp?.getString(PreferenceKey.token)}",
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        if (isLoaderShow && context.mounted) {
+          Navigator.pop(context);
+        }
+        var data = json.decode(response.body);
+        return data;
+      }
+      if (response.statusCode == 201) {
+        if (isLoaderShow && context.mounted) {
+          Navigator.pop(context);
+        }
+        var data = json.decode(response.body);
+        return data;
+      } else if (response.statusCode == 400) {
+        if (isLoaderShow && context.mounted) {
+          Navigator.pop(context);
+        }
+
+        var data = json.decode(response.body);
         if (isLoaderShow && context.mounted) {
           if (fromBottomSheet) {
             AppWidget().snackBarTop(context, data["message"] ?? "", AppColors.red, Colors.white);
@@ -485,6 +710,8 @@ mixin class Networking {
 
     final url = Uri.parse("${AppApiEndPoint.baseUrl}$endPoint");
 
+    print(url);
+
     try {
       final response = await http.get(
         url,
@@ -680,9 +907,6 @@ mixin class Networking {
 
     final url = Uri.parse("${AppApiEndPoint.baseUrl}$endPoint$params");
 
-
-
-
     try {
       final response = await http.get(
         url,
@@ -692,7 +916,6 @@ mixin class Networking {
           'Accept': 'application/json',
         },
       );
-
 
       if (response.statusCode == 200) {
         if (isShowLoader && context.mounted) {
@@ -747,6 +970,207 @@ mixin class Networking {
                 msg: "Permission have changed, Please contact to HR Manager.",
                 onTap: () {
                   return null;
+                },
+              );
+            },
+          );
+        }
+        return null;
+      } else if (response.statusCode == 500) {
+        if (isShowLoader && context.mounted) {
+          Navigator.pop(context);
+        }
+        if (context.mounted) {
+          AppWidget().snackBar(context, "Sever is under maintenance,Try again later.", AppColors.red, Colors.white);
+        }
+        return null;
+      } else if (response.statusCode == 503) {
+        if (isShowLoader && context.mounted) {
+          Navigator.pop(context);
+        }
+        if (context.mounted) {
+          AppWidget().snackBar(context, "Service is unavailable,Try again later.", AppColors.red, Colors.white);
+        }
+        return null;
+      }
+    } on SocketException catch (e) {
+      if (context.mounted) {
+        Navigator.pop(context);
+        showDialog(
+          context: context,
+          builder: (context) {
+            return HttpErrorDialog(
+              msg: e.message,
+              onTap: () {
+                Navigator.pop(context);
+                return null;
+              },
+            );
+          },
+        );
+      }
+
+      return null;
+    } on HttpException catch (e) {
+      if (context.mounted) {
+        Navigator.pop(context);
+        showDialog(
+          context: context,
+          builder: (context) {
+            return HttpErrorDialog(
+              msg: e.message,
+              onTap: () {
+                Navigator.pop(context);
+                return null;
+              },
+            );
+          },
+        );
+      }
+      return null;
+    } on FormatException catch (e) {
+      if (context.mounted) {
+        Navigator.pop(context);
+        showDialog(
+          context: context,
+          builder: (context) {
+            return HttpErrorDialog(
+              msg: e.message,
+              onTap: () {
+                Navigator.pop(context);
+                return null;
+              },
+            );
+          },
+        );
+      }
+      return null;
+    } on TimeoutException catch (e) {
+      if (context.mounted) {
+        Navigator.pop(context);
+        showDialog(
+          context: context,
+          builder: (context) {
+            return HttpErrorDialog(
+              msg: e.message,
+              onTap: () {
+                Navigator.pop(context);
+                return null;
+              },
+            );
+          },
+        );
+      }
+      return null;
+    } on Exception catch (_, e) {
+      if (context.mounted) {
+        Navigator.pop(context);
+        showDialog(
+          context: context,
+          builder: (context) {
+            return HttpErrorDialog(
+              msg: "$e",
+              onTap: () {
+                Navigator.pop(context);
+                return null;
+              },
+            );
+          },
+        );
+      }
+      return null;
+    }
+    return null;
+  }
+
+  Future<Map<String, dynamic>?> put({
+    required BuildContext context,
+    required String endPoint,
+    required Map<String, dynamic> mapData,
+    required String params,
+    required bool isShowLoader,
+  }) async {
+    sp = await SharedPreferences.getInstance();
+
+    if (isShowLoader && context.mounted) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AppWidget().loader(context);
+        },
+      );
+    }
+
+    final url = Uri.parse("${AppApiEndPoint.baseUrl}$endPoint/$params");
+
+    try {
+      final response = await http.put(
+        url,
+        body: jsonEncode(mapData),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': "Bearer ${sp?.getString(PreferenceKey.token)}",
+          'Accept': 'application/json',
+        },
+      );
+
+      print(response.statusCode);
+      print(response.body);
+
+      if (response.statusCode == 200) {
+        if (isShowLoader && context.mounted) {
+          Navigator.pop(context);
+        }
+        var data = json.decode(response.body);
+        return data;
+      } else if (response.statusCode == 401) {
+        if (isShowLoader && context.mounted) {
+          Navigator.pop(context);
+        }
+        var data = json.decode(response.body);
+
+        if (context.mounted) {
+          AppWidget().snackBarTop(context, data["message"] ?? "", AppColors.red, Colors.white);
+        }
+
+        Provider.of<ProviderDashboard>(context, listen: false).logOut(context);
+
+        return null;
+      } else if (response.statusCode == 422) {
+        if (isShowLoader && context.mounted) {
+          Navigator.pop(context);
+        }
+        var data = json.decode(response.body);
+        if (context.mounted) {
+          AppWidget().snackBarTop(context, data["message"] ?? "", AppColors.red, Colors.white);
+        }
+        return null;
+      } else if (response.statusCode == 404) {
+        if (isShowLoader && context.mounted) {
+          Navigator.pop(context);
+        }
+
+        var data = json.decode(response.body);
+
+        if (context.mounted) {
+          AppWidget().snackBarTop(context, data["message"] ?? "", AppColors.red, Colors.white);
+        }
+        return null;
+      } else if (response.statusCode == 403) {
+        var data = json.decode(response.body);
+        if (isShowLoader && context.mounted) {
+          Navigator.pop(context);
+        }
+
+        if (context.mounted) {
+          showDialog(
+            barrierDismissible: false,
+            context: context,
+            builder: (context) {
+              return HttpErrorDialog(
+                msg: data["message"] ?? "",
+                onTap: () {
+                  Navigator.pop(context);
                 },
               );
             },

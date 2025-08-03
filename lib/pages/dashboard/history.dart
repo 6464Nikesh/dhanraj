@@ -1,4 +1,3 @@
-import 'package:dhanraj/pages/bottom_sheet/deposit_withdrawal.dart';
 import 'package:dhanraj/provider/provider_history.dart';
 import 'package:dhanraj/utils/app_colors.dart';
 import 'package:dhanraj/utils/app_route.dart';
@@ -7,6 +6,8 @@ import 'package:dhanraj/utils/miscellaneous.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../arguments/trade_detail_arg.dart';
+import '../../provider/position_provider.dart';
 import '../../provider/provider_dashboard.dart';
 
 class History extends StatefulWidget {
@@ -31,46 +32,6 @@ class _HistoryState extends State<History> {
   Widget build(BuildContext context) {
     return Consumer<ProviderHistory>(builder: (context, ph, child) {
       return Scaffold(
-        appBar: AppBar(
-          elevation: 2,
-          surfaceTintColor: Colors.white,
-          shadowColor: Colors.white,
-          foregroundColor: Colors.white,
-          backgroundColor: Colors.white,
-          centerTitle: false,
-          leading: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: Container(
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                color: AppColors.darkBlue,
-              ),
-              child:  Center(
-                child: Consumer<ProviderDashboard>(
-                    builder: (context,pd,child) {
-                      return Text(
-                        pd.customerInitial ?? "",
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontFamily: "roboto",
-                          color: Colors.white,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      );
-                    }
-                ),
-              ),
-            ),
-          ),
-          title: const Text(
-            AppStrings.history,
-            style: TextStyle(
-              fontFamily: "roboto",
-              color: AppColors.navyBlue,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-        ),
         backgroundColor: Colors.white,
         body: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -83,12 +44,11 @@ class _HistoryState extends State<History> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          const Text(
-                            "₹ 61,252.63 (6.13%)",
-                            style: TextStyle(
+                          Text(
+                            ph.netPnl.toStringAsFixed(2),
+                            style: const TextStyle(
                               fontFamily: "roboto",
                               fontSize: 18,
-                              color: AppColors.green,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -121,27 +81,27 @@ class _HistoryState extends State<History> {
                           ),
                           Container(
                             decoration: BoxDecoration(color: AppColors.blue, borderRadius: BorderRadius.circular(8)),
-                            child: const Padding(
-                              padding: EdgeInsets.all(12),
+                            child: Padding(
+                              padding: const EdgeInsets.all(12),
                               child: Column(
                                 children: [
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text(
+                                      const Text(
                                         AppStrings.realisedPL,
                                         style: TextStyle(fontFamily: "roboto", fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600),
                                       ),
                                       Text(
-                                        "₹10,63,917.80",
-                                        style: TextStyle(fontFamily: "roboto", fontSize: 14, color: AppColors.green, fontWeight: FontWeight.w600),
+                                        ph.realisedPnl.toStringAsFixed(2),
+                                        style: const TextStyle(fontFamily: "roboto", fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600),
                                       ),
                                     ],
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     height: 10,
                                   ),
-                                  Row(
+                                  const Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
@@ -149,24 +109,24 @@ class _HistoryState extends State<History> {
                                         style: TextStyle(fontFamily: "roboto", fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600),
                                       ),
                                       Text(
-                                        "₹00.00",
-                                        style: TextStyle(fontFamily: "roboto", fontSize: 14, color: AppColors.green, fontWeight: FontWeight.w600),
+                                        "00.00",
+                                        style: TextStyle(fontFamily: "roboto", fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600),
                                       ),
                                     ],
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     height: 10,
                                   ),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text(
-                                        AppStrings.estCharges,
+                                      const Text(
+                                        AppStrings.brokerage,
                                         style: TextStyle(fontFamily: "roboto", fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600),
                                       ),
                                       Text(
-                                        "₹367.00",
-                                        style: TextStyle(fontFamily: "roboto", fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600),
+                                        ph.totalBrokerage.toStringAsFixed(2),
+                                        style: const TextStyle(fontFamily: "roboto", fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600),
                                       ),
                                     ],
                                   )
@@ -180,13 +140,35 @@ class _HistoryState extends State<History> {
                           Column(
                             children: List.generate(
                               ph.trades.length,
-                                  (index) {
+                              (index) {
                                 var data = ph.trades[index];
+                                Color pnlColor = Colors.grey;
+
+                                final multiplier = Provider.of<PositionProvider>(context, listen: false).commodityMultipliers[data.symbolName] ?? 1;
+                                // Parse prices as numbers
+                                final open = num.tryParse(data.openPrice ?? '0') ?? 0;
+                                final close = num.tryParse(data.closePrice ?? '0') ?? 0;
+                                final qty = data.quantity ?? 0;
+                                final isBuy = data.tradeType?.toUpperCase() == 'BUY';
+
+                                final pnl = isBuy ? (close - open) * qty * multiplier : (open - close) * qty * multiplier;
+
+                                final percentChange = open != 0 ? (pnl / (open * qty)) * 100 : 0;
+
+                                if (pnl > 0) {
+                                  pnlColor = Colors.green;
+                                } else if (pnl < 0) {
+                                  pnlColor = Colors.red;
+                                } else {
+                                  pnlColor = Colors.grey;
+                                }
+
                                 return Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 8),
+                                  padding: const EdgeInsets.symmetric(vertical: 4),
                                   child: GestureDetector(
                                     onTap: () {
-                                      Navigator.pushNamed(context, AppRoutes.tradeDetails);
+                                      TradeDetailArg arg = TradeDetailArg(trades: data);
+                                      Navigator.pushNamed(context, AppRoutes.historyTradeDetails, arguments: arg);
                                     },
                                     child: Container(
                                       decoration: BoxDecoration(
@@ -213,71 +195,113 @@ class _HistoryState extends State<History> {
                                       ),
                                       child: Padding(
                                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                        child: Row(
                                           children: [
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                              children: [
-                                                Text(
-                                                  "${data.symbolName}${ph.removeTrailingZeros(data?.strike ?? "")} ${data?.instrumentType ?? ""}",
-                                                  style: const TextStyle(
-                                                    fontFamily: "roboto",
-                                                    fontSize: 14,
-                                                    color: AppColors.navyBlue,
-                                                    fontWeight: FontWeight.w600,
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Row(
+                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                    children: [
+                                                      Text(
+                                                        "${data.symbolName}${ph.removeTrailingZeros(data?.strike ?? "")} ${data?.instrumentType ?? ""}",
+                                                        style: const TextStyle(
+                                                          fontFamily: "roboto",
+                                                          fontSize: 14,
+                                                          color: AppColors.navyBlue,
+                                                          fontWeight: FontWeight.w600,
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
-                                                ),
-                                              ],
-                                            ),
-                                            const SizedBox(
-                                              height: 5,
+                                                  const SizedBox(
+                                                    height: 5,
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      Container(
+                                                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(2), color: AppColors.grey.withOpacity(0.1)),
+                                                        child: Padding(
+                                                          padding: const EdgeInsets.all(2),
+                                                          child: Text(
+                                                            "${data.segment}",
+                                                            style: const TextStyle(
+                                                              fontFamily: "roboto",
+                                                              fontSize: 12,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      const SizedBox(
+                                                        width: 5,
+                                                      ),
+                                                      Text(
+                                                        Miscellaneous.dateConverterToDDMMMYYYY(data.expiry ?? ""),
+                                                        style: const TextStyle(
+                                                          fontFamily: "roboto",
+                                                          fontSize: 12,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 3,
+                                                  ),
+                                                  Row(
+                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                    children: [
+                                                      Text(
+                                                        "${data.quantity} • (${data.tradeType?[0].toUpperCase()}) • ${data.openPrice}",
+                                                        style: const TextStyle(
+                                                          fontFamily: "roboto",
+                                                          fontSize: 14,
+                                                          color: AppColors.navyBlue,
+                                                          fontWeight: FontWeight.w600,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 5,
+                                                  ),
+                                                ],
+                                              ),
                                             ),
                                             Row(
+                                              mainAxisSize: MainAxisSize.min,
                                               children: [
-                                                Container(
-                                                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(2), color: AppColors.grey.withOpacity(0.1)),
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.all(2),
-                                                    child: Text(
-                                                      "${data.segment}",
-                                                      style: const TextStyle(
+                                                const SizedBox(width: 4),
+                                                Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                                  children: [
+                                                    Text(
+                                                      pnl.toStringAsFixed(2),
+                                                      style: TextStyle(
                                                         fontFamily: "roboto",
-                                                        fontSize: 8,
+                                                        fontSize: 14,
+                                                        color: pnl >= 0 ? AppColors.green : AppColors.red,
+                                                        fontWeight: FontWeight.bold,
                                                       ),
                                                     ),
-                                                  ),
-                                                ),
-                                                const SizedBox(
-                                                  width: 5,
-                                                ),
-                                                Text(
-                                                  Miscellaneous.dateConverterToDDMMMYYYY(data.expiry ?? ""),
-                                                  style: const TextStyle(
-                                                    fontFamily: "roboto",
-                                                    fontSize: 12,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            const SizedBox(
-                                              height: 3,
-                                            ),
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                              children: [
-                                                Text(
-                                                  "${data.quantity} • (${data.tradeType?[0].toUpperCase()}) • ${data.openPrice}",
-                                                  style: const TextStyle(
-                                                    fontFamily: "roboto",
-                                                    fontSize: 12,
-                                                    color: AppColors.grey,
-                                                  ),
+                                                    Text(
+                                                      "${percentChange.toStringAsFixed(2)}%",
+                                                      style: TextStyle(
+                                                        fontFamily: "roboto",
+                                                        fontSize: 10,
+                                                        color: pnl >= 0 ? AppColors.green : AppColors.red,
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      data.closePrice ?? "0",
+                                                      style: const TextStyle(
+                                                        fontFamily: "roboto",
+                                                        fontSize: 14,
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
                                               ],
-                                            ),
-                                            const SizedBox(
-                                              height: 5,
                                             ),
                                           ],
                                         ),

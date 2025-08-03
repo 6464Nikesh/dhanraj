@@ -6,8 +6,7 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 import '../utils/preference_key.dart';
 
 enum SubscriptionType {
-  watchlist,
-  openTrades,
+  data,
   // Add more if needed
 }
 
@@ -15,13 +14,26 @@ class WebSocketService with ChangeNotifier {
   WebSocketChannel? _channel;
   bool _isConnected = false;
   bool _isMarketClosed = false;
+  num? _pendingWatchlistId;
+  bool? _isSubscribedToOpenTrades = false;
+
+
+
+  String removeTrailingZeros(String value) {
+    double val = double.tryParse(value) ?? 0.0;
+
+    if (val == 0) return '';
+    if (value.contains('.')) {
+      // Remove trailing zeros and dot if nothing remains after dot
+      value = " ${value.replaceFirst(RegExp(r'\.0+$'), '')}"; // e.g., 12.0000 -> 12
+    }
+    return value;
+  }
 
   // Store latest data per subscription type
   Map<SubscriptionType, Map<int, dynamic>> latestData = {
-    SubscriptionType.watchlist: {},
-    SubscriptionType.openTrades: {},
+    SubscriptionType.data: {},
   };
-
 
   Future<void> connect() async {
     if (_isConnected) return;
@@ -48,6 +60,7 @@ class WebSocketService with ChangeNotifier {
         _reconnect();
       },
       onError: (error) {
+        _isConnected = false;
         debugPrint("⚠️ WebSocket error: $error");
         _reconnect();
       },
@@ -55,7 +68,6 @@ class WebSocketService with ChangeNotifier {
   }
 
   void _handleMessage(dynamic data) {
-    debugPrint("📥 Received: $data");
     final decoded = jsonDecode(data);
 
     if (decoded['type'] == 'info' && decoded['message'] == 'Market is closed') {
@@ -65,71 +77,121 @@ class WebSocketService with ChangeNotifier {
       return;
     }
 
-
-
     // Handle different types
     if (decoded['type'] == 'tick' && decoded['payload'] != null) {
       final payload = decoded['payload'];
       final int token = payload['instrument_token'];
 
       // Store tick data by token
-      latestData[SubscriptionType.watchlist]![token] = payload;
+      latestData[SubscriptionType.data]![token] = payload;
       notifyListeners();
-
-
-      notifyListeners();
-    } else if (decoded['type'] == 'open_trades' && decoded['payload'] != null) {
-      latestData[SubscriptionType.openTrades] = decoded['payload'];
-      notifyListeners();
-    } else {
-      debugPrint("ℹ️ Unknown message type: ${decoded['type']}");
     }
   }
 
-  void subscribeToWatchlist(int watchlistId) {
-    if (!_isConnected) return;
+  void subscribeToWatchlist(num watchlistId) {
+    if (_channel == null || !_isConnected) {
+      debugPrint("⚠️ Not connected. Will subscribe on reconnect to watchlist $watchlistId");
+      return;
+    }
 
-    final message = {
-      "action": "subscribe",
-      "watchlistId": watchlistId,
-    };
-    _channel?.sink.add(jsonEncode(message));
-    debugPrint("📡 Subscribed to watchlist $watchlistId");
+    try {
+      final message = {
+        "action": "subscribe",
+        "watchlistId": watchlistId,
+      };
+      _channel?.sink.add(jsonEncode(message));
+      debugPrint("📡 Subscribed to watchlist $watchlistId");
+      _pendingWatchlistId = null; // Clear after success
+    } catch (e) {
+      debugPrint("🚨 Failed to unsubscribe: $e");
+      _isConnected = false;
+      _channel = null; // Reset so next call triggers reconnect
+      _pendingWatchlistId = watchlistId;
+    }
+    notifyListeners();
   }
 
   void subscribeToOpenTrades() {
-    if (!_isConnected) return;
+    if (_channel == null || !_isConnected) {
+      debugPrint("⚠️ Not connected. Will subscribe to open trades on reconnect.");
+      return;
+    }
 
-    final message = {
-      "action": "subscribe_open_trades",
-    };
-    _channel?.sink.add(jsonEncode(message));
-    debugPrint("📡 Subscribed to open trades");
+    try {
+      final message = {
+        "action": "subscribe_open_trades",
+      };
+      _channel?.sink.add(jsonEncode(message));
+      _isSubscribedToOpenTrades = true; // ✅ Update state
+      debugPrint("📡 Subscribed to open trades");
+    } catch (e) {
+      debugPrint("🚨 Failed to unsubscribe: $e");
+      _isConnected = false;
+      _channel = null; // Reset so next call triggers reconnect
+      _isSubscribedToOpenTrades = false; // optional fallback
+    }
+    notifyListeners();
   }
 
   void unsubscribeFromWatchlist(int watchlistId) {
-    final message = {
-      "action": "unsubscribe",
-      "watchlistId": watchlistId,
-    };
-    _channel?.sink.add(jsonEncode(message));
-    debugPrint("❌ Unsubscribed from watchlist $watchlistId");
+    if (_channel == null || !_isConnected) {
+      debugPrint("⚠️ Cannot unsubscribe – socket not connected.");
+      return;
+    }
+
+    try {
+      final message = {
+        "action": "unsubscribe",
+        "watchlistId": watchlistId,
+      };
+      _channel!.sink.add(jsonEncode(message));
+      debugPrint("❌ Unsubscribed from watchlist $watchlistId");
+    } catch (e) {
+      debugPrint("🚨 Failed to unsubscribe: $e");
+      _isConnected = false;
+      _channel = null; // Reset so next call triggers reconnect
+    }
+    notifyListeners();
   }
 
   void unsubscribeFromOpenTrades() {
-    final message = {
-      "action": "unsubscribe_open_trades",
-    };
-    _channel?.sink.add(jsonEncode(message));
-    debugPrint("❌ Unsubscribed from open trades");
+    if (_channel == null || !_isConnected) {
+      debugPrint("⚠️ Cannot unsubscribe – socket not connected.");
+      return;
+    }
+
+    try {
+      final message = {
+        "action": "unsubscribe_open_trades",
+      };
+      _channel?.sink.add(jsonEncode(message));
+      debugPrint("❌ Unsubscribed from open trades");
+      _isSubscribedToOpenTrades = false; // ✅ Update state
+    } catch (e) {
+      debugPrint("🚨 Failed to unsubscribe: $e");
+      _isConnected = false;
+      _channel = null; // Reset so next call triggers reconnect
+      _isSubscribedToOpenTrades = false; // fallback
+    }
+    notifyListeners();
   }
 
-  void _reconnect() {
+  Future<void> _reconnect() async {
     Future.delayed(const Duration(seconds: 3), () {
       debugPrint("🔁 Reconnecting...");
       _isConnected = false;
       connect();
     });
+
+    await Future.delayed(const Duration(seconds: 1));
+
+    if (_pendingWatchlistId != null) {
+      subscribeToWatchlist(_pendingWatchlistId!);
+    }
+
+    if (_isSubscribedToOpenTrades ?? false) {
+      subscribeToOpenTrades();
+    }
   }
 
   void disconnect() {

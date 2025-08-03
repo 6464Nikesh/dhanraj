@@ -36,6 +36,86 @@ class _DashboardState extends State<Dashboard> {
       return PopScope(
         canPop: false,
         child: Scaffold(
+          appBar: AppBar(
+            elevation: 2,
+            surfaceTintColor: Colors.white,
+            shadowColor: Colors.white,
+            foregroundColor: Colors.white,
+            backgroundColor: Colors.white,
+            centerTitle: false,
+            leading: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Container(
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: AppColors.darkBlue,
+                ),
+                child: Center(
+                  child: Consumer<ProviderDashboard>(builder: (context, pd, child) {
+                    return Text(
+                      pd.customerInitial ?? "",
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontFamily: "roboto",
+                        color: Colors.white,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    );
+                  }),
+                ),
+              ),
+            ),
+            title: const Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      "Nifty 50 : ",
+                      style: TextStyle(
+                        fontFamily: "roboto",
+                        color: AppColors.navyBlue,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+
+                    Text(
+                      "00.00",
+                      style: TextStyle(
+                        fontFamily: "roboto",
+                        color: AppColors.navyBlue,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Text(
+                      "SENSEX : ",
+                      style: TextStyle(
+                        fontFamily: "roboto",
+                        color: AppColors.navyBlue,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    Text(
+                      "00.00",
+                      style: TextStyle(
+                        fontFamily: "roboto",
+                        color: AppColors.navyBlue,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
+                )
+              ],
+            ),
+          ),
           backgroundColor: Colors.white,
           bottomNavigationBar: BottomNavigationBar(
             elevation: 4,

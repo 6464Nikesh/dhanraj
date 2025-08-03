@@ -9,6 +9,7 @@ class AppRoutes {
   static const tradingTerms = "/tradingTerms";
   static const changePassword = "/changePassword";
   static const tradeDetails = "/tradeDetails";
+  static const historyDetails = "/historyDetails";
   static const modifyTarget = "/modifyTarget";
   static const historyTradeDetails = "/historyTradeDetails";
   static const globalSearch = "/globalSearch";

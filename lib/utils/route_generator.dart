@@ -3,7 +3,6 @@ import 'package:dhanraj/pages/auth/login.dart';
 import 'package:dhanraj/pages/auth/sign_up.dart';
 import 'package:dhanraj/pages/dashboard.dart';
 import 'package:dhanraj/pages/history/history_trade_details.dart';
-import 'package:dhanraj/pages/position/modify_target.dart';
 import 'package:dhanraj/pages/position/trade_details.dart';
 import 'package:dhanraj/pages/splash.dart';
 import 'package:dhanraj/pages/settings/change_password.dart';
@@ -38,10 +37,10 @@ class RouteGenerator {
       case AppRoutes.tradeDetails:
         final arguments = settings.arguments as TradeDetailArg;
         return buildRoute(TradeDetails(arg: arguments), settings: settings);
-      case AppRoutes.modifyTarget:
-        return buildRoute(const ModifyTarget(), settings: settings);
+
       case AppRoutes.historyTradeDetails:
-        return buildRoute(const HistoryTradeDetails(), settings: settings);
+        final arguments = settings.arguments as TradeDetailArg;
+        return buildRoute(HistoryTradeDetails(arg: arguments), settings: settings);
       case AppRoutes.globalSearch:
         final arguments = settings.arguments as GlobalSearchArg;
         return buildRoute(GlobalSearch(globalSearchArg: arguments), settings: settings);

@@ -150,8 +150,21 @@ class Symbol {
   String? segment;
   String? instrumentType;
   String? expiry;
+  num? lotSize;
 
-  Symbol({this.symbolId, this.strike, this.instrumentToken, this.tradingsymbol, this.name, this.lastPrice, this.exchange, this.segment, this.instrumentType, this.expiry});
+  Symbol({
+    this.symbolId,
+    this.strike,
+    this.instrumentToken,
+    this.tradingsymbol,
+    this.name,
+    this.lastPrice,
+    this.exchange,
+    this.segment,
+    this.instrumentType,
+    this.expiry,
+    this.lotSize,
+  });
 
   Symbol.fromJson(Map<String, dynamic> json) {
     symbolId = json['symbol_id'];
@@ -164,6 +177,7 @@ class Symbol {
     segment = json['segment'];
     instrumentType = json['instrument_type'];
     expiry = json['expiry'];
+    lotSize = json['lot_size'];
   }
 
   Map<String, dynamic> toJson() {
@@ -178,6 +192,7 @@ class Symbol {
     data['segment'] = segment;
     data['instrument_type'] = instrumentType;
     data['expiry'] = expiry;
+    data['lot_size'] = lotSize;
     return data;
   }
 }

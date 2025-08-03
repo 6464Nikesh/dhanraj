@@ -44,7 +44,14 @@ class Miscellaneous {
       return "";
     }
     DateTime dateTime = DateTime.parse(date);
-    return DateFormat('dd-MMM-yyyy').format(dateTime);
+    return DateFormat('dd MMM yyyy').format(dateTime);
+  }
+  static String dateConverterToDDMMMYYYYHHMM(String date) {
+    if(date.isEmpty){
+      return "";
+    }
+    DateTime dateTime = DateTime.parse(date);
+    return DateFormat('dd MMM yyyy HH:mm:ss').format(dateTime);
   }
 
   static String getDateWithTime(String date) {

@@ -16,6 +16,7 @@ class _HttpErrorDialogState extends State<HttpErrorDialog> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
+      backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -24,6 +25,9 @@ class _HttpErrorDialogState extends State<HttpErrorDialog> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              const SizedBox(
+                height: 20,
+              ),
               Text(
                 textAlign: TextAlign.center,
                 widget.msg ?? "",

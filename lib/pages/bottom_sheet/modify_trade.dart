@@ -31,10 +31,10 @@ class _ModifyTradeState extends State<ModifyTrade> {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      Navigator.pushNamed(context, AppRoutes.modifyTarget);
+                      Navigator.pop(context, 1);
                     },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 10),
                       child: Text(
                         AppStrings.modifyTarget,
                         style: TextStyle(
@@ -45,15 +45,20 @@ class _ModifyTradeState extends State<ModifyTrade> {
                       ),
                     ),
                   ),
-                  Divider(),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10),
-                    child: Text(
-                      AppStrings.modifyStopLoss,
-                      style: TextStyle(
-                        fontFamily: "roboto",
-                        fontSize: 18,
-                        color: AppColors.navyBlue,
+                  const Divider(),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context, 2);
+                    },
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 10),
+                      child: Text(
+                        AppStrings.modifyStopLoss,
+                        style: TextStyle(
+                          fontFamily: "roboto",
+                          fontSize: 18,
+                          color: AppColors.navyBlue,
+                        ),
                       ),
                     ),
                   ),
@@ -64,7 +69,7 @@ class _ModifyTradeState extends State<ModifyTrade> {
               padding: const EdgeInsets.symmetric(vertical: 20),
               child: GestureDetector(
                 onTap: () {
-                  Navigator.pop(context);
+                  Navigator.pop(context, 0);
                 },
                 child: AppButton.colorButton(
                   text: AppStrings.cancel,

@@ -40,11 +40,11 @@ class TotalMarginModel {
 }
 
 class Result {
-  double? totalMargin;
-  double? totalOpenPrice;
-  double? totalRequiredMargin;
+  num? totalMargin;
+  num? totalOpenPrice;
+  num? totalRequiredMargin;
   String? latestBalance;
-  int? tradeCount;
+  num? tradeCount;
 
   Result(
       {this.totalMargin,
