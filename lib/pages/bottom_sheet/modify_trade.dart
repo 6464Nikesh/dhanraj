@@ -33,16 +33,12 @@ class _ModifyTradeState extends State<ModifyTrade> {
                     onTap: () {
                       Navigator.pop(context, 1);
                     },
-                    child: const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 10),
-                      child: Text(
-                        AppStrings.modifyTarget,
-                        style: TextStyle(
-                          fontFamily: "roboto",
-                          fontSize: 18,
-                          color: AppColors.navyBlue,
-                        ),
-                      ),
+                    child: AppButton.colorButton(
+                      text: AppStrings.modifyTarget,
+                      context: context,
+                      color: Colors.white,
+                      isActive: true,
+                      textColor: AppColors.navyBlue,
                     ),
                   ),
                   const Divider(),
@@ -50,16 +46,12 @@ class _ModifyTradeState extends State<ModifyTrade> {
                     onTap: () {
                       Navigator.pop(context, 2);
                     },
-                    child: const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 10),
-                      child: Text(
-                        AppStrings.modifyStopLoss,
-                        style: TextStyle(
-                          fontFamily: "roboto",
-                          fontSize: 18,
-                          color: AppColors.navyBlue,
-                        ),
-                      ),
+                    child: AppButton.colorButton(
+                      text: AppStrings.modifyStopLoss,
+                      context: context,
+                      color: Colors.white,
+                      isActive: true,
+                      textColor: AppColors.navyBlue,
                     ),
                   ),
                 ],

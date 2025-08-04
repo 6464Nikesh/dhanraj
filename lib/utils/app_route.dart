@@ -7,7 +7,6 @@ class AppRoutes {
   static const dashboard = "/dashboard";
   static const funds = "/funds";
   static const tradingTerms = "/tradingTerms";
-  static const changePassword = "/changePassword";
   static const tradeDetails = "/tradeDetails";
   static const historyDetails = "/historyDetails";
   static const modifyTarget = "/modifyTarget";

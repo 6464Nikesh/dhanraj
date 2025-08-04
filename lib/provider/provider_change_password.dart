@@ -20,7 +20,9 @@ class ProviderChangePassword extends ChangeNotifier {
   SharedPreferences? sp;
   LoginModel.Result? loginModel;
 
-  bool isPasswordShow = false;
+  bool isPasswordCurrentShow = false;
+  bool isPasswordNewShow = false;
+  bool isPasswordConfirmShow = false;
 
   clear() {
     currentPassword.clear();
@@ -28,11 +30,29 @@ class ProviderChangePassword extends ChangeNotifier {
     confirmPassword.clear();
   }
 
-  setVisibility() {
-    if (isPasswordShow) {
-      isPasswordShow = false;
+  setVisibilityCurrent() {
+    if (isPasswordCurrentShow) {
+      isPasswordCurrentShow = false;
     } else {
-      isPasswordShow = true;
+      isPasswordCurrentShow = true;
+    }
+    notifyListeners();
+  }
+
+  setVisibilityNew() {
+    if (isPasswordNewShow) {
+      isPasswordNewShow = false;
+    } else {
+      isPasswordNewShow = true;
+    }
+    notifyListeners();
+  }
+
+  setVisibilityConfirm() {
+    if (isPasswordConfirmShow) {
+      isPasswordConfirmShow = false;
+    } else {
+      isPasswordConfirmShow = true;
     }
     notifyListeners();
   }
@@ -48,16 +68,16 @@ class ProviderChangePassword extends ChangeNotifier {
 
   bool validation({required BuildContext context}) {
     if (currentPassword.text.trim().isEmpty) {
-      AppWidget().snackBar(context, "${AppStrings.enter} ${AppStrings.current} ${AppStrings.password}", AppColors.red, Colors.white);
+      AppWidget().snackBarTop(context, "${AppStrings.enter} ${AppStrings.current} ${AppStrings.password}", AppColors.red, Colors.white);
       return false;
     } else if (newPassword.text.trim().isEmpty) {
-      AppWidget().snackBar(context, "${AppStrings.enter} ${AppStrings.newPassword}", AppColors.red, Colors.white);
+      AppWidget().snackBarTop(context, "${AppStrings.enter} ${AppStrings.newPassword}", AppColors.red, Colors.white);
       return false;
     } else if (confirmPassword.text.trim().isEmpty) {
-      AppWidget().snackBar(context, "${AppStrings.enter} ${AppStrings.confirmPassword}", AppColors.red, Colors.white);
+      AppWidget().snackBarTop(context, "${AppStrings.enter} ${AppStrings.confirmPassword}", AppColors.red, Colors.white);
       return false;
     } else if (confirmPassword.text.trim() != newPassword.text.trim()) {
-      AppWidget().snackBar(context, "${AppStrings.password} ${AppStrings.notMatched}", AppColors.red, Colors.white);
+      AppWidget().snackBarTop(context, "${AppStrings.password} ${AppStrings.notMatched}", AppColors.red, Colors.white);
       return false;
     }
 
@@ -88,6 +108,7 @@ class ProviderChangePassword extends ChangeNotifier {
             currentPassword.clear();
             newPassword.clear();
             confirmPassword.clear();
+            Navigator.pop(context);
           }
         },
       );

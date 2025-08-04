@@ -287,7 +287,7 @@ class _HistoryTradeDetailsState extends State<HistoryTradeDetails> {
                           ),
                         ),
                         Text(
-                          Miscellaneous.dateConverterToDDMMMYYYYHHMM(widget.arg.trades?.execution?.executionTime ?? ""),
+                          Miscellaneous.dateConverterToDDMMMYYYY(widget.arg.trades?.execution?.executionTime ?? ""),
                           style: const TextStyle(
                             fontFamily: "roboto",
                             color: AppColors.navyBlue,
@@ -304,7 +304,7 @@ class _HistoryTradeDetailsState extends State<HistoryTradeDetails> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const Text(
-                          "Expiry",
+                          "Closed at",
                           style: TextStyle(
                             fontFamily: "roboto",
                             color: AppColors.grey,
@@ -312,7 +312,7 @@ class _HistoryTradeDetailsState extends State<HistoryTradeDetails> {
                           ),
                         ),
                         Text(
-                          Miscellaneous.dateConverterToDDMMMYYYYHHMM(widget.arg.trades?.expiry ?? ""),
+                          Miscellaneous.dateConverterToDDMMMYYYY(widget.arg.trades?.expiry ?? ""),
                           style: const TextStyle(
                             fontFamily: "roboto",
                             color: AppColors.navyBlue,

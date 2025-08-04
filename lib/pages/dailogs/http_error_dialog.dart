@@ -6,7 +6,7 @@ class HttpErrorDialog extends StatefulWidget {
   final String? msg;
   final Future<dynamic>? Function() onTap;
 
-  HttpErrorDialog({super.key, required this.msg, required this.onTap});
+  const HttpErrorDialog({super.key, required this.msg, required this.onTap});
 
   @override
   State<HttpErrorDialog> createState() => _HttpErrorDialogState();

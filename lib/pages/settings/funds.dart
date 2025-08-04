@@ -38,6 +38,7 @@ class _FundsState extends State<Funds> {
             onPressed: () {
               showModalBottomSheet(
                 context: context,
+                enableDrag: true,
                 isScrollControlled: true,
                 shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.vertical(
@@ -68,11 +69,20 @@ class _FundsState extends State<Funds> {
               controller: _.scrollController,
               itemBuilder: (context, index) {
                 final data = _.transactions?[index];
+
+                Color color = AppColors.grey;
+
+                if (data?.status == "DEPOSIT") {
+                  color = AppColors.green;
+                } else if (data?.status == "WITHDRAWAL") {
+                  color = AppColors.red;
+                }
+
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 4),
                   child: Container(
                     decoration: BoxDecoration(
-                      color: AppColors.grey.withOpacity(0.5),
+                      color: color,
                       borderRadius: BorderRadius.circular(8),
                       boxShadow: [
                         BoxShadow(
@@ -143,9 +153,10 @@ class _FundsState extends State<Funds> {
                                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                                           child: Text(
                                             data?.amount ?? "",
-                                            style: const TextStyle(
+                                            style: TextStyle(
                                               fontFamily: "roboto",
                                               fontSize: 14,
+                                              color: color,
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),

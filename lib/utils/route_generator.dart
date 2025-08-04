@@ -30,8 +30,6 @@ class RouteGenerator {
         return buildRoute(const Profile(), settings: settings);
       case AppRoutes.tradingTerms:
         return buildRoute(const TradingTerms(), settings: settings);
-      case AppRoutes.changePassword:
-        return buildRoute(const ChangePassword(), settings: settings);
       case AppRoutes.funds:
         return buildRoute(const Funds(), settings: settings);
       case AppRoutes.tradeDetails:

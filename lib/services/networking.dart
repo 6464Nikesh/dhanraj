@@ -11,7 +11,9 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../utils/app_strings.dart';
 import '../utils/app_widget.dart';
+import 'exception_dialogs.dart';
 
 mixin class Networking {
   SharedPreferences? sp;
@@ -47,16 +49,13 @@ mixin class Networking {
         },
       );
 
-      print(response.body);
-
       if (response.statusCode == 200) {
         if (isLoaderShow && context.mounted) {
           Navigator.pop(context);
         }
         var data = json.decode(response.body);
         return data;
-      }
-      if (response.statusCode == 201) {
+      } else if (response.statusCode == 201) {
         if (isLoaderShow && context.mounted) {
           Navigator.pop(context);
         }
@@ -70,9 +69,9 @@ mixin class Networking {
         var data = json.decode(response.body);
         if (isLoaderShow && context.mounted) {
           if (fromBottomSheet) {
-            AppWidget().snackBarTop(context, data["message"] ?? "", AppColors.red, Colors.white);
+            AppWidget().snackBarTop(context, data["errors"][0]["message"] ?? "", AppColors.red, Colors.white);
           } else {
-            AppWidget().snackBar(context, data["message"] ?? "", AppColors.red, Colors.white);
+            AppWidget().snackBar(context, data["errors"][0]["message"] ?? "", AppColors.red, Colors.white);
           }
         }
 
@@ -85,11 +84,12 @@ mixin class Networking {
         var data = json.decode(response.body);
         if (isLoaderShow && context.mounted) {
           if (fromBottomSheet) {
-            AppWidget().snackBarTop(context, data["message"] ?? "", AppColors.red, Colors.white);
+            AppWidget().snackBarTop(context, data["errors"][0]["message"] ?? "", AppColors.red, Colors.white);
           } else {
-            AppWidget().snackBarTop(context, data["message"] ?? "", AppColors.red, Colors.white);
+            AppWidget().snackBar(context, data["errors"][0]["message"] ?? "", AppColors.red, Colors.white);
           }
         }
+        Provider.of<ProviderDashboard>(context, listen: false).logOut(context);
 
         return null;
       } else if (response.statusCode == 422) {
@@ -100,9 +100,9 @@ mixin class Networking {
         var data = json.decode(response.body);
         if (isLoaderShow && context.mounted) {
           if (fromBottomSheet) {
-            AppWidget().snackBarTop(context, data["message"] ?? "", AppColors.red, Colors.white);
+            AppWidget().snackBarTop(context, data["errors"][0]["message"] ?? "", AppColors.red, Colors.white);
           } else {
-            AppWidget().snackBarTop(context, data["message"] ?? "", AppColors.red, Colors.white);
+            AppWidget().snackBar(context, data["errors"][0]["message"] ?? "", AppColors.red, Colors.white);
           }
         }
         return null;
@@ -113,9 +113,9 @@ mixin class Networking {
         var data = json.decode(response.body);
         if (isLoaderShow && context.mounted) {
           if (fromBottomSheet) {
-            AppWidget().snackBarTop(context, data["message"] ?? "", AppColors.red, Colors.white);
+            AppWidget().snackBarTop(context, data["errors"][0]["message"] ?? "", AppColors.red, Colors.white);
           } else {
-            AppWidget().snackBarTop(context, data["message"] ?? "", AppColors.red, Colors.white);
+            AppWidget().snackBar(context, data["errors"][0]["message"] ?? "", AppColors.red, Colors.white);
           }
         }
         return null;
@@ -123,40 +123,35 @@ mixin class Networking {
         if (isLoaderShow && context.mounted) {
           Navigator.pop(context);
         }
-
+        var data = json.decode(response.body);
         if (context.mounted) {
-          showDialog(
-            barrierDismissible: false,
+          ExceptionDialogs.networkDialog(
             context: context,
-            builder: (context) {
-              return HttpErrorDialog(
-                msg: "Permission have changed, Please contact to HR Manager.",
-                onTap: () {
-                  return null;
-                },
-              );
-            },
+            message: data["errors"][0]["message"] ?? "",
+            onPressed: () {},
           );
         }
         return null;
       } else if (response.statusCode == 503) {
         if (isLoaderShow && context.mounted) {
+          var data = json.decode(response.body);
           Navigator.pop(context);
-          if (fromBottomSheet) {
-            AppWidget().snackBarTop(context, "Server is under maintenance,Try again later.", AppColors.red, Colors.white);
-          } else {
-            AppWidget().snackBar(context, "Server is under maintenance,Try again later.", AppColors.red, Colors.white);
-          }
+          ExceptionDialogs.networkDialog(
+            context: context,
+            message: data["errors"][0]["message"] ?? "",
+            onPressed: () {},
+          );
         }
         return null;
       } else if (response.statusCode == 500) {
         if (isLoaderShow && context.mounted) {
+          var data = json.decode(response.body);
           Navigator.pop(context);
-          if (fromBottomSheet) {
-            AppWidget().snackBarTop(context, "Service is unavailable,Try again later.", AppColors.red, Colors.white);
-          } else {
-            AppWidget().snackBar(context, "Service is unavailable,Try again later.", AppColors.red, Colors.white);
-          }
+          ExceptionDialogs.networkDialog(
+            context: context,
+            message: data["errors"][0]["message"] ?? "",
+            onPressed: () {},
+          );
         }
 
         return null;
@@ -164,84 +159,49 @@ mixin class Networking {
     } on SocketException catch (e) {
       if (isLoaderShow && context.mounted) {
         Navigator.pop(context);
-        showDialog(
+        ExceptionDialogs.networkDialog(
           context: context,
-          builder: (context) {
-            return HttpErrorDialog(
-              msg: e.message,
-              onTap: () {
-                Navigator.pop(context);
-                return null;
-              },
-            );
-          },
+          message: e.message,
+          onPressed: () {},
         );
       }
       return null;
     } on HttpException catch (e) {
       if (isLoaderShow && context.mounted) {
         Navigator.pop(context);
-        showDialog(
+        ExceptionDialogs.networkDialog(
           context: context,
-          builder: (context) {
-            return HttpErrorDialog(
-              msg: e.message,
-              onTap: () {
-                Navigator.pop(context);
-                return null;
-              },
-            );
-          },
+          message: e.message,
+          onPressed: () {},
         );
       }
       return null;
     } on FormatException catch (e) {
       if (isLoaderShow && context.mounted) {
         Navigator.pop(context);
-        showDialog(
+        ExceptionDialogs.networkDialog(
           context: context,
-          builder: (context) {
-            return HttpErrorDialog(
-              msg: e.message,
-              onTap: () {
-                Navigator.pop(context);
-                return null;
-              },
-            );
-          },
+          message: e.message,
+          onPressed: () {},
         );
       }
       return null;
     } on TimeoutException catch (e) {
       if (isLoaderShow && context.mounted) {
-        showDialog(
+        ExceptionDialogs.networkDialog(
           context: context,
-          builder: (context) {
-            return HttpErrorDialog(
-              msg: e.message,
-              onTap: () {
-                Navigator.pop(context);
-                return null;
-              },
-            );
-          },
+          message: e.message ?? "",
+          onPressed: () {},
         );
       }
       return null;
     } on Exception catch (_, e) {
       if (isLoaderShow && context.mounted) {
         Navigator.pop(context);
-        showDialog(
+        ExceptionDialogs.networkDialog(
           context: context,
-          builder: (context) {
-            return HttpErrorDialog(
-              msg: "$e",
-              onTap: () {
-                Navigator.pop(context);
-                return null;
-              },
-            );
-          },
+          message: e.toString(),
+          onPressed: () {},
         );
       }
       return null;
@@ -286,8 +246,7 @@ mixin class Networking {
         }
         var data = json.decode(response.body);
         return data;
-      }
-      if (response.statusCode == 201) {
+      } else if (response.statusCode == 201) {
         if (isLoaderShow && context.mounted) {
           Navigator.pop(context);
         }
@@ -301,9 +260,9 @@ mixin class Networking {
         var data = json.decode(response.body);
         if (isLoaderShow && context.mounted) {
           if (fromBottomSheet) {
-            AppWidget().snackBarTop(context, data["message"] ?? "", AppColors.red, Colors.white);
+            AppWidget().snackBarTop(context, data["errors"][0]["message"] ?? "", AppColors.red, Colors.white);
           } else {
-            AppWidget().snackBar(context, data["message"] ?? "", AppColors.red, Colors.white);
+            AppWidget().snackBar(context, data["errors"][0]["message"] ?? "", AppColors.red, Colors.white);
           }
         }
 
@@ -316,11 +275,12 @@ mixin class Networking {
         var data = json.decode(response.body);
         if (isLoaderShow && context.mounted) {
           if (fromBottomSheet) {
-            AppWidget().snackBarTop(context, data["message"] ?? "", AppColors.red, Colors.white);
+            AppWidget().snackBarTop(context, data["errors"][0]["message"] ?? "", AppColors.red, Colors.white);
           } else {
-            AppWidget().snackBarTop(context, data["message"] ?? "", AppColors.red, Colors.white);
+            AppWidget().snackBar(context, data["errors"][0]["message"] ?? "", AppColors.red, Colors.white);
           }
         }
+        Provider.of<ProviderDashboard>(context, listen: false).logOut(context);
 
         return null;
       } else if (response.statusCode == 422) {
@@ -331,9 +291,9 @@ mixin class Networking {
         var data = json.decode(response.body);
         if (isLoaderShow && context.mounted) {
           if (fromBottomSheet) {
-            AppWidget().snackBarTop(context, data["message"] ?? "", AppColors.red, Colors.white);
+            AppWidget().snackBarTop(context, data["errors"][0]["message"] ?? "", AppColors.red, Colors.white);
           } else {
-            AppWidget().snackBarTop(context, data["message"] ?? "", AppColors.red, Colors.white);
+            AppWidget().snackBar(context, data["errors"][0]["message"] ?? "", AppColors.red, Colors.white);
           }
         }
         return null;
@@ -344,9 +304,9 @@ mixin class Networking {
         var data = json.decode(response.body);
         if (isLoaderShow && context.mounted) {
           if (fromBottomSheet) {
-            AppWidget().snackBarTop(context, data["message"] ?? "", AppColors.red, Colors.white);
+            AppWidget().snackBarTop(context, data["errors"][0]["message"] ?? "", AppColors.red, Colors.white);
           } else {
-            AppWidget().snackBarTop(context, data["message"] ?? "", AppColors.red, Colors.white);
+            AppWidget().snackBar(context, data["errors"][0]["message"] ?? "", AppColors.red, Colors.white);
           }
         }
         return null;
@@ -354,40 +314,35 @@ mixin class Networking {
         if (isLoaderShow && context.mounted) {
           Navigator.pop(context);
         }
-
+        var data = json.decode(response.body);
         if (context.mounted) {
-          showDialog(
-            barrierDismissible: false,
+          ExceptionDialogs.networkDialog(
             context: context,
-            builder: (context) {
-              return HttpErrorDialog(
-                msg: "Permission have changed, Please contact to HR Manager.",
-                onTap: () {
-                  return null;
-                },
-              );
-            },
+            message: data["errors"][0]["message"] ?? "",
+            onPressed: () {},
           );
         }
         return null;
       } else if (response.statusCode == 503) {
         if (isLoaderShow && context.mounted) {
+          var data = json.decode(response.body);
           Navigator.pop(context);
-          if (fromBottomSheet) {
-            AppWidget().snackBarTop(context, "Server is under maintenance,Try again later.", AppColors.red, Colors.white);
-          } else {
-            AppWidget().snackBar(context, "Server is under maintenance,Try again later.", AppColors.red, Colors.white);
-          }
+          ExceptionDialogs.networkDialog(
+            context: context,
+            message: data["errors"][0]["message"] ?? "",
+            onPressed: () {},
+          );
         }
         return null;
       } else if (response.statusCode == 500) {
         if (isLoaderShow && context.mounted) {
+          var data = json.decode(response.body);
           Navigator.pop(context);
-          if (fromBottomSheet) {
-            AppWidget().snackBarTop(context, "Service is unavailable,Try again later.", AppColors.red, Colors.white);
-          } else {
-            AppWidget().snackBar(context, "Service is unavailable,Try again later.", AppColors.red, Colors.white);
-          }
+          ExceptionDialogs.networkDialog(
+            context: context,
+            message: data["errors"][0]["message"] ?? "",
+            onPressed: () {},
+          );
         }
 
         return null;
@@ -395,84 +350,49 @@ mixin class Networking {
     } on SocketException catch (e) {
       if (isLoaderShow && context.mounted) {
         Navigator.pop(context);
-        showDialog(
+        ExceptionDialogs.networkDialog(
           context: context,
-          builder: (context) {
-            return HttpErrorDialog(
-              msg: e.message,
-              onTap: () {
-                Navigator.pop(context);
-                return null;
-              },
-            );
-          },
+          message: e.message,
+          onPressed: () {},
         );
       }
       return null;
     } on HttpException catch (e) {
       if (isLoaderShow && context.mounted) {
         Navigator.pop(context);
-        showDialog(
+        ExceptionDialogs.networkDialog(
           context: context,
-          builder: (context) {
-            return HttpErrorDialog(
-              msg: e.message,
-              onTap: () {
-                Navigator.pop(context);
-                return null;
-              },
-            );
-          },
+          message: e.message,
+          onPressed: () {},
         );
       }
       return null;
     } on FormatException catch (e) {
       if (isLoaderShow && context.mounted) {
         Navigator.pop(context);
-        showDialog(
+        ExceptionDialogs.networkDialog(
           context: context,
-          builder: (context) {
-            return HttpErrorDialog(
-              msg: e.message,
-              onTap: () {
-                Navigator.pop(context);
-                return null;
-              },
-            );
-          },
+          message: e.message,
+          onPressed: () {},
         );
       }
       return null;
     } on TimeoutException catch (e) {
       if (isLoaderShow && context.mounted) {
-        showDialog(
+        ExceptionDialogs.networkDialog(
           context: context,
-          builder: (context) {
-            return HttpErrorDialog(
-              msg: e.message,
-              onTap: () {
-                Navigator.pop(context);
-                return null;
-              },
-            );
-          },
+          message: e.message ?? "",
+          onPressed: () {},
         );
       }
       return null;
     } on Exception catch (_, e) {
       if (isLoaderShow && context.mounted) {
         Navigator.pop(context);
-        showDialog(
+        ExceptionDialogs.networkDialog(
           context: context,
-          builder: (context) {
-            return HttpErrorDialog(
-              msg: "$e",
-              onTap: () {
-                Navigator.pop(context);
-                return null;
-              },
-            );
-          },
+          message: e.toString(),
+          onPressed: () {},
         );
       }
       return null;
@@ -512,7 +432,6 @@ mixin class Networking {
         },
       );
 
-      print(response.body);
       if (response.statusCode == 200) {
         if (isLoaderShow && context.mounted) {
           Navigator.pop(context);
@@ -533,7 +452,7 @@ mixin class Networking {
 
         var data = json.decode(response.body);
         if (isLoaderShow && context.mounted) {
-          AppWidget().snackBarTop(context, data["message"] ?? "", AppColors.red, Colors.white);
+          AppWidget().snackBar(context, data["errors"][0]["message"] ?? "", AppColors.red, Colors.white);
         }
 
         return null;
@@ -544,8 +463,9 @@ mixin class Networking {
 
         var data = json.decode(response.body);
         if (isLoaderShow && context.mounted) {
-          AppWidget().snackBarTop(context, data["message"] ?? "", AppColors.red, Colors.white);
+          AppWidget().snackBar(context, data["errors"][0]["message"] ?? "", AppColors.red, Colors.white);
         }
+        Provider.of<ProviderDashboard>(context, listen: false).logOut(context);
 
         return null;
       } else if (response.statusCode == 422) {
@@ -555,7 +475,7 @@ mixin class Networking {
 
         var data = json.decode(response.body);
         if (isLoaderShow && context.mounted) {
-          AppWidget().snackBarTop(context, data["message"] ?? "", AppColors.red, Colors.white);
+          AppWidget().snackBar(context, data["errors"][0]["message"] ?? "", AppColors.red, Colors.white);
         }
         return null;
       } else if (response.statusCode == 404) {
@@ -564,39 +484,43 @@ mixin class Networking {
         }
         var data = json.decode(response.body);
         if (isLoaderShow && context.mounted) {
-          AppWidget().snackBarTop(context, data["message"] ?? "", AppColors.red, Colors.white);
+          AppWidget().snackBar(context, data["errors"][0]["message"] ?? "", AppColors.red, Colors.white);
         }
         return null;
       } else if (response.statusCode == 403) {
         if (isLoaderShow && context.mounted) {
           Navigator.pop(context);
         }
-
+        var data = json.decode(response.body);
         if (context.mounted) {
-          showDialog(
-            barrierDismissible: false,
+          ExceptionDialogs.networkDialog(
             context: context,
-            builder: (context) {
-              return HttpErrorDialog(
-                msg: "Permission have changed, Please contact to HR Manager.",
-                onTap: () {
-                  return null;
-                },
-              );
-            },
+            message: data["errors"][0]["message"] ?? "",
+            onPressed: () {},
           );
         }
         return null;
       } else if (response.statusCode == 503) {
         if (isLoaderShow && context.mounted) {
+          var data = json.decode(response.body);
           Navigator.pop(context);
-          AppWidget().snackBar(context, "Server is under maintenance,Try again later.", AppColors.red, Colors.white);
+
+          ExceptionDialogs.networkDialog(
+            context: context,
+            message: data["errors"][0]["message"] ?? "",
+            onPressed: () {},
+          );
         }
         return null;
       } else if (response.statusCode == 500) {
         if (isLoaderShow && context.mounted) {
+          var data = json.decode(response.body);
           Navigator.pop(context);
-          AppWidget().snackBar(context, "Service is unavailable,Try again later.", AppColors.red, Colors.white);
+          ExceptionDialogs.networkDialog(
+            context: context,
+            message: data["errors"][0]["message"] ?? "",
+            onPressed: () {},
+          );
         }
 
         return null;
@@ -604,84 +528,49 @@ mixin class Networking {
     } on SocketException catch (e) {
       if (isLoaderShow && context.mounted) {
         Navigator.pop(context);
-        showDialog(
+        ExceptionDialogs.networkDialog(
           context: context,
-          builder: (context) {
-            return HttpErrorDialog(
-              msg: e.message,
-              onTap: () {
-                Navigator.pop(context);
-                return null;
-              },
-            );
-          },
+          message: e.message,
+          onPressed: () {},
         );
       }
       return null;
     } on HttpException catch (e) {
       if (isLoaderShow && context.mounted) {
         Navigator.pop(context);
-        showDialog(
+        ExceptionDialogs.networkDialog(
           context: context,
-          builder: (context) {
-            return HttpErrorDialog(
-              msg: e.message,
-              onTap: () {
-                Navigator.pop(context);
-                return null;
-              },
-            );
-          },
+          message: e.message,
+          onPressed: () {},
         );
       }
       return null;
     } on FormatException catch (e) {
       if (isLoaderShow && context.mounted) {
         Navigator.pop(context);
-        showDialog(
+        ExceptionDialogs.networkDialog(
           context: context,
-          builder: (context) {
-            return HttpErrorDialog(
-              msg: e.message,
-              onTap: () {
-                Navigator.pop(context);
-                return null;
-              },
-            );
-          },
+          message: e.message,
+          onPressed: () {},
         );
       }
       return null;
     } on TimeoutException catch (e) {
       if (isLoaderShow && context.mounted) {
-        showDialog(
+        ExceptionDialogs.networkDialog(
           context: context,
-          builder: (context) {
-            return HttpErrorDialog(
-              msg: e.message,
-              onTap: () {
-                Navigator.pop(context);
-                return null;
-              },
-            );
-          },
+          message: e.message ?? "",
+          onPressed: () {},
         );
       }
       return null;
     } on Exception catch (_, e) {
       if (isLoaderShow && context.mounted) {
         Navigator.pop(context);
-        showDialog(
+        ExceptionDialogs.networkDialog(
           context: context,
-          builder: (context) {
-            return HttpErrorDialog(
-              msg: "$e",
-              onTap: () {
-                Navigator.pop(context);
-                return null;
-              },
-            );
-          },
+          message: e.toString(),
+          onPressed: () {},
         );
       }
       return null;
@@ -728,16 +617,33 @@ mixin class Networking {
         }
         var data = json.decode(response.body);
         return data;
-      } else if (response.statusCode == 401) {
+      }
+      if (response.statusCode == 201) {
         if (isShowLoader && context.mounted) {
           Navigator.pop(context);
         }
         var data = json.decode(response.body);
-
-        if (context.mounted) {
-          AppWidget().snackBarTop(context, data["message"] ?? "", AppColors.red, Colors.white);
+        return data;
+      } else if (response.statusCode == 400) {
+        if (isShowLoader && context.mounted) {
+          Navigator.pop(context);
         }
 
+        var data = json.decode(response.body);
+        if (isShowLoader && context.mounted) {
+          AppWidget().snackBar(context, data["errors"][0]["message"] ?? "", AppColors.red, Colors.white);
+        }
+
+        return null;
+      } else if (response.statusCode == 401) {
+        if (isShowLoader && context.mounted) {
+          Navigator.pop(context);
+        }
+
+        var data = json.decode(response.body);
+        if (isShowLoader && context.mounted) {
+          AppWidget().snackBar(context, data["errors"][0]["message"] ?? "", AppColors.red, Colors.white);
+        }
         Provider.of<ProviderDashboard>(context, listen: false).logOut(context);
 
         return null;
@@ -745,73 +651,66 @@ mixin class Networking {
         if (isShowLoader && context.mounted) {
           Navigator.pop(context);
         }
+
         var data = json.decode(response.body);
-        if (context.mounted) {
-          AppWidget().snackBarTop(context, data["message"] ?? "", AppColors.red, Colors.white);
+        if (isShowLoader && context.mounted) {
+          AppWidget().snackBar(context, data["errors"][0]["message"] ?? "", AppColors.red, Colors.white);
         }
         return null;
       } else if (response.statusCode == 404) {
         if (isShowLoader && context.mounted) {
           Navigator.pop(context);
         }
-
         var data = json.decode(response.body);
-
-        if (context.mounted) {
-          AppWidget().snackBarTop(context, data["message"] ?? "", AppColors.red, Colors.white);
+        if (isShowLoader && context.mounted) {
+          AppWidget().snackBar(context, data["errors"][0]["message"] ?? "", AppColors.red, Colors.white);
         }
         return null;
       } else if (response.statusCode == 403) {
         if (isShowLoader && context.mounted) {
           Navigator.pop(context);
         }
-
+        var data = json.decode(response.body);
         if (context.mounted) {
-          showDialog(
-            barrierDismissible: false,
+          ExceptionDialogs.networkDialog(
             context: context,
-            builder: (context) {
-              return HttpErrorDialog(
-                msg: "Permission have changed, Please contact to HR Manager.",
-                onTap: () {
-                  return null;
-                },
-              );
-            },
+            message: data["errors"][0]["message"] ?? "",
+            onPressed: () {},
+          );
+        }
+        return null;
+      } else if (response.statusCode == 503) {
+        if (isShowLoader && context.mounted) {
+          var data = json.decode(response.body);
+          Navigator.pop(context);
+
+          ExceptionDialogs.networkDialog(
+            context: context,
+            message: data["errors"][0]["message"] ?? "",
+            onPressed: () {},
           );
         }
         return null;
       } else if (response.statusCode == 500) {
         if (isShowLoader && context.mounted) {
+          var data = json.decode(response.body);
           Navigator.pop(context);
+          ExceptionDialogs.networkDialog(
+            context: context,
+            message: data["errors"][0]["message"] ?? "",
+            onPressed: () {},
+          );
         }
-        if (context.mounted) {
-          AppWidget().snackBar(context, "Sever is under maintenance,Try again later.", AppColors.red, Colors.white);
-        }
-        return null;
-      } else if (response.statusCode == 503) {
-        if (isShowLoader && context.mounted) {
-          Navigator.pop(context);
-        }
-        if (context.mounted) {
-          AppWidget().snackBar(context, "Service is unavailable,Try again later.", AppColors.red, Colors.white);
-        }
+
         return null;
       }
     } on SocketException catch (e) {
       if (context.mounted) {
         Navigator.pop(context);
-        showDialog(
+        ExceptionDialogs.networkDialog(
           context: context,
-          builder: (context) {
-            return HttpErrorDialog(
-              msg: e.message,
-              onTap: () {
-                Navigator.pop(context);
-                return null;
-              },
-            );
-          },
+          message: e.message,
+          onPressed: () {},
         );
       }
 
@@ -819,68 +718,40 @@ mixin class Networking {
     } on HttpException catch (e) {
       if (context.mounted) {
         Navigator.pop(context);
-        showDialog(
+        ExceptionDialogs.networkDialog(
           context: context,
-          builder: (context) {
-            return HttpErrorDialog(
-              msg: e.message,
-              onTap: () {
-                Navigator.pop(context);
-                return null;
-              },
-            );
-          },
+          message: e.message,
+          onPressed: () {},
         );
       }
       return null;
     } on FormatException catch (e) {
       if (context.mounted) {
         Navigator.pop(context);
-        showDialog(
+        ExceptionDialogs.networkDialog(
           context: context,
-          builder: (context) {
-            return HttpErrorDialog(
-              msg: e.message,
-              onTap: () {
-                Navigator.pop(context);
-                return null;
-              },
-            );
-          },
+          message: e.message,
+          onPressed: () {},
         );
       }
       return null;
     } on TimeoutException catch (e) {
       if (context.mounted) {
         Navigator.pop(context);
-        showDialog(
+        ExceptionDialogs.networkDialog(
           context: context,
-          builder: (context) {
-            return HttpErrorDialog(
-              msg: e.message,
-              onTap: () {
-                Navigator.pop(context);
-                return null;
-              },
-            );
-          },
+          message: e.message ?? "",
+          onPressed: () {},
         );
       }
       return null;
     } on Exception catch (_, e) {
       if (context.mounted) {
         Navigator.pop(context);
-        showDialog(
+        ExceptionDialogs.networkDialog(
           context: context,
-          builder: (context) {
-            return HttpErrorDialog(
-              msg: "$e",
-              onTap: () {
-                Navigator.pop(context);
-                return null;
-              },
-            );
-          },
+          message: e.toString(),
+          onPressed: () {},
         );
       }
       return null;
@@ -907,6 +778,9 @@ mixin class Networking {
 
     final url = Uri.parse("${AppApiEndPoint.baseUrl}$endPoint$params");
 
+    print(url);
+    print(sp?.getString(PreferenceKey.token));
+
     try {
       final response = await http.get(
         url,
@@ -923,16 +797,33 @@ mixin class Networking {
         }
         var data = json.decode(response.body);
         return data;
-      } else if (response.statusCode == 401) {
+      }
+      if (response.statusCode == 201) {
         if (isShowLoader && context.mounted) {
           Navigator.pop(context);
         }
         var data = json.decode(response.body);
-
-        if (context.mounted) {
-          AppWidget().snackBarTop(context, data["message"] ?? "", AppColors.red, Colors.white);
+        return data;
+      } else if (response.statusCode == 400) {
+        if (isShowLoader && context.mounted) {
+          Navigator.pop(context);
         }
 
+        var data = json.decode(response.body);
+        if (isShowLoader && context.mounted) {
+          AppWidget().snackBar(context, data["errors"][0]["message"] ?? "", AppColors.red, Colors.white);
+        }
+
+        return null;
+      } else if (response.statusCode == 401) {
+        if (isShowLoader && context.mounted) {
+          Navigator.pop(context);
+        }
+
+        var data = json.decode(response.body);
+        if (isShowLoader && context.mounted) {
+          AppWidget().snackBar(context, data["errors"][0]["message"] ?? "", AppColors.red, Colors.white);
+        }
         Provider.of<ProviderDashboard>(context, listen: false).logOut(context);
 
         return null;
@@ -940,73 +831,66 @@ mixin class Networking {
         if (isShowLoader && context.mounted) {
           Navigator.pop(context);
         }
+
         var data = json.decode(response.body);
-        if (context.mounted) {
-          AppWidget().snackBarTop(context, data["message"] ?? "", AppColors.red, Colors.white);
+        if (isShowLoader && context.mounted) {
+          AppWidget().snackBar(context, data["errors"][0]["message"] ?? "", AppColors.red, Colors.white);
         }
         return null;
       } else if (response.statusCode == 404) {
         if (isShowLoader && context.mounted) {
           Navigator.pop(context);
         }
-
         var data = json.decode(response.body);
-
-        if (context.mounted) {
-          AppWidget().snackBarTop(context, data["message"] ?? "", AppColors.red, Colors.white);
+        if (isShowLoader && context.mounted) {
+          AppWidget().snackBar(context, data["errors"][0]["message"] ?? "", AppColors.red, Colors.white);
         }
         return null;
       } else if (response.statusCode == 403) {
         if (isShowLoader && context.mounted) {
           Navigator.pop(context);
         }
-
+        var data = json.decode(response.body);
         if (context.mounted) {
-          showDialog(
-            barrierDismissible: false,
+          ExceptionDialogs.networkDialog(
             context: context,
-            builder: (context) {
-              return HttpErrorDialog(
-                msg: "Permission have changed, Please contact to HR Manager.",
-                onTap: () {
-                  return null;
-                },
-              );
-            },
+            message: data["errors"][0]["message"] ?? "",
+            onPressed: () {},
+          );
+        }
+        return null;
+      } else if (response.statusCode == 503) {
+        if (isShowLoader && context.mounted) {
+          var data = json.decode(response.body);
+          Navigator.pop(context);
+
+          ExceptionDialogs.networkDialog(
+            context: context,
+            message: data["errors"][0]["message"] ?? "",
+            onPressed: () {},
           );
         }
         return null;
       } else if (response.statusCode == 500) {
         if (isShowLoader && context.mounted) {
+          var data = json.decode(response.body);
           Navigator.pop(context);
+          ExceptionDialogs.networkDialog(
+            context: context,
+            message: data["errors"][0]["message"] ?? "",
+            onPressed: () {},
+          );
         }
-        if (context.mounted) {
-          AppWidget().snackBar(context, "Sever is under maintenance,Try again later.", AppColors.red, Colors.white);
-        }
-        return null;
-      } else if (response.statusCode == 503) {
-        if (isShowLoader && context.mounted) {
-          Navigator.pop(context);
-        }
-        if (context.mounted) {
-          AppWidget().snackBar(context, "Service is unavailable,Try again later.", AppColors.red, Colors.white);
-        }
+
         return null;
       }
     } on SocketException catch (e) {
       if (context.mounted) {
         Navigator.pop(context);
-        showDialog(
+        ExceptionDialogs.networkDialog(
           context: context,
-          builder: (context) {
-            return HttpErrorDialog(
-              msg: e.message,
-              onTap: () {
-                Navigator.pop(context);
-                return null;
-              },
-            );
-          },
+          message: e.message,
+          onPressed: () {},
         );
       }
 
@@ -1014,68 +898,40 @@ mixin class Networking {
     } on HttpException catch (e) {
       if (context.mounted) {
         Navigator.pop(context);
-        showDialog(
+        ExceptionDialogs.networkDialog(
           context: context,
-          builder: (context) {
-            return HttpErrorDialog(
-              msg: e.message,
-              onTap: () {
-                Navigator.pop(context);
-                return null;
-              },
-            );
-          },
+          message: e.message,
+          onPressed: () {},
         );
       }
       return null;
     } on FormatException catch (e) {
       if (context.mounted) {
         Navigator.pop(context);
-        showDialog(
+        ExceptionDialogs.networkDialog(
           context: context,
-          builder: (context) {
-            return HttpErrorDialog(
-              msg: e.message,
-              onTap: () {
-                Navigator.pop(context);
-                return null;
-              },
-            );
-          },
+          message: e.message,
+          onPressed: () {},
         );
       }
       return null;
     } on TimeoutException catch (e) {
       if (context.mounted) {
         Navigator.pop(context);
-        showDialog(
+        ExceptionDialogs.networkDialog(
           context: context,
-          builder: (context) {
-            return HttpErrorDialog(
-              msg: e.message,
-              onTap: () {
-                Navigator.pop(context);
-                return null;
-              },
-            );
-          },
+          message: e.message ?? "",
+          onPressed: () {},
         );
       }
       return null;
-    } on Exception catch (_, e) {
+    } on Exception catch (e) {
       if (context.mounted) {
         Navigator.pop(context);
-        showDialog(
+        ExceptionDialogs.networkDialog(
           context: context,
-          builder: (context) {
-            return HttpErrorDialog(
-              msg: "$e",
-              onTap: () {
-                Navigator.pop(context);
-                return null;
-              },
-            );
-          },
+          message: e.toString() ?? "",
+          onPressed: () {},
         );
       }
       return null;
@@ -1113,10 +969,6 @@ mixin class Networking {
           'Accept': 'application/json',
         },
       );
-
-      print(response.statusCode);
-      print(response.body);
-
       if (response.statusCode == 200) {
         if (isShowLoader && context.mounted) {
           Navigator.pop(context);
@@ -1130,7 +982,7 @@ mixin class Networking {
         var data = json.decode(response.body);
 
         if (context.mounted) {
-          AppWidget().snackBarTop(context, data["message"] ?? "", AppColors.red, Colors.white);
+          AppWidget().snackBarTop(context, data["errors"][0]["message"] ?? "", AppColors.red, Colors.white);
         }
 
         Provider.of<ProviderDashboard>(context, listen: false).logOut(context);
@@ -1142,7 +994,7 @@ mixin class Networking {
         }
         var data = json.decode(response.body);
         if (context.mounted) {
-          AppWidget().snackBarTop(context, data["message"] ?? "", AppColors.red, Colors.white);
+          AppWidget().snackBarTop(context, data["errors"][0]["message"] ?? "", AppColors.red, Colors.white);
         }
         return null;
       } else if (response.statusCode == 404) {
@@ -1153,7 +1005,7 @@ mixin class Networking {
         var data = json.decode(response.body);
 
         if (context.mounted) {
-          AppWidget().snackBarTop(context, data["message"] ?? "", AppColors.red, Colors.white);
+          AppWidget().snackBarTop(context, data["errors"][0]["message"] ?? "", AppColors.red, Colors.white);
         }
         return null;
       } else if (response.statusCode == 403) {
@@ -1163,51 +1015,47 @@ mixin class Networking {
         }
 
         if (context.mounted) {
-          showDialog(
-            barrierDismissible: false,
+          ExceptionDialogs.networkDialog(
             context: context,
-            builder: (context) {
-              return HttpErrorDialog(
-                msg: data["message"] ?? "",
-                onTap: () {
-                  Navigator.pop(context);
-                },
-              );
-            },
+            message: data["errors"][0]["message"] ?? "",
+            onPressed: () {},
           );
         }
         return null;
       } else if (response.statusCode == 500) {
+        var data = json.decode(response.body);
         if (isShowLoader && context.mounted) {
           Navigator.pop(context);
         }
         if (context.mounted) {
-          AppWidget().snackBar(context, "Sever is under maintenance,Try again later.", AppColors.red, Colors.white);
+          ExceptionDialogs.networkDialog(
+            context: context,
+            message: data["errors"][0]["message"] ?? "",
+            onPressed: () {},
+          );
         }
         return null;
       } else if (response.statusCode == 503) {
+        var data = json.decode(response.body);
         if (isShowLoader && context.mounted) {
           Navigator.pop(context);
         }
         if (context.mounted) {
-          AppWidget().snackBar(context, "Service is unavailable,Try again later.", AppColors.red, Colors.white);
+          ExceptionDialogs.networkDialog(
+            context: context,
+            message: data["errors"][0]["message"] ?? "",
+            onPressed: () {},
+          );
         }
         return null;
       }
     } on SocketException catch (e) {
       if (context.mounted) {
         Navigator.pop(context);
-        showDialog(
+        ExceptionDialogs.networkDialog(
           context: context,
-          builder: (context) {
-            return HttpErrorDialog(
-              msg: e.message,
-              onTap: () {
-                Navigator.pop(context);
-                return null;
-              },
-            );
-          },
+          message: e.message,
+          onPressed: () {},
         );
       }
 
@@ -1215,68 +1063,40 @@ mixin class Networking {
     } on HttpException catch (e) {
       if (context.mounted) {
         Navigator.pop(context);
-        showDialog(
+        ExceptionDialogs.networkDialog(
           context: context,
-          builder: (context) {
-            return HttpErrorDialog(
-              msg: e.message,
-              onTap: () {
-                Navigator.pop(context);
-                return null;
-              },
-            );
-          },
+          message: e.message,
+          onPressed: () {},
         );
       }
       return null;
     } on FormatException catch (e) {
       if (context.mounted) {
         Navigator.pop(context);
-        showDialog(
+        ExceptionDialogs.networkDialog(
           context: context,
-          builder: (context) {
-            return HttpErrorDialog(
-              msg: e.message,
-              onTap: () {
-                Navigator.pop(context);
-                return null;
-              },
-            );
-          },
+          message: e.message,
+          onPressed: () {},
         );
       }
       return null;
     } on TimeoutException catch (e) {
       if (context.mounted) {
         Navigator.pop(context);
-        showDialog(
+        ExceptionDialogs.networkDialog(
           context: context,
-          builder: (context) {
-            return HttpErrorDialog(
-              msg: e.message,
-              onTap: () {
-                Navigator.pop(context);
-                return null;
-              },
-            );
-          },
+          message: e.message ?? "",
+          onPressed: () {},
         );
       }
       return null;
     } on Exception catch (_, e) {
       if (context.mounted) {
         Navigator.pop(context);
-        showDialog(
+        ExceptionDialogs.networkDialog(
           context: context,
-          builder: (context) {
-            return HttpErrorDialog(
-              msg: "$e",
-              onTap: () {
-                Navigator.pop(context);
-                return null;
-              },
-            );
-          },
+          message: e.toString(),
+          onPressed: () {},
         );
       }
       return null;

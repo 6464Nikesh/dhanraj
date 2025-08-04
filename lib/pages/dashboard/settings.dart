@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../provider/provider_dashboard.dart';
+import '../settings/change_password.dart';
 
 class Settings extends StatefulWidget {
   const Settings({super.key});
@@ -128,7 +129,24 @@ class _SettingsState extends State<Settings> {
                     const Divider(),
                     GestureDetector(
                       onTap: () {
-                        Navigator.pushNamed(context, AppRoutes.changePassword);
+                        showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(16),
+                            ),
+                          ),
+                          builder: (context) => Padding(
+                            padding: EdgeInsets.only(
+                              left: 16,
+                              right: 16,
+                              top: 16,
+                              bottom: MediaQuery.of(context).viewInsets.bottom,
+                            ),
+                            child: const ChangePassword(),
+                          ),
+                        );
                       },
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),

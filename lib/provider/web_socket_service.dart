@@ -17,8 +17,6 @@ class WebSocketService with ChangeNotifier {
   num? _pendingWatchlistId;
   bool? _isSubscribedToOpenTrades = false;
 
-
-
   String removeTrailingZeros(String value) {
     double val = double.tryParse(value) ?? 0.0;
 

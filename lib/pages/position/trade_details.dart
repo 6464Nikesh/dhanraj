@@ -180,7 +180,8 @@ class _TradeDetailsState extends State<TradeDetails> {
                       ),
                       const SizedBox(
                         height: 10,
-                      ),Row(
+                      ),
+                      Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           const Text(
@@ -259,31 +260,6 @@ class _TradeDetailsState extends State<TradeDetails> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           const Text(
-                            "Stop loss",
-                            style: TextStyle(
-                              fontFamily: "roboto",
-                              color: AppColors.grey,
-                              fontSize: 14,
-                            ),
-                          ),
-                          Text(
-                            widget.arg.trades?.stoplossPrice ?? "--",
-                            style: const TextStyle(
-                              fontFamily: "roboto",
-                              color: AppColors.navyBlue,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
                             "Target",
                             style: TextStyle(
                               fontFamily: "roboto",
@@ -302,7 +278,6 @@ class _TradeDetailsState extends State<TradeDetails> {
                           ),
                         ],
                       ),
-
                       const SizedBox(
                         height: 10,
                       ),
@@ -344,7 +319,7 @@ class _TradeDetailsState extends State<TradeDetails> {
                             ),
                           ),
                           Text(
-                            Miscellaneous.dateConverterToDDMMMYYYYHHMM(widget.arg.trades?.execution?.executionTime ?? ""),
+                            Miscellaneous.dateConverterToDDMMMYYYY(widget.arg.trades?.execution?.executionTime ?? ""),
                             style: const TextStyle(
                               fontFamily: "roboto",
                               color: AppColors.navyBlue,
@@ -369,7 +344,7 @@ class _TradeDetailsState extends State<TradeDetails> {
                             ),
                           ),
                           Text(
-                            Miscellaneous.dateConverterToDDMMMYYYYHHMM(widget.arg.trades?.expiry ?? ""),
+                            Miscellaneous.dateConverterToDDMMMYYYY(widget.arg.trades?.expiry ?? ""),
                             style: const TextStyle(
                               fontFamily: "roboto",
                               color: AppColors.navyBlue,
@@ -486,6 +461,9 @@ class _TradeDetailsState extends State<TradeDetails> {
                                     ),
                                     builder: (context) => Padding(
                                       padding: EdgeInsets.only(
+                                        left: 16,
+                                        right: 16,
+                                        top: 16,
                                         bottom: MediaQuery.of(context).viewInsets.bottom,
                                       ),
                                       child: SingleChildScrollView(
@@ -508,6 +486,9 @@ class _TradeDetailsState extends State<TradeDetails> {
                                     ),
                                     builder: (context) => Padding(
                                       padding: EdgeInsets.only(
+                                        left: 16,
+                                        right: 16,
+                                        top: 16,
                                         bottom: MediaQuery.of(context).viewInsets.bottom,
                                       ),
                                       child: SingleChildScrollView(

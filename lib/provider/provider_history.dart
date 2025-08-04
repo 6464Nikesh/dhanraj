@@ -26,11 +26,11 @@ class ProviderHistory extends ChangeNotifier {
     realisedPnl = realisedPnl + val;
   }
 
-  void fetchSymbols({required BuildContext context}) {
+  Future<void> fetchSymbols({required BuildContext context}) async {
     trades.clear();
-    String urlParams = '?page=1&limit=100&status=CLOSED';
+    String urlParams = '?page=1&limit=1000&status=CLOSED';
 
-    Networking()
+    await Networking()
         .getWithParams(
       context: context,
       endPoint: AppApiEndPoint.position,

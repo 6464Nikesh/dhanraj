@@ -116,10 +116,13 @@ class _TradeBottomSheetState extends State<TradeBottomSheet> {
       "remarks": "Quick market buy",
       "stoplossPrice": stoplossController.text,
       "takeprofitPrice": targetController.text,
-      "openPrice": widget.lastPrice,
+      "openPrice": orderType == "LIMIT" ? limitController.text : widget.lastPrice,
       "requiredMargin": marginModel?.result?.margin?.toStringAsFixed(2) ?? "00.00",
       "originalMargin": marginModel?.result?.margin?.toStringAsFixed(2) ?? "00.00"
     };
+
+    print(mapData);
+
     Networking().post(context: context, mapData: mapData, endPoint: AppApiEndPoint.position, isLoaderShow: true, fromBottomSheet: true).then(
       (value) {
         if (value != null) {
@@ -220,7 +223,7 @@ class _TradeBottomSheetState extends State<TradeBottomSheet> {
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               Text(
-                                lastPrice ?? "0",
+                                lastPrice,
                                 style: TextStyle(
                                   fontFamily: "roboto",
                                   fontSize: 14,

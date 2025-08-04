@@ -65,56 +65,77 @@ class _DashboardState extends State<Dashboard> {
                 ),
               ),
             ),
-            title: const Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Row(
-                  children: [
-                    Text(
-                      "Nifty 50 : ",
-                      style: TextStyle(
-                        fontFamily: "roboto",
-                        color: AppColors.navyBlue,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
+            title: Consumer<WebSocketService>(builder: (context, wss, _) {
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Expanded(
+                    child: Container(
+                      decoration: BoxDecoration(border: Border.all(color: AppColors.navyBlue), borderRadius: BorderRadius.circular(4)),
+                      child: Padding(
+                        padding: const EdgeInsets.all(4),
+                        child: Column(
+                          children: [
+                            const Text(
+                              "Nifty 50",
+                              style: TextStyle(
+                                fontFamily: "roboto",
+                                color: AppColors.navyBlue,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            Text(
+                              wss.latestData[SubscriptionType.data]?[256265]?["last_price"].toString() ?? "",
+                              style: const TextStyle(
+                                fontFamily: "roboto",
+                                color: AppColors.red,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-
-                    Text(
-                      "00.00",
-                      style: TextStyle(
-                        fontFamily: "roboto",
-                        color: AppColors.navyBlue,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
+                  ),
+                  const SizedBox(
+                    width: 16,
+                  ),
+                  Expanded(
+                    child: Container(
+                      decoration: BoxDecoration(border: Border.all(color: AppColors.navyBlue), borderRadius: BorderRadius.circular(4)),
+                      child: Padding(
+                        padding: const EdgeInsets.all(4),
+                        child: Column(
+                          children: [
+                            const Text(
+                              "SENSEX",
+                              style: TextStyle(
+                                fontFamily: "roboto",
+                                color: AppColors.navyBlue,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            Text(
+                              wss.latestData[SubscriptionType.data]?[265]?["last_price"].toString() ?? "",
+                              style: const TextStyle(
+                                fontFamily: "roboto",
+                                color: AppColors.green,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Text(
-                      "SENSEX : ",
-                      style: TextStyle(
-                        fontFamily: "roboto",
-                        color: AppColors.navyBlue,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    Text(
-                      "00.00",
-                      style: TextStyle(
-                        fontFamily: "roboto",
-                        color: AppColors.navyBlue,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ],
-                )
-              ],
-            ),
+                  ),
+                  Expanded(child: Container())
+                ],
+              );
+            }),
           ),
           backgroundColor: Colors.white,
           bottomNavigationBar: BottomNavigationBar(

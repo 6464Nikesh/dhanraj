@@ -2,10 +2,12 @@ import 'dart:convert';
 
 import 'package:dhanraj/model/login_model.dart';
 import 'package:dhanraj/model/position_model.dart';
+import 'package:dhanraj/provider/web_socket_service.dart';
 import 'package:dhanraj/utils/app_colors.dart';
 import 'package:dhanraj/utils/app_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../model/total_margin_model.dart';
 import '../model/update_target_model.dart';
@@ -42,13 +44,17 @@ class PositionProvider extends ChangeNotifier {
     'ALUMINIUMMINI': 1000,
   };
 
+  Future<void> init({required BuildContext context}) async {
+    Provider.of<WebSocketService>(context, listen: false).subscribeToOpenTrades();
+    getPrefData(context: context);
+  }
+
   clear() {
     trades.clear();
   }
 
   updatePnl(num pnl) {
     totalPnl = pnl;
-    notifyListeners();
   }
 
   getPrefData({required BuildContext context}) async {
