@@ -135,8 +135,8 @@ class _WatchlistState extends State<Watchlist> {
                                         style: TextStyle(
                                           fontWeight: pw.selectedWatchList?.watchlistId == data?.watchlistId ? FontWeight.bold : FontWeight.w400,
                                           fontFamily: "roboto",
-                                          fontSize: 12,
-                                          color: AppColors.grey,
+                                          fontSize: 14,
+                                          color: AppColors.navyBlue,
                                         ),
                                       ),
                                     ),

@@ -72,24 +72,24 @@ class _DashboardState extends State<Dashboard> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        Text("Hello, ${pd.loginModel?.result?.user?.firstName ?? " "}", style: Theme.of(context).textTheme.bodySmall),
                         Text(
-                          "Hello, ${pd.loginModel?.result?.user?.firstName ?? " "}",
-                          style: Theme.of(context).textTheme.titleSmall
-                        ), Text(
                           pd.loginModel?.result?.user?.userName ?? "",
-                          style: Theme.of(context).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.bold),
+                          style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.navyBlue,
+                              ),
                         ),
                       ],
                     ),
                   ),
-
                   Padding(
                     padding: const EdgeInsets.all(4),
                     child: Column(
                       children: [
                         Text(
-                          "Nifty 50",
-                          style: Theme.of(context).textTheme.bodySmall,
+                          "NIFTY 50",
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.navyBlue,fontWeight: FontWeight.bold),
                         ),
                         Text(wss.latestData[256265]?["last_price"].toString() ?? "", style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.red)),
                       ],
@@ -104,7 +104,7 @@ class _DashboardState extends State<Dashboard> {
                       children: [
                         Text(
                           "SENSEX",
-                          style: Theme.of(context).textTheme.bodySmall,
+                          style: Theme.of(context).textTheme.labelLarge?.copyWith(color: AppColors.navyBlue,fontWeight: FontWeight.bold),
                         ),
                         Text(wss.latestData[265]?["last_price"].toString() ?? "", style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.green)),
                       ],
