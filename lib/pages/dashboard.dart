@@ -22,7 +22,7 @@ class _DashboardState extends State<Dashboard> {
 
         Future.microtask(() {
           final webSocketService = Provider.of<WebSocketService>(context, listen: false);
-          webSocketService.connect(); // Open WebSocket connection here
+          webSocketService.connect(context: context); // Open WebSocket connection here
         });
       },
     );
@@ -67,72 +67,49 @@ class _DashboardState extends State<Dashboard> {
             ),
             title: Consumer<WebSocketService>(builder: (context, wss, _) {
               return Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   Expanded(
-                    child: Container(
-                      decoration: BoxDecoration(border: Border.all(color: AppColors.navyBlue), borderRadius: BorderRadius.circular(4)),
-                      child: Padding(
-                        padding: const EdgeInsets.all(4),
-                        child: Column(
-                          children: [
-                            const Text(
-                              "Nifty 50",
-                              style: TextStyle(
-                                fontFamily: "roboto",
-                                color: AppColors.navyBlue,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                            Text(
-                              wss.latestData[SubscriptionType.data]?[256265]?["last_price"].toString() ?? "",
-                              style: const TextStyle(
-                                fontFamily: "roboto",
-                                color: AppColors.red,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                          ],
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Hello, ${pd.loginModel?.result?.user?.firstName ?? " "}",
+                          style: Theme.of(context).textTheme.titleSmall
+                        ), Text(
+                          pd.loginModel?.result?.user?.userName ?? "",
+                          style: Theme.of(context).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.bold),
                         ),
-                      ),
+                      ],
+                    ),
+                  ),
+
+                  Padding(
+                    padding: const EdgeInsets.all(4),
+                    child: Column(
+                      children: [
+                        Text(
+                          "Nifty 50",
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                        Text(wss.latestData[256265]?["last_price"].toString() ?? "", style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.red)),
+                      ],
                     ),
                   ),
                   const SizedBox(
                     width: 16,
                   ),
-                  Expanded(
-                    child: Container(
-                      decoration: BoxDecoration(border: Border.all(color: AppColors.navyBlue), borderRadius: BorderRadius.circular(4)),
-                      child: Padding(
-                        padding: const EdgeInsets.all(4),
-                        child: Column(
-                          children: [
-                            const Text(
-                              "SENSEX",
-                              style: TextStyle(
-                                fontFamily: "roboto",
-                                color: AppColors.navyBlue,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                            Text(
-                              wss.latestData[SubscriptionType.data]?[265]?["last_price"].toString() ?? "",
-                              style: const TextStyle(
-                                fontFamily: "roboto",
-                                color: AppColors.green,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                          ],
+                  Padding(
+                    padding: const EdgeInsets.all(4),
+                    child: Column(
+                      children: [
+                        Text(
+                          "SENSEX",
+                          style: Theme.of(context).textTheme.bodySmall,
                         ),
-                      ),
+                        Text(wss.latestData[265]?["last_price"].toString() ?? "", style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.green)),
+                      ],
                     ),
                   ),
-                  Expanded(child: Container())
                 ],
               );
             }),

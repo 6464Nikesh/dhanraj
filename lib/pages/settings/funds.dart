@@ -39,6 +39,7 @@ class _FundsState extends State<Funds> {
               showModalBottomSheet(
                 context: context,
                 enableDrag: true,
+                backgroundColor: Colors.white,
                 isScrollControlled: true,
                 shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.vertical(

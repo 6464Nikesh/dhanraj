@@ -45,8 +45,10 @@ class PositionProvider extends ChangeNotifier {
   };
 
   Future<void> init({required BuildContext context}) async {
+    totalPnl = 0;
     Provider.of<WebSocketService>(context, listen: false).subscribeToOpenTrades();
     getPrefData(context: context);
+    Provider.of<WebSocketService>(context, listen: false).registerContext(context);
   }
 
   clear() {
@@ -55,6 +57,32 @@ class PositionProvider extends ChangeNotifier {
 
   updatePnl(num pnl) {
     totalPnl = pnl;
+  }
+
+  void recalculateTotalPnl(Map<int, dynamic> liveData) {
+    num newTotalPnl = 0;
+
+    for (var trade in trades) {
+      int? instrumentToken = int.tryParse(trade.instrumentToken ?? '');
+      final symbol = trade.symbolName?.toUpperCase();
+      final multiplier = commodityMultipliers[symbol] ?? 1;
+      final isBuy = trade.tradeType == 'BUY';
+      final quantity = trade.quantity ?? 1;
+
+      final socketData = liveData[instrumentToken];
+
+      if (socketData != null && socketData['instrument_token'] == instrumentToken) {
+        num lastPrice = num.parse(socketData['last_price'].toString());
+        num openPrice = num.parse(trade.openPrice.toString());
+
+        num priceDiff = isBuy ? lastPrice - openPrice : openPrice - lastPrice;
+        num pnl = priceDiff * quantity * multiplier;
+
+        newTotalPnl += pnl;
+      }
+    }
+
+    totalPnl = newTotalPnl;
   }
 
   getPrefData({required BuildContext context}) async {

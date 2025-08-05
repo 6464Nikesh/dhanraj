@@ -49,6 +49,8 @@ mixin class Networking {
         },
       );
 
+      print(response.body);
+
       if (response.statusCode == 200) {
         if (isLoaderShow && context.mounted) {
           Navigator.pop(context);
@@ -68,11 +70,11 @@ mixin class Networking {
 
         var data = json.decode(response.body);
         if (isLoaderShow && context.mounted) {
-          if (fromBottomSheet) {
-            AppWidget().snackBarTop(context, data["errors"][0]["message"] ?? "", AppColors.red, Colors.white);
-          } else {
-            AppWidget().snackBar(context, data["errors"][0]["message"] ?? "", AppColors.red, Colors.white);
-          }
+          ExceptionDialogs.networkDialog(
+            context: context,
+            message: data["errors"][0]["message"] ?? "",
+            onPressed: () {},
+          );
         }
 
         return null;
@@ -83,11 +85,11 @@ mixin class Networking {
 
         var data = json.decode(response.body);
         if (isLoaderShow && context.mounted) {
-          if (fromBottomSheet) {
-            AppWidget().snackBarTop(context, data["errors"][0]["message"] ?? "", AppColors.red, Colors.white);
-          } else {
-            AppWidget().snackBar(context, data["errors"][0]["message"] ?? "", AppColors.red, Colors.white);
-          }
+          ExceptionDialogs.networkDialog(
+            context: context,
+            message: data["errors"][0]["message"] ?? "",
+            onPressed: () {},
+          );
         }
         Provider.of<ProviderDashboard>(context, listen: false).logOut(context);
 
@@ -99,11 +101,11 @@ mixin class Networking {
 
         var data = json.decode(response.body);
         if (isLoaderShow && context.mounted) {
-          if (fromBottomSheet) {
-            AppWidget().snackBarTop(context, data["errors"][0]["message"] ?? "", AppColors.red, Colors.white);
-          } else {
-            AppWidget().snackBar(context, data["errors"][0]["message"] ?? "", AppColors.red, Colors.white);
-          }
+          ExceptionDialogs.networkDialog(
+            context: context,
+            message: data["errors"][0]["message"] ?? "",
+            onPressed: () {},
+          );
         }
         return null;
       } else if (response.statusCode == 404) {
@@ -112,11 +114,11 @@ mixin class Networking {
         }
         var data = json.decode(response.body);
         if (isLoaderShow && context.mounted) {
-          if (fromBottomSheet) {
-            AppWidget().snackBarTop(context, data["errors"][0]["message"] ?? "", AppColors.red, Colors.white);
-          } else {
-            AppWidget().snackBar(context, data["errors"][0]["message"] ?? "", AppColors.red, Colors.white);
-          }
+          ExceptionDialogs.networkDialog(
+            context: context,
+            message: data["errors"][0]["message"] ?? "",
+            onPressed: () {},
+          );
         }
         return null;
       } else if (response.statusCode == 403) {
@@ -145,14 +147,14 @@ mixin class Networking {
         return null;
       } else if (response.statusCode == 500) {
         if (isLoaderShow && context.mounted) {
-          var data = json.decode(response.body);
           Navigator.pop(context);
-          ExceptionDialogs.networkDialog(
-            context: context,
-            message: data["errors"][0]["message"] ?? "",
-            onPressed: () {},
-          );
         }
+        var data = json.decode(response.body);
+        ExceptionDialogs.networkDialog(
+          context: context,
+          message: data["errors"][0]["message"] ?? "",
+          onPressed: () {},
+        );
 
         return null;
       }
@@ -259,11 +261,11 @@ mixin class Networking {
 
         var data = json.decode(response.body);
         if (isLoaderShow && context.mounted) {
-          if (fromBottomSheet) {
-            AppWidget().snackBarTop(context, data["errors"][0]["message"] ?? "", AppColors.red, Colors.white);
-          } else {
-            AppWidget().snackBar(context, data["errors"][0]["message"] ?? "", AppColors.red, Colors.white);
-          }
+          ExceptionDialogs.networkDialog(
+            context: context,
+            message: data["errors"][0]["message"] ?? "",
+            onPressed: () {},
+          );
         }
 
         return null;
@@ -274,11 +276,11 @@ mixin class Networking {
 
         var data = json.decode(response.body);
         if (isLoaderShow && context.mounted) {
-          if (fromBottomSheet) {
-            AppWidget().snackBarTop(context, data["errors"][0]["message"] ?? "", AppColors.red, Colors.white);
-          } else {
-            AppWidget().snackBar(context, data["errors"][0]["message"] ?? "", AppColors.red, Colors.white);
-          }
+          ExceptionDialogs.networkDialog(
+            context: context,
+            message: data["errors"][0]["message"] ?? "",
+            onPressed: () {},
+          );
         }
         Provider.of<ProviderDashboard>(context, listen: false).logOut(context);
 
@@ -290,11 +292,11 @@ mixin class Networking {
 
         var data = json.decode(response.body);
         if (isLoaderShow && context.mounted) {
-          if (fromBottomSheet) {
-            AppWidget().snackBarTop(context, data["errors"][0]["message"] ?? "", AppColors.red, Colors.white);
-          } else {
-            AppWidget().snackBar(context, data["errors"][0]["message"] ?? "", AppColors.red, Colors.white);
-          }
+          ExceptionDialogs.networkDialog(
+            context: context,
+            message: data["errors"][0]["message"] ?? "",
+            onPressed: () {},
+          );
         }
         return null;
       } else if (response.statusCode == 404) {
@@ -303,11 +305,11 @@ mixin class Networking {
         }
         var data = json.decode(response.body);
         if (isLoaderShow && context.mounted) {
-          if (fromBottomSheet) {
-            AppWidget().snackBarTop(context, data["errors"][0]["message"] ?? "", AppColors.red, Colors.white);
-          } else {
-            AppWidget().snackBar(context, data["errors"][0]["message"] ?? "", AppColors.red, Colors.white);
-          }
+          ExceptionDialogs.networkDialog(
+            context: context,
+            message: data["errors"][0]["message"] ?? "",
+            onPressed: () {},
+          );
         }
         return null;
       } else if (response.statusCode == 403) {
@@ -451,9 +453,12 @@ mixin class Networking {
         }
 
         var data = json.decode(response.body);
-        if (isLoaderShow && context.mounted) {
-          AppWidget().snackBar(context, data["errors"][0]["message"] ?? "", AppColors.red, Colors.white);
-        }
+
+        ExceptionDialogs.networkDialog(
+          context: context,
+          message: data["errors"][0]["message"] ?? "",
+          onPressed: () {},
+        );
 
         return null;
       } else if (response.statusCode == 401) {
@@ -462,9 +467,11 @@ mixin class Networking {
         }
 
         var data = json.decode(response.body);
-        if (isLoaderShow && context.mounted) {
-          AppWidget().snackBar(context, data["errors"][0]["message"] ?? "", AppColors.red, Colors.white);
-        }
+        ExceptionDialogs.networkDialog(
+          context: context,
+          message: data["errors"][0]["message"] ?? "",
+          onPressed: () {},
+        );
         Provider.of<ProviderDashboard>(context, listen: false).logOut(context);
 
         return null;
@@ -474,18 +481,22 @@ mixin class Networking {
         }
 
         var data = json.decode(response.body);
-        if (isLoaderShow && context.mounted) {
-          AppWidget().snackBar(context, data["errors"][0]["message"] ?? "", AppColors.red, Colors.white);
-        }
+        ExceptionDialogs.networkDialog(
+          context: context,
+          message: data["errors"][0]["message"] ?? "",
+          onPressed: () {},
+        );
         return null;
       } else if (response.statusCode == 404) {
         if (isLoaderShow && context.mounted) {
           Navigator.pop(context);
         }
         var data = json.decode(response.body);
-        if (isLoaderShow && context.mounted) {
-          AppWidget().snackBar(context, data["errors"][0]["message"] ?? "", AppColors.red, Colors.white);
-        }
+        ExceptionDialogs.networkDialog(
+          context: context,
+          message: data["errors"][0]["message"] ?? "",
+          onPressed: () {},
+        );
         return null;
       } else if (response.statusCode == 403) {
         if (isLoaderShow && context.mounted) {
@@ -630,9 +641,11 @@ mixin class Networking {
         }
 
         var data = json.decode(response.body);
-        if (isShowLoader && context.mounted) {
-          AppWidget().snackBar(context, data["errors"][0]["message"] ?? "", AppColors.red, Colors.white);
-        }
+        ExceptionDialogs.networkDialog(
+          context: context,
+          message: data["errors"][0]["message"] ?? "",
+          onPressed: () {},
+        );
 
         return null;
       } else if (response.statusCode == 401) {
@@ -641,9 +654,11 @@ mixin class Networking {
         }
 
         var data = json.decode(response.body);
-        if (isShowLoader && context.mounted) {
-          AppWidget().snackBar(context, data["errors"][0]["message"] ?? "", AppColors.red, Colors.white);
-        }
+        ExceptionDialogs.networkDialog(
+          context: context,
+          message: data["errors"][0]["message"] ?? "",
+          onPressed: () {},
+        );
         Provider.of<ProviderDashboard>(context, listen: false).logOut(context);
 
         return null;
@@ -653,18 +668,22 @@ mixin class Networking {
         }
 
         var data = json.decode(response.body);
-        if (isShowLoader && context.mounted) {
-          AppWidget().snackBar(context, data["errors"][0]["message"] ?? "", AppColors.red, Colors.white);
-        }
+        ExceptionDialogs.networkDialog(
+          context: context,
+          message: data["errors"][0]["message"] ?? "",
+          onPressed: () {},
+        );
         return null;
       } else if (response.statusCode == 404) {
         if (isShowLoader && context.mounted) {
           Navigator.pop(context);
         }
         var data = json.decode(response.body);
-        if (isShowLoader && context.mounted) {
-          AppWidget().snackBar(context, data["errors"][0]["message"] ?? "", AppColors.red, Colors.white);
-        }
+        ExceptionDialogs.networkDialog(
+          context: context,
+          message: data["errors"][0]["message"] ?? "",
+          onPressed: () {},
+        );
         return null;
       } else if (response.statusCode == 403) {
         if (isShowLoader && context.mounted) {
@@ -681,26 +700,26 @@ mixin class Networking {
         return null;
       } else if (response.statusCode == 503) {
         if (isShowLoader && context.mounted) {
-          var data = json.decode(response.body);
           Navigator.pop(context);
-
-          ExceptionDialogs.networkDialog(
-            context: context,
-            message: data["errors"][0]["message"] ?? "",
-            onPressed: () {},
-          );
         }
+        var data = json.decode(response.body);
+
+        ExceptionDialogs.networkDialog(
+          context: context,
+          message: data["errors"][0]["message"] ?? "",
+          onPressed: () {},
+        );
         return null;
       } else if (response.statusCode == 500) {
         if (isShowLoader && context.mounted) {
-          var data = json.decode(response.body);
           Navigator.pop(context);
-          ExceptionDialogs.networkDialog(
-            context: context,
-            message: data["errors"][0]["message"] ?? "",
-            onPressed: () {},
-          );
         }
+        var data = json.decode(response.body);
+        ExceptionDialogs.networkDialog(
+          context: context,
+          message: data["errors"][0]["message"] ?? "",
+          onPressed: () {},
+        );
 
         return null;
       }
@@ -810,9 +829,11 @@ mixin class Networking {
         }
 
         var data = json.decode(response.body);
-        if (isShowLoader && context.mounted) {
-          AppWidget().snackBar(context, data["errors"][0]["message"] ?? "", AppColors.red, Colors.white);
-        }
+        ExceptionDialogs.networkDialog(
+          context: context,
+          message: data["errors"][0]["message"] ?? "",
+          onPressed: () {},
+        );
 
         return null;
       } else if (response.statusCode == 401) {
@@ -821,9 +842,12 @@ mixin class Networking {
         }
 
         var data = json.decode(response.body);
-        if (isShowLoader && context.mounted) {
-          AppWidget().snackBar(context, data["errors"][0]["message"] ?? "", AppColors.red, Colors.white);
-        }
+
+        ExceptionDialogs.networkDialog(
+          context: context,
+          message: data["errors"][0]["message"] ?? "",
+          onPressed: () {},
+        );
         Provider.of<ProviderDashboard>(context, listen: false).logOut(context);
 
         return null;
@@ -833,18 +857,22 @@ mixin class Networking {
         }
 
         var data = json.decode(response.body);
-        if (isShowLoader && context.mounted) {
-          AppWidget().snackBar(context, data["errors"][0]["message"] ?? "", AppColors.red, Colors.white);
-        }
+        ExceptionDialogs.networkDialog(
+          context: context,
+          message: data["errors"][0]["message"] ?? "",
+          onPressed: () {},
+        );
         return null;
       } else if (response.statusCode == 404) {
         if (isShowLoader && context.mounted) {
           Navigator.pop(context);
         }
         var data = json.decode(response.body);
-        if (isShowLoader && context.mounted) {
-          AppWidget().snackBar(context, data["errors"][0]["message"] ?? "", AppColors.red, Colors.white);
-        }
+        ExceptionDialogs.networkDialog(
+          context: context,
+          message: data["errors"][0]["message"] ?? "",
+          onPressed: () {},
+        );
         return null;
       } else if (response.statusCode == 403) {
         if (isShowLoader && context.mounted) {
@@ -861,15 +889,14 @@ mixin class Networking {
         return null;
       } else if (response.statusCode == 503) {
         if (isShowLoader && context.mounted) {
-          var data = json.decode(response.body);
           Navigator.pop(context);
-
-          ExceptionDialogs.networkDialog(
-            context: context,
-            message: data["errors"][0]["message"] ?? "",
-            onPressed: () {},
-          );
         }
+        var data = json.decode(response.body);
+        ExceptionDialogs.networkDialog(
+          context: context,
+          message: data["errors"][0]["message"] ?? "",
+          onPressed: () {},
+        );
         return null;
       } else if (response.statusCode == 500) {
         if (isShowLoader && context.mounted) {
@@ -979,11 +1006,14 @@ mixin class Networking {
         if (isShowLoader && context.mounted) {
           Navigator.pop(context);
         }
-        var data = json.decode(response.body);
 
-        if (context.mounted) {
-          AppWidget().snackBarTop(context, data["errors"][0]["message"] ?? "", AppColors.red, Colors.white);
-        }
+
+        var data = json.decode(response.body);
+        ExceptionDialogs.networkDialog(
+          context: context,
+          message: data["errors"][0]["message"] ?? "",
+          onPressed: () {},
+        );
 
         Provider.of<ProviderDashboard>(context, listen: false).logOut(context);
 
@@ -993,9 +1023,11 @@ mixin class Networking {
           Navigator.pop(context);
         }
         var data = json.decode(response.body);
-        if (context.mounted) {
-          AppWidget().snackBarTop(context, data["errors"][0]["message"] ?? "", AppColors.red, Colors.white);
-        }
+        ExceptionDialogs.networkDialog(
+          context: context,
+          message: data["errors"][0]["message"] ?? "",
+          onPressed: () {},
+        );
         return null;
       } else if (response.statusCode == 404) {
         if (isShowLoader && context.mounted) {
@@ -1003,10 +1035,11 @@ mixin class Networking {
         }
 
         var data = json.decode(response.body);
-
-        if (context.mounted) {
-          AppWidget().snackBarTop(context, data["errors"][0]["message"] ?? "", AppColors.red, Colors.white);
-        }
+        ExceptionDialogs.networkDialog(
+          context: context,
+          message: data["errors"][0]["message"] ?? "",
+          onPressed: () {},
+        );
         return null;
       } else if (response.statusCode == 403) {
         var data = json.decode(response.body);

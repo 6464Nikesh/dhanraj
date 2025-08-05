@@ -232,7 +232,7 @@ class _WatchlistState extends State<Watchlist> {
                                 (index) {
                                   var data = pw.items?[index];
                                   int? instrumentToken = int.tryParse(data?.symbol?.instrumentToken ?? '');
-                                  var socketData = ws.latestData[SubscriptionType.data]![instrumentToken];
+                                  var socketData = ws.latestData[instrumentToken];
 
                                   String lastPrice = '00.00';
                                   String changePercent = '00.00';
@@ -300,6 +300,7 @@ class _WatchlistState extends State<Watchlist> {
                                         onTap: () {
                                           showModalBottomSheet(
                                             context: context,
+                                            backgroundColor: Colors.white,
                                             isScrollControlled: true,
                                             shape: const RoundedRectangleBorder(
                                               borderRadius: BorderRadius.vertical(

@@ -136,7 +136,7 @@ class _TradeBottomSheetState extends State<TradeBottomSheet> {
   @override
   Widget build(BuildContext context) {
     return Selector<WebSocketService, Map?>(
-        selector: (_, ws) => ws.latestData[SubscriptionType.data]?[instrumentToken],
+        selector: (_, ws) => ws.latestData[instrumentToken],
         builder: (_, data, __) {
           String lastPrice = '00.00';
           String changePercent = '00.00';

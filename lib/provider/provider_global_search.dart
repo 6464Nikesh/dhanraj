@@ -40,7 +40,6 @@ class ProviderGlobalSearch extends ChangeNotifier {
           AddWatchListItemsModel addWatchListItemsModel = AddWatchListItemsModel.fromJson(value);
 
           if (addWatchListItemsModel.statusCode == 201) {
-            AppWidget().snackBar(context, addWatchListItemsModel.message ?? "", AppColors.green, Colors.white);
             Provider.of<ProviderWatchlist>(context, listen: false).getSymbolsList(context: context);
           }
         }

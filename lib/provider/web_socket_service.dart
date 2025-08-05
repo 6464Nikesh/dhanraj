@@ -1,14 +1,12 @@
 import 'dart:convert';
+import 'package:dhanraj/provider/position_provider.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 import '../utils/preference_key.dart';
-
-enum SubscriptionType {
-  data,
-  // Add more if needed
-}
 
 class WebSocketService with ChangeNotifier {
   WebSocketChannel? _channel;
@@ -16,6 +14,12 @@ class WebSocketService with ChangeNotifier {
   bool _isMarketClosed = false;
   num? _pendingWatchlistId;
   bool? _isSubscribedToOpenTrades = false;
+
+  BuildContext? _positionProviderContext;
+
+  void registerContext(BuildContext context) {
+    _positionProviderContext = context;
+  }
 
   String removeTrailingZeros(String value) {
     double val = double.tryParse(value) ?? 0.0;
@@ -29,11 +33,9 @@ class WebSocketService with ChangeNotifier {
   }
 
   // Store latest data per subscription type
-  Map<SubscriptionType, Map<int, dynamic>> latestData = {
-    SubscriptionType.data: {},
-  };
+  Map<int, dynamic> latestData = {};
 
-  Future<void> connect() async {
+  Future<void> connect({required BuildContext context}) async {
     if (_isConnected) return;
 
     SharedPreferences sp = await SharedPreferences.getInstance();
@@ -55,12 +57,12 @@ class WebSocketService with ChangeNotifier {
       onDone: () {
         _isConnected = false;
         debugPrint("🛑 WebSocket closed");
-        _reconnect();
+        _reconnect(context);
       },
       onError: (error) {
         _isConnected = false;
         debugPrint("⚠️ WebSocket error: $error");
-        _reconnect();
+        _reconnect(context);
       },
     );
   }
@@ -81,13 +83,17 @@ class WebSocketService with ChangeNotifier {
       final int token = payload['instrument_token'];
 
       // Store tick data by token
-      latestData[SubscriptionType.data]![token] = payload;
+      latestData[token] = payload;
       notifyListeners();
+    } else if (decoded['type'] == 'trade_tp_hit' || decoded['type'] == 'trade_sl_hit') {
+      if (_positionProviderContext != null) {
+        Provider.of<PositionProvider>(_positionProviderContext!, listen: false).getPositionList(context: _positionProviderContext!);
+      }
     }
   }
 
   void subscribeToWatchlist(num watchlistId) {
-    if (_channel == null || !_isConnected) {
+    if (_channel == null) {
       debugPrint("⚠️ Not connected. Will subscribe on reconnect to watchlist $watchlistId");
       return;
     }
@@ -110,7 +116,7 @@ class WebSocketService with ChangeNotifier {
   }
 
   void subscribeToOpenTrades() {
-    if (_channel == null || !_isConnected) {
+    if (_channel == null) {
       debugPrint("⚠️ Not connected. Will subscribe to open trades on reconnect.");
       return;
     }
@@ -132,7 +138,7 @@ class WebSocketService with ChangeNotifier {
   }
 
   void unsubscribeFromWatchlist(int watchlistId) {
-    if (_channel == null || !_isConnected) {
+    if (_channel == null) {
       debugPrint("⚠️ Cannot unsubscribe – socket not connected.");
       return;
     }
@@ -153,7 +159,7 @@ class WebSocketService with ChangeNotifier {
   }
 
   void unsubscribeFromOpenTrades() {
-    if (_channel == null || !_isConnected) {
+    if (_channel == null) {
       debugPrint("⚠️ Cannot unsubscribe – socket not connected.");
       return;
     }
@@ -174,11 +180,11 @@ class WebSocketService with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> _reconnect() async {
+  Future<void> _reconnect(BuildContext context) async {
     Future.delayed(const Duration(seconds: 3), () {
       debugPrint("🔁 Reconnecting...");
       _isConnected = false;
-      connect();
+      connect(context: context);
     });
 
     await Future.delayed(const Duration(seconds: 1));

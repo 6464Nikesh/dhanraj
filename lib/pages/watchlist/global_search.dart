@@ -60,8 +60,6 @@ class _GlobalSearchState extends State<GlobalSearch> {
                               keyboardType: TextInputType.name,
                               onChanged: (value) {
                                 if (value.isNotEmpty) {
-                                  print(pds.fatching);
-
                                   if (pds.fatching == false) {
                                     pds.fetchSymbols(context: context, search: value);
                                   }

@@ -30,6 +30,7 @@ class _PositionState extends State<Position> {
   Widget build(BuildContext context) {
     return Consumer2<PositionProvider, WebSocketService>(
       builder: (context, pp, ws, child) {
+        pp.recalculateTotalPnl(ws.latestData);
         return Scaffold(
           backgroundColor: Colors.white,
           body: Padding(
@@ -137,16 +138,13 @@ class _PositionState extends State<Position> {
                             pp.trades.length,
                             (index) {
                               var data = pp.trades[index];
-                              print(data.toJson());
-
                               int? instrumentToken = int.tryParse(data.instrumentToken ?? '');
                               final symbol = data.symbolName?.toUpperCase();
                               final multiplier = pp.commodityMultipliers[symbol] ?? 1;
                               final isBuy = data.tradeType == 'BUY';
                               final quantity = data.quantity ?? 1;
-                              num totalPnl = 0;
 
-                              final socketData = ws.latestData[SubscriptionType.data]?[instrumentToken];
+                              final socketData = ws.latestData[instrumentToken];
 
                               String pnlText = "00.00";
                               String percentText = "0.00%";
@@ -164,8 +162,6 @@ class _PositionState extends State<Position> {
 
                                 final percentChange = openPrice > 0 ? (priceDiff / openPrice) * 100 : 0;
                                 percentText = "${percentChange.toStringAsFixed(2)}%";
-                                totalPnl += pnl;
-                                pp.updatePnl(totalPnl);
 
                                 if (pnl > 0) {
                                   pnlColor = Colors.green;
@@ -367,7 +363,7 @@ class _PositionState extends State<Position> {
                                         final isBuy = data.tradeType == 'BUY';
                                         final quantity = data.quantity ?? 1;
 
-                                        final socketData = ws.latestData[SubscriptionType.data]?[instrumentToken];
+                                        final socketData = ws.latestData[instrumentToken];
 
                                         String pnlText = "00.00";
                                         String percentText = "0.00%";

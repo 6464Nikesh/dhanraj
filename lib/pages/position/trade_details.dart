@@ -39,7 +39,7 @@ class _TradeDetailsState extends State<TradeDetails> {
         final isBuy = widget.arg.trades?.tradeType == 'BUY';
         final quantity = widget.arg.trades?.quantity ?? 0;
 
-        final socketData = ws.latestData[SubscriptionType.data]?[instrumentToken];
+        final socketData = ws.latestData[instrumentToken];
 
         String pnlText = "00.00";
         String percentText = "0.00%";
@@ -453,6 +453,7 @@ class _TradeDetailsState extends State<TradeDetails> {
                                     context: context,
                                     isScrollControlled: true,
                                     enableDrag: true,
+                                    backgroundColor: Colors.white,
                                     requestFocus: true,
                                     shape: const RoundedRectangleBorder(
                                       borderRadius: BorderRadius.vertical(
@@ -479,6 +480,7 @@ class _TradeDetailsState extends State<TradeDetails> {
                                     isScrollControlled: true,
                                     enableDrag: true,
                                     requestFocus: true,
+                                    backgroundColor: Colors.white,
                                     shape: const RoundedRectangleBorder(
                                       borderRadius: BorderRadius.vertical(
                                         top: Radius.circular(16),
