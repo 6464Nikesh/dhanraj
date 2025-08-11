@@ -19,7 +19,6 @@ class _DashboardState extends State<Dashboard> {
     WidgetsBinding.instance.addPostFrameCallback(
       (timeStamp) {
         Provider.of<ProviderDashboard>(context, listen: false).getPrefData();
-
         Future.microtask(() {
           final webSocketService = Provider.of<WebSocketService>(context, listen: false);
           webSocketService.connect(context: context); // Open WebSocket connection here
@@ -36,7 +35,7 @@ class _DashboardState extends State<Dashboard> {
       return PopScope(
         canPop: false,
         child: Scaffold(
-          appBar: AppBar(
+          appBar: pd.currentIndex == 3 ? null : AppBar(
             elevation: 2,
             surfaceTintColor: Colors.white,
             shadowColor: Colors.white,
@@ -89,7 +88,7 @@ class _DashboardState extends State<Dashboard> {
                       children: [
                         Text(
                           "NIFTY 50",
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.navyBlue,fontWeight: FontWeight.bold),
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.navyBlue, fontWeight: FontWeight.bold),
                         ),
                         Text(wss.latestData[256265]?["last_price"].toString() ?? "", style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.red)),
                       ],
@@ -104,7 +103,7 @@ class _DashboardState extends State<Dashboard> {
                       children: [
                         Text(
                           "SENSEX",
-                          style: Theme.of(context).textTheme.labelLarge?.copyWith(color: AppColors.navyBlue,fontWeight: FontWeight.bold),
+                          style: Theme.of(context).textTheme.labelLarge?.copyWith(color: AppColors.navyBlue, fontWeight: FontWeight.bold),
                         ),
                         Text(wss.latestData[265]?["last_price"].toString() ?? "", style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.green)),
                       ],

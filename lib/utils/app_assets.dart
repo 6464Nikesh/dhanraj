@@ -7,4 +7,6 @@ class AppAssets {
   static const String whatsapp = 'assets/images/whatsapp.png';
   static const String emptyBox = "assets/images/empty_box.png";
   static const String logo = "assets/images/logo.png";
+  static const String fullLogo = "assets/images/full_logo.png";
+  static const String nestaTrading = "assets/images/nesta_trading.jpg";
 }

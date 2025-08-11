@@ -11,6 +11,8 @@ import 'package:dhanraj/utils/app_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../utils/update_checker.dart';
+
 class ProviderWatchlist extends ChangeNotifier {
   List<WatchLists>? watchLists = [];
   TextEditingController name = TextEditingController();
@@ -40,6 +42,9 @@ class ProviderWatchlist extends ChangeNotifier {
   }
 
   getWatchList({required BuildContext context}) {
+    watchLists?.clear();
+    items?.clear();
+
     Networking().get(context: context, endPoint: AppApiEndPoint.allWatchList, isShowLoader: true).then(
       (value) {
         if (value != null) {
@@ -86,6 +91,8 @@ class ProviderWatchlist extends ChangeNotifier {
                 int.parse(watchlistId),
               );
             }
+
+            UpdateChecker.checkForUpdate(context);
             notifyListeners();
           }
         }

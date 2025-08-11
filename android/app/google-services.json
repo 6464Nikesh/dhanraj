@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "441521018410",
+    "project_id": "dhanraj-trading",
+    "storage_bucket": "dhanraj-trading.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:441521018410:android:939198e3586fd9f3af1553",
+        "android_client_info": {
+          "package_name": "dhanraj.trading"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDT2eeGUiAqPLmGORqV3YWBgWwtaqDbK8w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

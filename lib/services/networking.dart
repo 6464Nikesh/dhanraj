@@ -28,7 +28,7 @@ mixin class Networking {
   }) async {
     sp = await SharedPreferences.getInstance();
 
-    if (isLoaderShow && context.mounted) {
+    if (isLoaderShow) {
       showDialog(
         context: context,
         builder: (context) {
@@ -38,7 +38,11 @@ mixin class Networking {
     }
     final url = Uri.parse("${AppApiEndPoint.baseUrl}$endPoint");
 
+    print(url);
+
     try {
+      print("Nikesh");
+
       final response = await http.post(
         url,
         body: jsonEncode(mapData),
@@ -50,92 +54,88 @@ mixin class Networking {
       );
 
       print(response.body);
+      print(response.statusCode);
 
       if (response.statusCode == 200) {
-        if (isLoaderShow && context.mounted) {
+        if (isLoaderShow) {
           Navigator.pop(context);
         }
         var data = json.decode(response.body);
         return data;
       } else if (response.statusCode == 201) {
-        if (isLoaderShow && context.mounted) {
+        if (isLoaderShow) {
           Navigator.pop(context);
         }
         var data = json.decode(response.body);
         return data;
       } else if (response.statusCode == 400) {
-        if (isLoaderShow && context.mounted) {
+        if (isLoaderShow) {
           Navigator.pop(context);
         }
 
         var data = json.decode(response.body);
-        if (isLoaderShow && context.mounted) {
-          ExceptionDialogs.networkDialog(
-            context: context,
-            message: data["errors"][0]["message"] ?? "",
-            onPressed: () {},
-          );
-        }
+
+        ExceptionDialogs.networkDialog(
+          context: context,
+          message: data["errors"][0]["message"] ?? "",
+          onPressed: () {},
+        );
 
         return null;
       } else if (response.statusCode == 401) {
-        if (isLoaderShow && context.mounted) {
+        if (isLoaderShow) {
           Navigator.pop(context);
         }
 
         var data = json.decode(response.body);
-        if (isLoaderShow && context.mounted) {
-          ExceptionDialogs.networkDialog(
-            context: context,
-            message: data["errors"][0]["message"] ?? "",
-            onPressed: () {},
-          );
-        }
+        ExceptionDialogs.networkDialog(
+          context: context,
+          message: data["errors"][0]["message"] ?? "",
+          onPressed: () {},
+        );
+
         Provider.of<ProviderDashboard>(context, listen: false).logOut(context);
 
         return null;
       } else if (response.statusCode == 422) {
-        if (isLoaderShow && context.mounted) {
+        if (isLoaderShow) {
           Navigator.pop(context);
         }
 
         var data = json.decode(response.body);
-        if (isLoaderShow && context.mounted) {
-          ExceptionDialogs.networkDialog(
-            context: context,
-            message: data["errors"][0]["message"] ?? "",
-            onPressed: () {},
-          );
-        }
+        ExceptionDialogs.networkDialog(
+          context: context,
+          message: data["errors"][0]["message"] ?? "",
+          onPressed: () {},
+        );
+
         return null;
       } else if (response.statusCode == 404) {
-        if (isLoaderShow && context.mounted) {
+        if (isLoaderShow) {
           Navigator.pop(context);
         }
         var data = json.decode(response.body);
-        if (isLoaderShow && context.mounted) {
-          ExceptionDialogs.networkDialog(
-            context: context,
-            message: data["errors"][0]["message"] ?? "",
-            onPressed: () {},
-          );
-        }
+        ExceptionDialogs.networkDialog(
+          context: context,
+          message: data["errors"][0]["message"] ?? "",
+          onPressed: () {},
+        );
+
         return null;
       } else if (response.statusCode == 403) {
-        if (isLoaderShow && context.mounted) {
+        if (isLoaderShow) {
           Navigator.pop(context);
         }
         var data = json.decode(response.body);
-        if (context.mounted) {
-          ExceptionDialogs.networkDialog(
-            context: context,
-            message: data["errors"][0]["message"] ?? "",
-            onPressed: () {},
-          );
-        }
+        ExceptionDialogs.networkDialog(
+          context: context,
+          message: data["errors"][0]["message"] ?? "",
+          onPressed: () {},
+        );
+
         return null;
       } else if (response.statusCode == 503) {
-        if (isLoaderShow && context.mounted) {
+        if (isLoaderShow) {
           var data = json.decode(response.body);
           Navigator.pop(context);
           ExceptionDialogs.networkDialog(
@@ -146,7 +146,7 @@ mixin class Networking {
         }
         return null;
       } else if (response.statusCode == 500) {
-        if (isLoaderShow && context.mounted) {
+        if (isLoaderShow) {
           Navigator.pop(context);
         }
         var data = json.decode(response.body);
@@ -159,7 +159,7 @@ mixin class Networking {
         return null;
       }
     } on SocketException catch (e) {
-      if (isLoaderShow && context.mounted) {
+      if (isLoaderShow) {
         Navigator.pop(context);
         ExceptionDialogs.networkDialog(
           context: context,
@@ -169,7 +169,7 @@ mixin class Networking {
       }
       return null;
     } on HttpException catch (e) {
-      if (isLoaderShow && context.mounted) {
+      if (isLoaderShow) {
         Navigator.pop(context);
         ExceptionDialogs.networkDialog(
           context: context,
@@ -179,7 +179,7 @@ mixin class Networking {
       }
       return null;
     } on FormatException catch (e) {
-      if (isLoaderShow && context.mounted) {
+      if (isLoaderShow) {
         Navigator.pop(context);
         ExceptionDialogs.networkDialog(
           context: context,
@@ -189,7 +189,7 @@ mixin class Networking {
       }
       return null;
     } on TimeoutException catch (e) {
-      if (isLoaderShow && context.mounted) {
+      if (isLoaderShow) {
         ExceptionDialogs.networkDialog(
           context: context,
           message: e.message ?? "",
@@ -198,7 +198,7 @@ mixin class Networking {
       }
       return null;
     } on Exception catch (_, e) {
-      if (isLoaderShow && context.mounted) {
+      if (isLoaderShow) {
         Navigator.pop(context);
         ExceptionDialogs.networkDialog(
           context: context,
@@ -797,9 +797,6 @@ mixin class Networking {
 
     final url = Uri.parse("${AppApiEndPoint.baseUrl}$endPoint$params");
 
-    print(url);
-    print(sp?.getString(PreferenceKey.token));
-
     try {
       final response = await http.get(
         url,
@@ -1006,7 +1003,6 @@ mixin class Networking {
         if (isShowLoader && context.mounted) {
           Navigator.pop(context);
         }
-
 
         var data = json.decode(response.body);
         ExceptionDialogs.networkDialog(

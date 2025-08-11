@@ -1,5 +1,7 @@
 class AppStrings {
   static const String signIn = "Sign In";
+  static const String shareUs = "Share Us";
+  static const String rateUs = "Rate Us";
   static const String signUp = "Sign Up";
   static const String aPaperTradingApp = "A paper trading app";
   static const String youExceedLimit = "You exceed limit";
