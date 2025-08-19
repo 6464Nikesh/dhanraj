@@ -38,6 +38,7 @@ mixin class Networking {
     }
     final url = Uri.parse("${AppApiEndPoint.baseUrl}$endPoint");
 
+    print(sp?.getString(PreferenceKey.token));
     print(url);
 
     try {
@@ -53,8 +54,8 @@ mixin class Networking {
         },
       );
 
-      print(response.body);
       print(response.statusCode);
+      print(response.body);
 
       if (response.statusCode == 200) {
         if (isLoaderShow) {
@@ -75,9 +76,11 @@ mixin class Networking {
 
         var data = json.decode(response.body);
 
+        print(data);
+
         ExceptionDialogs.networkDialog(
           context: context,
-          message: data["errors"][0]["message"] ?? "",
+          message: data["message"] ?? "",
           onPressed: () {},
         );
 
@@ -90,7 +93,7 @@ mixin class Networking {
         var data = json.decode(response.body);
         ExceptionDialogs.networkDialog(
           context: context,
-          message: data["errors"][0]["message"] ?? "",
+          message: data["message"] ?? "",
           onPressed: () {},
         );
 
@@ -105,7 +108,7 @@ mixin class Networking {
         var data = json.decode(response.body);
         ExceptionDialogs.networkDialog(
           context: context,
-          message: data["errors"][0]["message"] ?? "",
+          message: data["message"] ?? "",
           onPressed: () {},
         );
 
@@ -117,7 +120,7 @@ mixin class Networking {
         var data = json.decode(response.body);
         ExceptionDialogs.networkDialog(
           context: context,
-          message: data["errors"][0]["message"] ?? "",
+          message: data["message"] ?? "",
           onPressed: () {},
         );
 
@@ -129,7 +132,7 @@ mixin class Networking {
         var data = json.decode(response.body);
         ExceptionDialogs.networkDialog(
           context: context,
-          message: data["errors"][0]["message"] ?? "",
+          message: data["message"] ?? "",
           onPressed: () {},
         );
 
@@ -140,7 +143,7 @@ mixin class Networking {
           Navigator.pop(context);
           ExceptionDialogs.networkDialog(
             context: context,
-            message: data["errors"][0]["message"] ?? "",
+            message: data["message"] ?? "",
             onPressed: () {},
           );
         }
@@ -152,7 +155,19 @@ mixin class Networking {
         var data = json.decode(response.body);
         ExceptionDialogs.networkDialog(
           context: context,
-          message: data["errors"][0]["message"] ?? "",
+          message: data["message"] ?? "",
+          onPressed: () {},
+        );
+
+        return null;
+      } else if (response.statusCode == 504) {
+        if (isLoaderShow) {
+          Navigator.pop(context);
+        }
+
+        ExceptionDialogs.networkDialog(
+          context: context,
+          message: "Internal server error.",
           onPressed: () {},
         );
 
@@ -263,7 +278,7 @@ mixin class Networking {
         if (isLoaderShow && context.mounted) {
           ExceptionDialogs.networkDialog(
             context: context,
-            message: data["errors"][0]["message"] ?? "",
+            message: data["message"] ?? "",
             onPressed: () {},
           );
         }
@@ -278,7 +293,7 @@ mixin class Networking {
         if (isLoaderShow && context.mounted) {
           ExceptionDialogs.networkDialog(
             context: context,
-            message: data["errors"][0]["message"] ?? "",
+            message: data["message"] ?? "",
             onPressed: () {},
           );
         }
@@ -294,7 +309,7 @@ mixin class Networking {
         if (isLoaderShow && context.mounted) {
           ExceptionDialogs.networkDialog(
             context: context,
-            message: data["errors"][0]["message"] ?? "",
+            message: data["message"] ?? "",
             onPressed: () {},
           );
         }
@@ -307,7 +322,7 @@ mixin class Networking {
         if (isLoaderShow && context.mounted) {
           ExceptionDialogs.networkDialog(
             context: context,
-            message: data["errors"][0]["message"] ?? "",
+            message: data["message"] ?? "",
             onPressed: () {},
           );
         }
@@ -320,7 +335,7 @@ mixin class Networking {
         if (context.mounted) {
           ExceptionDialogs.networkDialog(
             context: context,
-            message: data["errors"][0]["message"] ?? "",
+            message: data["message"] ?? "",
             onPressed: () {},
           );
         }
@@ -331,7 +346,7 @@ mixin class Networking {
           Navigator.pop(context);
           ExceptionDialogs.networkDialog(
             context: context,
-            message: data["errors"][0]["message"] ?? "",
+            message: data["message"] ?? "",
             onPressed: () {},
           );
         }
@@ -342,10 +357,22 @@ mixin class Networking {
           Navigator.pop(context);
           ExceptionDialogs.networkDialog(
             context: context,
-            message: data["errors"][0]["message"] ?? "",
+            message: data["message"] ?? "",
             onPressed: () {},
           );
         }
+
+        return null;
+      } else if (response.statusCode == 504) {
+        if (isLoaderShow) {
+          Navigator.pop(context);
+        }
+
+        ExceptionDialogs.networkDialog(
+          context: context,
+          message: "Internal server error.",
+          onPressed: () {},
+        );
 
         return null;
       }
@@ -456,7 +483,7 @@ mixin class Networking {
 
         ExceptionDialogs.networkDialog(
           context: context,
-          message: data["errors"][0]["message"] ?? "",
+          message: data["message"] ?? "",
           onPressed: () {},
         );
 
@@ -469,7 +496,7 @@ mixin class Networking {
         var data = json.decode(response.body);
         ExceptionDialogs.networkDialog(
           context: context,
-          message: data["errors"][0]["message"] ?? "",
+          message: data["message"] ?? "",
           onPressed: () {},
         );
         Provider.of<ProviderDashboard>(context, listen: false).logOut(context);
@@ -483,7 +510,7 @@ mixin class Networking {
         var data = json.decode(response.body);
         ExceptionDialogs.networkDialog(
           context: context,
-          message: data["errors"][0]["message"] ?? "",
+          message: data["message"] ?? "",
           onPressed: () {},
         );
         return null;
@@ -494,7 +521,7 @@ mixin class Networking {
         var data = json.decode(response.body);
         ExceptionDialogs.networkDialog(
           context: context,
-          message: data["errors"][0]["message"] ?? "",
+          message: data["message"] ?? "",
           onPressed: () {},
         );
         return null;
@@ -506,7 +533,7 @@ mixin class Networking {
         if (context.mounted) {
           ExceptionDialogs.networkDialog(
             context: context,
-            message: data["errors"][0]["message"] ?? "",
+            message: data["message"] ?? "",
             onPressed: () {},
           );
         }
@@ -518,7 +545,7 @@ mixin class Networking {
 
           ExceptionDialogs.networkDialog(
             context: context,
-            message: data["errors"][0]["message"] ?? "",
+            message: data["message"] ?? "",
             onPressed: () {},
           );
         }
@@ -529,10 +556,22 @@ mixin class Networking {
           Navigator.pop(context);
           ExceptionDialogs.networkDialog(
             context: context,
-            message: data["errors"][0]["message"] ?? "",
+            message: data["message"] ?? "",
             onPressed: () {},
           );
         }
+
+        return null;
+      } else if (response.statusCode == 504) {
+        if (isLoaderShow) {
+          Navigator.pop(context);
+        }
+
+        ExceptionDialogs.networkDialog(
+          context: context,
+          message: "Internal server error.",
+          onPressed: () {},
+        );
 
         return null;
       }
@@ -643,7 +682,7 @@ mixin class Networking {
         var data = json.decode(response.body);
         ExceptionDialogs.networkDialog(
           context: context,
-          message: data["errors"][0]["message"] ?? "",
+          message: data["message"] ?? "",
           onPressed: () {},
         );
 
@@ -656,7 +695,7 @@ mixin class Networking {
         var data = json.decode(response.body);
         ExceptionDialogs.networkDialog(
           context: context,
-          message: data["errors"][0]["message"] ?? "",
+          message: data["message"] ?? "",
           onPressed: () {},
         );
         Provider.of<ProviderDashboard>(context, listen: false).logOut(context);
@@ -670,7 +709,7 @@ mixin class Networking {
         var data = json.decode(response.body);
         ExceptionDialogs.networkDialog(
           context: context,
-          message: data["errors"][0]["message"] ?? "",
+          message: data["message"] ?? "",
           onPressed: () {},
         );
         return null;
@@ -681,7 +720,7 @@ mixin class Networking {
         var data = json.decode(response.body);
         ExceptionDialogs.networkDialog(
           context: context,
-          message: data["errors"][0]["message"] ?? "",
+          message: data["message"] ?? "",
           onPressed: () {},
         );
         return null;
@@ -693,7 +732,7 @@ mixin class Networking {
         if (context.mounted) {
           ExceptionDialogs.networkDialog(
             context: context,
-            message: data["errors"][0]["message"] ?? "",
+            message: data["message"] ?? "",
             onPressed: () {},
           );
         }
@@ -706,7 +745,7 @@ mixin class Networking {
 
         ExceptionDialogs.networkDialog(
           context: context,
-          message: data["errors"][0]["message"] ?? "",
+          message: data["message"] ?? "",
           onPressed: () {},
         );
         return null;
@@ -717,7 +756,19 @@ mixin class Networking {
         var data = json.decode(response.body);
         ExceptionDialogs.networkDialog(
           context: context,
-          message: data["errors"][0]["message"] ?? "",
+          message: data["message"] ?? "",
+          onPressed: () {},
+        );
+
+        return null;
+      } else if (response.statusCode == 504) {
+        if (isShowLoader) {
+          Navigator.pop(context);
+        }
+
+        ExceptionDialogs.networkDialog(
+          context: context,
+          message: "Internal server error.",
           onPressed: () {},
         );
 
@@ -828,7 +879,7 @@ mixin class Networking {
         var data = json.decode(response.body);
         ExceptionDialogs.networkDialog(
           context: context,
-          message: data["errors"][0]["message"] ?? "",
+          message: data["message"] ?? "",
           onPressed: () {},
         );
 
@@ -842,7 +893,7 @@ mixin class Networking {
 
         ExceptionDialogs.networkDialog(
           context: context,
-          message: data["errors"][0]["message"] ?? "",
+          message: data["message"] ?? "",
           onPressed: () {},
         );
         Provider.of<ProviderDashboard>(context, listen: false).logOut(context);
@@ -856,7 +907,7 @@ mixin class Networking {
         var data = json.decode(response.body);
         ExceptionDialogs.networkDialog(
           context: context,
-          message: data["errors"][0]["message"] ?? "",
+          message: data["message"] ?? "",
           onPressed: () {},
         );
         return null;
@@ -867,7 +918,7 @@ mixin class Networking {
         var data = json.decode(response.body);
         ExceptionDialogs.networkDialog(
           context: context,
-          message: data["errors"][0]["message"] ?? "",
+          message: data["message"] ?? "",
           onPressed: () {},
         );
         return null;
@@ -879,7 +930,7 @@ mixin class Networking {
         if (context.mounted) {
           ExceptionDialogs.networkDialog(
             context: context,
-            message: data["errors"][0]["message"] ?? "",
+            message: data["message"] ?? "",
             onPressed: () {},
           );
         }
@@ -891,7 +942,7 @@ mixin class Networking {
         var data = json.decode(response.body);
         ExceptionDialogs.networkDialog(
           context: context,
-          message: data["errors"][0]["message"] ?? "",
+          message: data["message"] ?? "",
           onPressed: () {},
         );
         return null;
@@ -901,10 +952,22 @@ mixin class Networking {
           Navigator.pop(context);
           ExceptionDialogs.networkDialog(
             context: context,
-            message: data["errors"][0]["message"] ?? "",
+            message: data["message"] ?? "",
             onPressed: () {},
           );
         }
+
+        return null;
+      } else if (response.statusCode == 504) {
+        if (isShowLoader) {
+          Navigator.pop(context);
+        }
+
+        ExceptionDialogs.networkDialog(
+          context: context,
+          message: "Internal server error.",
+          onPressed: () {},
+        );
 
         return null;
       }
@@ -1007,7 +1070,7 @@ mixin class Networking {
         var data = json.decode(response.body);
         ExceptionDialogs.networkDialog(
           context: context,
-          message: data["errors"][0]["message"] ?? "",
+          message: data["message"] ?? "",
           onPressed: () {},
         );
 
@@ -1021,7 +1084,7 @@ mixin class Networking {
         var data = json.decode(response.body);
         ExceptionDialogs.networkDialog(
           context: context,
-          message: data["errors"][0]["message"] ?? "",
+          message: data["message"] ?? "",
           onPressed: () {},
         );
         return null;
@@ -1033,7 +1096,7 @@ mixin class Networking {
         var data = json.decode(response.body);
         ExceptionDialogs.networkDialog(
           context: context,
-          message: data["errors"][0]["message"] ?? "",
+          message: data["message"] ?? "",
           onPressed: () {},
         );
         return null;
@@ -1046,7 +1109,7 @@ mixin class Networking {
         if (context.mounted) {
           ExceptionDialogs.networkDialog(
             context: context,
-            message: data["errors"][0]["message"] ?? "",
+            message: data["message"] ?? "",
             onPressed: () {},
           );
         }
@@ -1059,7 +1122,7 @@ mixin class Networking {
         if (context.mounted) {
           ExceptionDialogs.networkDialog(
             context: context,
-            message: data["errors"][0]["message"] ?? "",
+            message: data["message"] ?? "",
             onPressed: () {},
           );
         }
@@ -1072,10 +1135,22 @@ mixin class Networking {
         if (context.mounted) {
           ExceptionDialogs.networkDialog(
             context: context,
-            message: data["errors"][0]["message"] ?? "",
+            message: data["message"] ?? "",
             onPressed: () {},
           );
         }
+        return null;
+      } else if (response.statusCode == 504) {
+        if (isShowLoader) {
+          Navigator.pop(context);
+        }
+
+        ExceptionDialogs.networkDialog(
+          context: context,
+          message: "Internal server error.",
+          onPressed: () {},
+        );
+
         return null;
       }
     } on SocketException catch (e) {

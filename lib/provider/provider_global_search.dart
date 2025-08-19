@@ -24,7 +24,7 @@ class ProviderGlobalSearch extends ChangeNotifier {
     notifyListeners();
   }
 
-  addSymbolsInWatchList({required String watchlistId, required symbol.Symbol s, required BuildContext context}) {
+  Future<void> addSymbolsInWatchList({required String watchlistId, required symbol.Symbol s, required BuildContext context}) async {
     var map = {
       "watchlist_id": watchlistId,
       "symbol_id": s.symbolId,
@@ -34,15 +34,9 @@ class ProviderGlobalSearch extends ChangeNotifier {
       "is_favorite": true,
     };
 
-    Networking().post(context: context, mapData: map, endPoint: AppApiEndPoint.addWatchListItems, isLoaderShow: true, fromBottomSheet: false).then(
+    await Networking().post(context: context, mapData: map, endPoint: AppApiEndPoint.addWatchListItems, isLoaderShow: true, fromBottomSheet: false).then(
       (value) {
-        if (value != null) {
-          AddWatchListItemsModel addWatchListItemsModel = AddWatchListItemsModel.fromJson(value);
-
-          if (addWatchListItemsModel.statusCode == 201) {
-            Provider.of<ProviderWatchlist>(context, listen: false).getSymbolsList(context: context);
-          }
-        }
+        if (value != null) {}
       },
     );
   }

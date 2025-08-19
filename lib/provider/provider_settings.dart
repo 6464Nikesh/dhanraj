@@ -57,7 +57,7 @@ class ProviderSettings extends ChangeNotifier {
   navigate({required BuildContext context}) async {
     final url = Theme.of(context).platform == TargetPlatform.iOS
         ? "https://apps.apple.com/in/app/Dhanraj-Trading/id6749827410"
-        : "https://play.google.com/store/apps/details?id=dhanrag.trading";
+        : "https://play.google.com/store/apps/details?id=dhanraj.trading";
     if (await canLaunchUrl(Uri.parse(url))) {
       await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
     }

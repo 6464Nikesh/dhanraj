@@ -22,7 +22,7 @@ class ProviderDashboard extends ChangeNotifier {
   String? customerInitial;
 
   List<Widget> pages = [
-    const Watchlist(),
+    Watchlist(key: UniqueKey()),
     const Position(),
     const History(),
     const Settings(),

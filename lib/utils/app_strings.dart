@@ -1,5 +1,7 @@
 class AppStrings {
   static const String signIn = "Sign In";
+  static const String firstName = "First Name";
+  static const String lastName = "Last Name";
   static const String shareUs = "Share Us";
   static const String rateUs = "Rate Us";
   static const String signUp = "Sign Up";
@@ -24,7 +26,10 @@ class AppStrings {
   static const String confirm = "Confirm";
   static const String newPassword = "New Password";
   static const String password = "Password";
+  static const String passwordIsNotMatched = "Confirm password is not matched.";
   static const String notMatched = "not matched";
+  static const String pleaseEnter = "Please Enter";
+  static const String valid = "valid";
   static const String pleaseEnterPassword = "Please enter password";
   static const String pleaseEnterUsername = "Please enter username";
   static const String mobileNo = "Mobile No.";

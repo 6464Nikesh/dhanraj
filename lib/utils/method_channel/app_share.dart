@@ -14,7 +14,7 @@ class AppShare {
     } else {
       const channel = MethodChannel("android_channel");
       try {
-        await channel.invokeMethod("shareFile", "https://play.google.com/store/apps/details?id=dhanrag.trading");
+        await channel.invokeMethod("shareFile", "https://play.google.com/store/apps/details?id=dhanraj.trading");
       } catch (e) {
         print("Error sharing image: $e");
       }

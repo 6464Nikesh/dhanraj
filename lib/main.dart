@@ -7,6 +7,7 @@ import 'package:dhanraj/provider/provider_global_search.dart';
 import 'package:dhanraj/provider/provider_history.dart';
 import 'package:dhanraj/provider/provider_login.dart';
 import 'package:dhanraj/provider/provider_settings.dart';
+import 'package:dhanraj/provider/provider_sign_up.dart';
 import 'package:dhanraj/provider/provider_watchlist.dart';
 import 'package:dhanraj/provider/web_socket_service.dart';
 import 'package:dhanraj/utils/app_route.dart';
@@ -68,6 +69,7 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (context) => ProviderChangePassword()),
         ChangeNotifierProvider(create: (context) => ProviderHistory()),
         ChangeNotifierProvider(create: (context) => WebSocketService()),
+        ChangeNotifierProvider(create: (context) => ProviderSignUp()),
 
         /// Bottom sheet Provider
         ChangeNotifierProvider(create: (context) => DepositWithdrawalSheetProvider())

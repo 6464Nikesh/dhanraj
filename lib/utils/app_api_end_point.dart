@@ -1,6 +1,9 @@
 class AppApiEndPoint {
   static const String baseUrl = "https://dhanrajtrading.in/api/v1/";
+
   static const String loginUser = "auth-service/login-user";
+  static const String signUpUser = "auth-service/sign-up-user";
+
   static const String changePassword = "auth-service/change-user-pass";
   static const String getAllSymbols = "trading-symbol-service/get-all-symbols";
   static const String addWatchListItems = "watchlist-item-service/add-watchlist-item";

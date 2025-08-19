@@ -68,6 +68,7 @@ class _TradeBottomSheetState extends State<TradeBottomSheet> {
       "quantity": (tradeLotController.text ?? "0"),
       "price": lastPrice,
       "order_type": orderType,
+      "segment": widget.items?.symbol?.segment,
       "variety": "regular"
     };
     Networking()
@@ -117,11 +118,9 @@ class _TradeBottomSheetState extends State<TradeBottomSheet> {
       "stoplossPrice": stoplossController.text,
       "takeprofitPrice": targetController.text,
       "openPrice": orderType == "LIMIT" ? limitController.text : widget.lastPrice,
-      "requiredMargin": marginModel?.result?.margin?.toStringAsFixed(2) ?? "00.00",
-      "originalMargin": marginModel?.result?.margin?.toStringAsFixed(2) ?? "00.00"
+      "requiredMargin": marginModel?.result?.reqiredMargin?.toStringAsFixed(2) ?? "00.00",
+      "originalMargin": marginModel?.result?.originalMargin?.toStringAsFixed(2) ?? "00.00"
     };
-
-    print(mapData);
 
     Networking().post(context: context, mapData: mapData, endPoint: AppApiEndPoint.position, isLoaderShow: true, fromBottomSheet: true).then(
       (value) {
@@ -322,15 +321,19 @@ class _TradeBottomSheetState extends State<TradeBottomSheet> {
                             style: const TextStyle(fontFamily: "roboto", fontSize: 14, fontWeight: FontWeight.w600),
                             controller: tradeLotController,
                             onChanged: (val) {
-                              num tradeLot = num.tryParse(val) ?? 0;
-                              if (orderType == "MARKET") {
-                                totalQty = tradeLot * (widget.items?.symbol?.lotSize ?? 0);
-                              } else {
-                                if (limitController.text.isNotEmpty) {
-                                  totalQty = tradeLot * num.parse(limitController.text);
+                              if (val.isNotEmpty) {
+                                num tradeLot = num.tryParse(val) ?? 0;
+                                if (orderType == "MARKET") {
+                                  totalQty = tradeLot * (widget.items?.symbol?.lotSize ?? 0);
+                                } else {
+                                  if (limitController.text.isNotEmpty) {
+                                    totalQty = tradeLot * num.parse(limitController.text);
+                                  }
                                 }
+                                getMargin(context: context, lastPrice: lastPrice);
+                              } else {
+                                marginModel = null;
                               }
-                              getMargin(context: context, lastPrice: lastPrice);
                               setState(() {});
                             },
                             decoration: InputDecoration(
@@ -587,24 +590,10 @@ class _TradeBottomSheetState extends State<TradeBottomSheet> {
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 10),
-                      child: Column(
+                      child: Row(
                         children: [
-                          Row(
-                            children: [
-                              const Text("${AppStrings.requiredMargin} : ", style: TextStyle(fontSize: 14, color: AppColors.grey)),
-                              Text(marginModel?.result?.margin?.toStringAsFixed(2) ?? "00.00", style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold))
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 4,
-                          ),
-                          Row(
-                            children: [
-                              const Text("${AppStrings.charges} : ", style: TextStyle(fontSize: 14, color: AppColors.grey)),
-                              Text(marginModel?.result?.marginData?.charges?.total?.toStringAsFixed(2) ?? "00.00",
-                                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold))
-                            ],
-                          ),
+                          const Text("${AppStrings.requiredMargin} : ", style: TextStyle(fontSize: 14, color: AppColors.grey)),
+                          Text(marginModel?.result?.reqiredMargin?.toStringAsFixed(2) ?? "00.00", style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold))
                         ],
                       ),
                     ),

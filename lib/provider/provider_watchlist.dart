@@ -35,16 +35,12 @@ class ProviderWatchlist extends ChangeNotifier {
 
     if (val == 0) return '';
     if (value.contains('.')) {
-      // Remove trailing zeros and dot if nothing remains after dot
-      value = " ${value.replaceFirst(RegExp(r'\.0+$'), '')}"; // e.g., 12.0000 -> 12
+      value = " ${value.replaceFirst(RegExp(r'\.0+$'), '')}";
     }
     return value;
   }
 
   getWatchList({required BuildContext context}) {
-    watchLists?.clear();
-    items?.clear();
-
     Networking().get(context: context, endPoint: AppApiEndPoint.allWatchList, isShowLoader: true).then(
       (value) {
         if (value != null) {

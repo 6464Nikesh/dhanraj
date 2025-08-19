@@ -174,12 +174,18 @@ class _GlobalSearchState extends State<GlobalSearch> {
                                               Consumer<ProviderWatchlist>(
                                                 builder: (context, pw, child) {
                                                   return GestureDetector(
-                                                    onTap: () {
+                                                    onTap: () async {
                                                       if (10 > (pw.items?.length ?? 0)) {
-                                                        pds.addSymbolsInWatchList(
+                                                        await pds
+                                                            .addSymbolsInWatchList(
                                                           watchlistId: widget.globalSearchArg.watchListId,
                                                           s: data,
                                                           context: context,
+                                                        )
+                                                            .then(
+                                                          (value) {
+                                                            Provider.of<ProviderWatchlist>(context, listen: false).getSymbolsList(context: context);
+                                                          },
                                                         );
                                                         pds.setSelectedSymbols(index: index, val: true);
                                                       } else {
