@@ -85,7 +85,7 @@ class Trades {
   int? symbolLotSize;
   String? tradingsymbol;
   String? tradeType;
-  int? quantity;
+  num? quantity;
   String? openPrice;
   String? closePrice;
   num? requiredMargin;
@@ -143,10 +143,10 @@ class Trades {
     symbolLotSize = json['symbol_lot_size'];
     tradingsymbol = json['tradingsymbol'];
     tradeType = json['trade_type'];
-    quantity = json['quantity'];
+    quantity = num.parse(json['quantity'] ?? "0");
     openPrice = json['openPrice'];
     closePrice = json['close_price'];
-    requiredMargin = json['requiredMargin'];
+    requiredMargin = num.parse(json['requiredMargin'] ?? "0");
     brokerage = json['brokerage'];
     profitLoss = json['profitLoss'];
     status = json['status'];
@@ -201,14 +201,14 @@ class Trades {
 }
 
 class Execution {
-  int? executedQuantity;
+  num? executedQuantity;
   String? executedPrice;
   String? executionTime;
 
   Execution({this.executedQuantity, this.executedPrice, this.executionTime});
 
   Execution.fromJson(Map<String, dynamic> json) {
-    executedQuantity = json['executed_quantity'];
+    executedQuantity = num.parse(json['executed_quantity'] ?? "0");
     executedPrice = json['executed_price'];
     executionTime = json['execution_time'];
   }
@@ -239,7 +239,7 @@ class Pagination {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['total_items'] = totalItems;
     data['total_pages'] = totalPages;
     data['current_page'] = currentPage;
