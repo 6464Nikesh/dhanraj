@@ -93,8 +93,7 @@ class ProviderWatchlist extends ChangeNotifier {
                 int.parse(watchlistId),
               );
             }
-
-            //UpdateChecker.checkForUpdate(context);
+            UpdateChecker.checkForUpdate(context);
           }
         }
       },
