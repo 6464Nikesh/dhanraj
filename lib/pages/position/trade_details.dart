@@ -454,7 +454,6 @@ class _TradeDetailsState extends State<TradeDetails> {
                                     isScrollControlled: true,
                                     enableDrag: true,
                                     backgroundColor: Colors.white,
-                                    requestFocus: true,
                                     shape: const RoundedRectangleBorder(
                                       borderRadius: BorderRadius.vertical(
                                         top: Radius.circular(16),
@@ -479,7 +478,6 @@ class _TradeDetailsState extends State<TradeDetails> {
                                     context: context,
                                     isScrollControlled: true,
                                     enableDrag: true,
-                                    requestFocus: true,
                                     backgroundColor: Colors.white,
                                     shape: const RoundedRectangleBorder(
                                       borderRadius: BorderRadius.vertical(
@@ -525,9 +523,11 @@ class _TradeDetailsState extends State<TradeDetails> {
                             builder: (context) {
                               return ExitTradeDialogs(
                                 onTap: () {
-                                  Navigator.pop(context);
-                                  Provider.of<PositionProvider>(context, listen: false)
-                                      .exitTrade(context: context, ltp: lastPrice.toStringAsFixed(2), tradeId: widget.arg.trades?.id.toString() ?? "");
+                                  Provider.of<PositionProvider>(context, listen: false).exitTrade(
+                                    context: context,
+                                    ltp: lastPrice.toStringAsFixed(2),
+                                    tradeId: widget.arg.trades?.id.toString() ?? "",
+                                  );
                                 },
                               );
                             },

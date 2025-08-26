@@ -101,7 +101,8 @@ class _WatchlistState extends State<Watchlist> {
                   padding: EdgeInsets.symmetric(vertical: 10),
                   child: Divider(),
                 ),
-                Row(
+                (pw.watchLists?.isNotEmpty ?? false)
+                    ? Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Expanded(
@@ -156,21 +157,16 @@ class _WatchlistState extends State<Watchlist> {
                         showDialog(
                           context: context,
                           builder: (context) {
-                            return AppDeleteDialogs(
-                              onTap: () {
-                                Navigator.pop(context);
-                                pw.deleteWatchList(context: context).then(
-                                  (value) {
-                                    pw.getWatchList(context: context);
-                                  },
-                                );
-                              },
-                            );
+                            return const AppDeleteDialogs();
                           },
                         ).then(
                           (value) {
-                            if (value == true) {
-                              pw.getSymbolsList(context: context);
+                            if (value != null && value == true) {
+                              pw.deleteWatchList(context: context).then(
+                                (value) {
+                                  pw.getWatchList(context: context);
+                                },
+                              );
                             }
                           },
                         );
@@ -214,7 +210,7 @@ class _WatchlistState extends State<Watchlist> {
                       ),
                     ),
                   ],
-                ),
+                ) : Container(),
                 const SizedBox(
                   height: 10,
                 ),
@@ -224,272 +220,317 @@ class _WatchlistState extends State<Watchlist> {
                           onRefresh: () async {
                             await pw.getSymbolsList(context: context);
                           },
-                          child: LayoutBuilder(
-                            builder: (context, constraints) {
-                              return SingleChildScrollView(
-                                physics: const AlwaysScrollableScrollPhysics(), // 🔑 Required
-                                child: ConstrainedBox(
-                                  constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                                  child: Column(
-                                    children: List.generate(
-                                      pw.items?.length ?? 0,
-                                      (index) {
-                                        var data = pw.items?[index];
-                                        int? instrumentToken = int.tryParse(data?.symbol?.instrumentToken ?? '');
-                                        var socketData = ws.latestData[instrumentToken];
-                                  
-                                        String lastPrice = '00.00';
-                                        String changePercent = '00.00';
-                                        num change = 0;
-                                  
-                                        Color priceColor = Colors.black;
-                                  
-                                        if (socketData != null && socketData['instrument_token'] == instrumentToken) {
-                                          num price = socketData['last_price'] ?? 0;
-                                          num prevClose = socketData['ohlc']['close'] ?? 0;
-                                  
-                                          change = price - prevClose;
-                                          num percent = (prevClose > 0) ? ((change / prevClose) * 100) : 0;
-                                  
-                                          lastPrice = price.toString();
-                                          changePercent = '${percent.toStringAsFixed(2)}%';
-                                  
-                                          if (change > 0) {
-                                            priceColor = Colors.green;
-                                          } else if (change < 0) {
-                                            priceColor = Colors.red;
-                                          } else {
-                                            priceColor = Colors.grey;
-                                          }
+                          child: LayoutBuilder(builder: (context, constraints) {
+                            return SingleChildScrollView(
+                              physics: const AlwaysScrollableScrollPhysics(),
+                              child: ConstrainedBox(
+                                constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                                child: Column(
+                                  children: List.generate(
+                                    pw.items?.length ?? 0,
+                                    (index) {
+                                      var data = pw.items?[index];
+                                      int? instrumentToken = int.tryParse(data?.symbol?.instrumentToken ?? '');
+                                      var socketData = ws.latestData[instrumentToken];
+
+                                      String lastPrice = '00.00';
+                                      String changePercent = '00.00';
+                                      num change = 0;
+
+                                      Color priceColor = Colors.black;
+
+                                      if (socketData != null && socketData['instrument_token'] == instrumentToken) {
+                                        num price = socketData['last_price'] ?? 0;
+                                        num prevClose = socketData['ohlc']['close'] ?? 0;
+
+                                        change = price - prevClose;
+                                        num percent = (prevClose > 0) ? ((change / prevClose) * 100) : 0;
+
+                                        lastPrice = price.toString();
+                                        changePercent = '${percent.toStringAsFixed(2)}%';
+
+                                        if (change > 0) {
+                                          priceColor = Colors.green;
+                                        } else if (change < 0) {
+                                          priceColor = Colors.red;
+                                        } else {
+                                          priceColor = Colors.grey;
                                         }
-                                  
-                                        return Padding(
-                                          padding: const EdgeInsets.symmetric(vertical: 4),
-                                          child: Dismissible(
-                                            key: Key(data?.watchlistItemId ?? ""),
-                                            direction: DismissDirection.endToStart,
-                                            confirmDismiss: (direction) async {
-                                              showDialog(
-                                                context: context,
-                                                builder: (context) {
-                                                  return AppDeleteDialogs(
-                                                    onTap: () {
-                                                      pw.deleteWatchListItem(
-                                                        context: context,
-                                                        id: data?.watchlistItemId ?? "",
-                                                      );
-                                                    },
+                                      }
+
+                                      return Padding(
+                                        padding: const EdgeInsets.symmetric(vertical: 4),
+                                        child: Dismissible(
+                                          key: Key(data?.watchlistItemId ?? ""),
+                                          direction: DismissDirection.endToStart,
+                                          confirmDismiss: (direction) async {
+                                            showDialog(
+                                              context: context,
+                                              builder: (context) {
+                                                return const AppDeleteDialogs();
+                                              },
+                                            ).then(
+                                              (value) {
+                                                if (value != null && value == true) {
+                                                  pw.deleteWatchListItem(
+                                                    context: context,
+                                                    id: data?.watchlistItemId ?? "",
                                                   );
-                                                },
-                                              ).then(
-                                                (value) {
-                                                  if (value == true) {
-                                                    pw.getSymbolsList(context: context);
-                                                  }
-                                                },
+                                                }
+                                              },
+                                            );
+                                          },
+                                          background: Container(
+                                            color: AppColors.red,
+                                            alignment: Alignment.centerLeft,
+                                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                                            child: const Row(
+                                              mainAxisAlignment: MainAxisAlignment.end,
+                                              children: [
+                                                Icon(Icons.delete_outline, size: 30, color: Colors.white),
+                                              ],
+                                            ),
+                                          ),
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              showModalBottomSheet(
+                                                context: context,
+                                                backgroundColor: Colors.white,
+                                                isScrollControlled: true,
+                                                shape: const RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.vertical(
+                                                    top: Radius.circular(16),
+                                                  ),
+                                                ),
+                                                builder: (context) => TradeBottomSheet(
+                                                  items: data,
+                                                  lastPrice: lastPrice,
+                                                  differentPercentage: changePercent,
+                                                  color: priceColor,
+                                                ),
                                               );
                                             },
-                                            background: Container(
-                                              color: AppColors.red,
-                                              alignment: Alignment.centerLeft,
-                                              padding: const EdgeInsets.symmetric(horizontal: 20),
-                                              child: const Row(
-                                                mainAxisAlignment: MainAxisAlignment.end,
-                                                children: [
-                                                  Icon(Icons.delete_outline, size: 30, color: Colors.white),
-                                                ],
-                                              ),
-                                            ),
-                                            child: GestureDetector(
-                                              onTap: () {
-                                                showModalBottomSheet(
-                                                  context: context,
-                                                  backgroundColor: Colors.white,
-                                                  isScrollControlled: true,
-                                                  shape: const RoundedRectangleBorder(
-                                                    borderRadius: BorderRadius.vertical(
-                                                      top: Radius.circular(16),
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Colors.grey.shade200,
+                                                    offset: const Offset(
+                                                      2.0,
+                                                      2.0,
                                                     ),
-                                                  ),
-                                                  builder: (context) => TradeBottomSheet(
-                                                    items: data,
-                                                    lastPrice: lastPrice,
-                                                    differentPercentage: changePercent,
-                                                    color: priceColor,
-                                                  ),
-                                                );
-                                              },
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                  boxShadow: [
-                                                    BoxShadow(
-                                                      color: Colors.grey.shade200,
-                                                      offset: const Offset(
-                                                        2.0,
-                                                        2.0,
-                                                      ),
-                                                      blurRadius: 3.0,
-                                                      spreadRadius: 1.0,
-                                                    ), //BoxShadow
-                                                    const BoxShadow(
-                                                      color: Colors.white,
-                                                      offset: Offset(0.0, 0.0),
-                                                      blurRadius: 0.0,
-                                                      spreadRadius: 0.0,
-                                                    ), //BoxShadow
-                                                  ],
-                                                  color: Colors.white,
-                                                  border: Border.all(color: AppColors.grey.withOpacity(0.2)),
-                                                  borderRadius: const BorderRadius.all(Radius.circular(15)),
-                                                ),
-                                                child: Padding(
-                                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                                                  child: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
-                                                      Row(
-                                                        children: [
-                                                          Expanded(
-                                                            child: Column(
-                                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                                              children: [
-                                                                Text(
-                                                                  "${data?.symbol?.name ?? ""}${pw.removeTrailingZeros(data?.symbol?.strike ?? "")} ${data?.symbol?.instrumentType}",
-                                                                  style: const TextStyle(
-                                                                    fontFamily: "roboto",
-                                                                    fontWeight: FontWeight.w600,
-                                                                    fontSize: 14,
-                                                                    color: AppColors.navyBlue,
+                                                    blurRadius: 3.0,
+                                                    spreadRadius: 1.0,
+                                                  ), //BoxShadow
+                                                  const BoxShadow(
+                                                    color: Colors.white,
+                                                    offset: Offset(0.0, 0.0),
+                                                    blurRadius: 0.0,
+                                                    spreadRadius: 0.0,
+                                                  ), //BoxShadow
+                                                ],
+                                                color: Colors.white,
+                                                border: Border.all(color: AppColors.grey.withOpacity(0.2)),
+                                                borderRadius: const BorderRadius.all(Radius.circular(15)),
+                                              ),
+                                              child: Padding(
+                                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Row(
+                                                      children: [
+                                                        Expanded(
+                                                          child: Column(
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                            children: [
+                                                              Text(
+                                                                "${data?.symbol?.name ?? ""}${pw.removeTrailingZeros(data?.symbol?.strike ?? "")} ${data?.symbol?.instrumentType}",
+                                                                style: const TextStyle(
+                                                                  fontFamily: "roboto",
+                                                                  fontWeight: FontWeight.w600,
+                                                                  fontSize: 14,
+                                                                  color: AppColors.navyBlue,
+                                                                ),
+                                                              ),
+                                                              const SizedBox(
+                                                                height: 4,
+                                                              ),
+                                                              Row(
+                                                                children: [
+                                                                  Container(
+                                                                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(2), color: AppColors.grey.withOpacity(0.1)),
+                                                                    child: Padding(
+                                                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                                                      child: Text(
+                                                                        "${data?.symbol?.segment}",
+                                                                        style: const TextStyle(
+                                                                          fontFamily: "roboto",
+                                                                          fontSize: 12,
+                                                                        ),
+                                                                      ),
+                                                                    ),
                                                                   ),
-                                                                ),
-                                                                const SizedBox(
-                                                                  height: 4,
-                                                                ),
-                                                                Row(
-                                                                  children: [
-                                                                    Container(
-                                                                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(2), color: AppColors.grey.withOpacity(0.1)),
-                                                                      child: Padding(
-                                                                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                                                                        child: Text(
-                                                                          "${data?.symbol?.segment}",
+                                                                  const SizedBox(
+                                                                    width: 10,
+                                                                  ),
+                                                                  (data?.symbol?.expiry != null)
+                                                                      ? Text(
+                                                                          Miscellaneous.dateConverterToDDMMMYYYY(data?.symbol?.expiry ?? ""),
                                                                           style: const TextStyle(
                                                                             fontFamily: "roboto",
                                                                             fontSize: 12,
                                                                           ),
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                    const SizedBox(
-                                                                      width: 10,
-                                                                    ),
-                                                                    (data?.symbol?.expiry != null)
-                                                                        ? Text(
-                                                                            Miscellaneous.dateConverterToDDMMMYYYY(data?.symbol?.expiry ?? ""),
-                                                                            style: const TextStyle(
-                                                                              fontFamily: "roboto",
-                                                                              fontSize: 12,
-                                                                            ),
-                                                                          )
-                                                                        : Container(),
-                                                                  ],
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                          Row(
-                                                            mainAxisSize: MainAxisSize.min,
-                                                            children: [
-                                                              const SizedBox(width: 4),
-                                                              Column(
-                                                                crossAxisAlignment: CrossAxisAlignment.end,
-                                                                children: [
-                                                                  Text(
-                                                                    lastPrice,
-                                                                    style: TextStyle(
-                                                                      fontFamily: "roboto",
-                                                                      fontSize: 14,
-                                                                      color: priceColor,
-                                                                      fontWeight: FontWeight.bold,
-                                                                    ),
-                                                                  ),
-                                                                  Row(
-                                                                    children: [
-                                                                      Text(
-                                                                        change.toStringAsFixed(2),
-                                                                        style: TextStyle(
-                                                                          fontFamily: "roboto",
-                                                                          fontSize: 10,
-                                                                          color: priceColor,
-                                                                        ),
-                                                                      ),
-                                                                      Text(
-                                                                        " ($changePercent)",
-                                                                        style: TextStyle(
-                                                                          fontFamily: "roboto",
-                                                                          fontSize: 10,
-                                                                          color: priceColor,
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
+                                                                        )
+                                                                      : Container(),
                                                                 ],
                                                               ),
                                                             ],
                                                           ),
-                                                        ],
-                                                      )
-                                                    ],
-                                                  ),
+                                                        ),
+                                                        Row(
+                                                          mainAxisSize: MainAxisSize.min,
+                                                          children: [
+                                                            const SizedBox(width: 4),
+                                                            Column(
+                                                              crossAxisAlignment: CrossAxisAlignment.end,
+                                                              children: [
+                                                                Text(
+                                                                  lastPrice,
+                                                                  style: TextStyle(
+                                                                    fontFamily: "roboto",
+                                                                    fontSize: 14,
+                                                                    color: priceColor,
+                                                                    fontWeight: FontWeight.bold,
+                                                                  ),
+                                                                ),
+                                                                Row(
+                                                                  children: [
+                                                                    Text(
+                                                                      change.toStringAsFixed(2),
+                                                                      style: TextStyle(
+                                                                        fontFamily: "roboto",
+                                                                        fontSize: 10,
+                                                                        color: priceColor,
+                                                                      ),
+                                                                    ),
+                                                                    Text(
+                                                                      " ($changePercent)",
+                                                                      style: TextStyle(
+                                                                        fontFamily: "roboto",
+                                                                        fontSize: 10,
+                                                                        color: priceColor,
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ],
+                                                    )
+                                                  ],
                                                 ),
                                               ),
                                             ),
                                           ),
-                                        );
-                                      },
-                                    ),
+                                        ),
+                                      );
+                                    },
                                   ),
                                 ),
-                              );
-                            }
-                          ),
+                              ),
+                            );
+                          }),
                         )
-                      : Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              AppAssets.emptyBox,
-                              scale: 10,
-                            ),
-                            const SizedBox(
-                              height: 16,
-                            ),
-                            Row(
+                      : (pw.watchLists?.isNotEmpty ?? false)
+                          ? Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                GestureDetector(
-                                  onTap: () {
-                                    GlobalSearchArg arg = GlobalSearchArg(
-                                      watchListId: pw.selectedWatchList?.watchlistId ?? "",
-                                    );
-                                    Navigator.pushNamed(context, AppRoutes.globalSearch, arguments: arg).then(
-                                      (value) {
-                                        pw.getSymbolsList(context: context);
-                                      },
-                                    );
-                                  },
-                                  child: AppButton.colorButton(
-                                    text: AppStrings.addSymbols,
-                                    context: context,
-                                    color: AppColors.navyBlue,
-                                    textColor: Colors.white,
-                                    isActive: true,
-                                  ),
+                                Image.asset(
+                                  AppAssets.emptyBox,
+                                  scale: 10,
                                 ),
+                                const SizedBox(
+                                  height: 16,
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    GestureDetector(
+                                      onTap: () {
+                                        GlobalSearchArg arg = GlobalSearchArg(
+                                          watchListId: pw.selectedWatchList?.watchlistId ?? "",
+                                        );
+                                        Navigator.pushNamed(context, AppRoutes.globalSearch, arguments: arg).then(
+                                          (value) {
+                                            pw.getSymbolsList(context: context);
+                                          },
+                                        );
+                                      },
+                                      child: AppButton.colorButton(
+                                        text: AppStrings.addSymbols,
+                                        context: context,
+                                        color: AppColors.navyBlue,
+                                        textColor: Colors.white,
+                                        isActive: true,
+                                      ),
+                                    ),
+                                  ],
+                                )
                               ],
                             )
-                          ],
-                        ),
+                          : Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Image.asset(
+                                  AppAssets.emptyBox,
+                                  scale: 10,
+                                ),
+                                const SizedBox(
+                                  height: 16,
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    GestureDetector(
+                                      onTap: () {
+                                        showModalBottomSheet(
+                                          context: context,
+                                          shape: const RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.vertical(top: Radius.circular(10.0)),
+                                          ),
+                                          backgroundColor: Colors.white,
+                                          isScrollControlled: true,
+                                          builder: (context) {
+                                            return Padding(
+                                              padding: EdgeInsets.only(
+                                                bottom: MediaQuery.of(context).viewInsets.bottom,
+                                              ),
+                                              child: const CreateNewWatchlistBottomSheet(),
+                                            );
+                                          },
+                                        ).then(
+                                          (value) {
+                                            if (value != null) {
+                                              pw.getWatchList(context: context);
+                                            }
+                                          },
+                                        );
+                                      },
+                                      child: AppButton.colorButton(
+                                        text: "${AppStrings.add} ${AppStrings.watchlist}",
+                                        context: context,
+                                        color: AppColors.navyBlue,
+                                        textColor: Colors.white,
+                                        isActive: true,
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              ],
+                            ),
                 )
               ],
             ),

@@ -65,12 +65,13 @@ class _TradeBottomSheetState extends State<TradeBottomSheet> {
       "tradingsymbol": widget.items?.symbol?.tradingsymbol,
       "exchange": widget.items?.symbol?.exchange,
       "transaction_type": selectedTrade,
-      "quantity": (tradeLotController.text ?? "0"),
+      "quantity": totalQty,
       "price": lastPrice,
       "order_type": orderType,
       "segment": widget.items?.symbol?.segment,
       "variety": "regular"
     };
+
     Networking()
         .post(
       context: context,
@@ -332,6 +333,7 @@ class _TradeBottomSheetState extends State<TradeBottomSheet> {
                                 }
                                 getMargin(context: context, lastPrice: lastPrice);
                               } else {
+                                totalQty = 0;
                                 marginModel = null;
                               }
                               setState(() {});

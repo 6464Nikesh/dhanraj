@@ -47,9 +47,10 @@ class ProviderWatchlist extends ChangeNotifier {
           WatchListsModel watchListsModel = WatchListsModel.fromJson(value);
           if (watchListsModel.statusCode == 200) {
             watchLists = watchListsModel.result?.watchLists ?? [];
-
             if (selectedWatchList == null) {
-              selSelectedWatchList(selectedWatchList: watchLists?.first, context: context);
+              if (watchLists?.isNotEmpty ?? false) {
+                selSelectedWatchList(selectedWatchList: watchLists?.first, context: context);
+              }
             }
             notifyListeners();
           }
@@ -60,8 +61,13 @@ class ProviderWatchlist extends ChangeNotifier {
 
   Future<void> deleteWatchList({required BuildContext context}) async {
     await Networking().delete(context: context, endPoint: AppApiEndPoint.removeWatchlist, id: selectedWatchList?.watchlistId ?? "", isLoaderShow: true).then(
-          (value) {},
-        );
+      (value) {
+        selectedWatchList = null;
+        watchLists?.clear();
+        items?.clear();
+        notifyListeners();
+      },
+    );
   }
 
   selSelectedWatchList({required WatchLists? selectedWatchList, required BuildContext context}) {
@@ -72,6 +78,7 @@ class ProviderWatchlist extends ChangeNotifier {
 
   Future<void> getSymbolsList({required BuildContext context}) async {
     final webSocketService = Provider.of<WebSocketService>(context, listen: false);
+    webSocketService.connect(context: context);
     await Networking()
         .getWithParams(context: context, endPoint: AppApiEndPoint.getWatchListItems, isShowLoader: true, params: '?watchlist_id=${selectedWatchList?.watchlistId}')
         .then(
@@ -80,7 +87,6 @@ class ProviderWatchlist extends ChangeNotifier {
           GetWatchlistItemsModel getWatchlistItemsModel = GetWatchlistItemsModel.fromJson(value);
           if (getWatchlistItemsModel.statusCode == 200) {
             items = getWatchlistItemsModel.result?.items ?? [];
-
             final watchlistId = selectedWatchList?.watchlistId?.toString();
             if (watchlistId != null) {
               webSocketService.subscribeToWatchlist(
@@ -88,8 +94,7 @@ class ProviderWatchlist extends ChangeNotifier {
               );
             }
 
-            UpdateChecker.checkForUpdate(context);
-            notifyListeners();
+            //UpdateChecker.checkForUpdate(context);
           }
         }
       },

@@ -11,6 +11,7 @@ import 'package:dhanraj/utils/app_strings.dart';
 import 'package:dhanraj/utils/app_widget.dart';
 import 'package:dhanraj/utils/miscellaneous.dart';
 import 'package:dhanraj/utils/preference_key.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart' hide Size;
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -18,6 +19,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 class ProviderSignUp extends ChangeNotifier with Networking {
   TextEditingController firstName = TextEditingController();
+  TextEditingController otp = TextEditingController();
   TextEditingController password = TextEditingController();
   TextEditingController confirmPassword = TextEditingController();
   TextEditingController email = TextEditingController();
@@ -75,7 +77,38 @@ class ProviderSignUp extends ChangeNotifier with Networking {
     return true;
   }
 
-  login({required BuildContext context}) async {
+  Future<void> sendOtp({required BuildContext context}) async {
+    if (validation(context)) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AppWidget().loader(context);
+        },
+      );
+
+      try {
+        await FirebaseAuth.instance.verifyPhoneNumber(
+          phoneNumber: "+91${mobile.text}",
+          verificationCompleted: (PhoneAuthCredential credential) async {
+            await FirebaseAuth.instance.signInWithCredential(credential);
+          },
+          verificationFailed: (FirebaseAuthException e) {
+            Navigator.pop(context);
+            AppWidget().snackBar(context, "Error: ${e.message}", Colors.redAccent, Colors.white);
+          },
+          codeSent: (String verificationId, int? resendToken) {
+            Navigator.pop(context);
+            otpVerification(context, verificationId);
+          },
+          codeAutoRetrievalTimeout: (String verificationId) {},
+        );
+      } catch (e) {
+        print(e);
+      }
+    }
+  }
+
+  createNewUser({required BuildContext context}) async {
     sp = await SharedPreferences.getInstance();
     if (validation(context)) {
       var postMap = {
@@ -175,6 +208,120 @@ class ProviderSignUp extends ChangeNotifier with Networking {
                   ),
                 ),
               ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> verifyOtp({required BuildContext context, required String verificationId}) async {
+    if (otp.text.isEmpty || otp.text.length < 6) {
+      AppWidget().snackBarTop(context, "Please enter valid OTP.", AppColors.red, Colors.white);
+      return;
+    }
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AppWidget().loader(context);
+      },
+    );
+
+    PhoneAuthCredential credential = PhoneAuthProvider.credential(
+      verificationId: verificationId,
+      smsCode: otp.text,
+    );
+
+    try {
+      await FirebaseAuth.instance.signInWithCredential(credential).then(
+        (value) {
+          if (value.user != null) {
+            createNewUser(context: context);
+          }
+        },
+      );
+      Navigator.pop(context);
+    } catch (e) {
+      Navigator.pop(context);
+      AppWidget().snackBarTop(context, "Invalid OTP: $e", AppColors.red, Colors.white);
+    }
+  }
+
+  void otpVerification(BuildContext context, String verificationId) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      isScrollControlled: false,
+      builder: (BuildContext context) {
+        return Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(
+                Icons.check_circle,
+                color: Colors.green,
+                size: 60,
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: otp,
+                cursorColor: AppColors.grey,
+                textAlign: TextAlign.center,
+                decoration: const InputDecoration(
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: AppColors.grey),
+                  ),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: AppColors.grey),
+                  ),
+                  hintText: "${AppStrings.enter} ${AppStrings.otp}",
+                  hintStyle: TextStyle(
+                    fontSize: 14,
+                    fontFamily: "roboto",
+                    fontWeight: FontWeight.w400,
+                    color: AppColors.grey,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                "Please, Enter OTP Here!",
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.labelLarge,
+              ),
+              const SizedBox(height: 20),
+              GestureDetector(
+                onTap: () {
+                  verifyOtp(context: context, verificationId: verificationId);
+                },
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(20),
+                      ),
+                      color: AppColors.blue),
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8),
+                    child: Center(
+                      child: Text(
+                        AppStrings.verify,
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontFamily: "roboto",
+                          color: Colors.white,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
             ],
           ),
         );

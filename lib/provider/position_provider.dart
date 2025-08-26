@@ -244,6 +244,7 @@ class PositionProvider extends ChangeNotifier {
           UpdateTargetModel updateTargetModel = UpdateTargetModel.fromJson(value);
           AppWidget().snackBarTop(context, updateTargetModel.message ?? "", AppColors.green, Colors.white);
           newStopLossController.clear();
+          Navigator.pop(context);
           Navigator.pop(context, true);
         }
       },

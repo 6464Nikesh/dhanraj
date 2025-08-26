@@ -3,11 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class AppDeleteDialogs extends StatefulWidget {
-  final Function() onTap;
-
   const AppDeleteDialogs({
     super.key,
-    required this.onTap,
   });
 
   @override
@@ -37,7 +34,9 @@ class _AppDeleteDialogsState extends State<AppDeleteDialogs> {
           ),
         ),
         TextButton(
-          onPressed: widget.onTap,
+          onPressed: () {
+            Navigator.pop(context,true);
+          },
           child: Text(
             AppStrings.delete,
             style: Theme.of(context).textTheme.labelSmall,

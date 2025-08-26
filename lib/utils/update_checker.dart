@@ -40,9 +40,6 @@ class UpdateChecker {
 
   static bool _isVersionLower(String current, String target) {
 
-    print(current);
-    print(target);
-
     List<int> currentParts = current.split('.').map(int.parse).toList();
     List<int> targetParts = target.split('.').map(int.parse).toList();
 

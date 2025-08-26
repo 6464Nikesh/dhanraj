@@ -46,11 +46,14 @@ class ProviderDashboard extends ChangeNotifier {
   }
 
   changePages({required int val, required BuildContext context}) {
-    Provider.of<WebSocketService>(context, listen: false).unsubscribeFromWatchlist(
-      int.parse(
-        Provider.of<ProviderWatchlist>(context, listen: false).selectedWatchList?.watchlistId.toString() ?? "",
-      ),
-    );
+    if (Provider.of<ProviderWatchlist>(context, listen: false).selectedWatchList?.watchlistId.toString() != null) {
+      Provider.of<WebSocketService>(context, listen: false).unsubscribeFromWatchlist(
+        int.parse(
+          Provider.of<ProviderWatchlist>(context, listen: false).selectedWatchList?.watchlistId.toString() ?? "",
+        ),
+      );
+    }
+
     setTitle(val: val);
     currentIndex = val;
     notifyListeners();

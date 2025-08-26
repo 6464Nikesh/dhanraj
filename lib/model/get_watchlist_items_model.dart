@@ -65,7 +65,6 @@ class Result {
 
 class Items {
   String? watchlistItemId;
-
   String? watchlistId;
   String? symbolId;
   int? sortOrder;

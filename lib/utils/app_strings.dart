@@ -62,6 +62,7 @@ class AppStrings {
   static const String and = "and";
   static const String privacyPolicy = "Privacy Policy";
   static const String hey = "Hey";
+  static const String add = "Add";
   static const String welcome = "Welcome";
   static const String watchlist = "Watchlist";
   static const String searchAndAdd = "Search and Add";
@@ -101,6 +102,7 @@ class AppStrings {
   static const String watchlistName = "Watchlist Name";
   static const String enterName = "Enter Name";
   static const String enter = "Enter";
+  static const String otp = "OTP";
   static const String enterTradeLot = "Enter Trade Lot";
   static const String tradeLot = "Trade Lot";
   static const String description = "Description";

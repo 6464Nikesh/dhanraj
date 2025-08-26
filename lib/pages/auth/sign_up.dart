@@ -132,6 +132,7 @@ class _SignUpState extends State<SignUp> {
                           TextField(
                             controller: ps.mobile,
                             cursorColor: AppColors.grey,
+                            keyboardType: TextInputType.number,
                             decoration: const InputDecoration(
                               focusedBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(color: AppColors.grey),
@@ -244,7 +245,7 @@ class _SignUpState extends State<SignUp> {
                            Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Text(
+                              const Text(
                                 AppStrings.bySigningUpYouAgreeToThe,
                                 style: TextStyle(
                                   fontSize: 12,
@@ -252,7 +253,7 @@ class _SignUpState extends State<SignUp> {
                                   color: AppColors.grey,
                                 ),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 2,
                               ),
                               Row(
@@ -262,7 +263,7 @@ class _SignUpState extends State<SignUp> {
                                     onTap: (){
                                       ps.openBrowserUrl("https://dhanraj.trading/termsandcondition");
                                     },
-                                    child: Text(
+                                    child: const Text(
                                       AppStrings.termsAndCondition,
                                       style: TextStyle(
                                         fontSize: 12,
@@ -271,10 +272,10 @@ class _SignUpState extends State<SignUp> {
                                       ),
                                     ),
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     width: 2,
                                   ),
-                                  Text(
+                                  const Text(
                                     AppStrings.and,
                                     style: TextStyle(
                                       fontSize: 12,
@@ -282,14 +283,14 @@ class _SignUpState extends State<SignUp> {
                                       color: AppColors.grey,
                                     ),
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     width: 2,
                                   ),
                                   GestureDetector(
                                     onTap: (){
                                       ps.openBrowserUrl("https://dhanraj.trading/privacy-policy/");
                                     },
-                                    child: Text(
+                                    child: const Text(
                                       AppStrings.privacyPolicy,
                                       style: TextStyle(
                                         fontSize: 12,
@@ -307,7 +308,8 @@ class _SignUpState extends State<SignUp> {
                           ),
                           GestureDetector(
                             onTap: () {
-                              ps.login(context: context);
+                              ps.sendOtp(context: context);
+                             // ps.createNewUser(context: context);
                             },
                             child: Container(
                               width: MediaQuery.of(context).size.width,

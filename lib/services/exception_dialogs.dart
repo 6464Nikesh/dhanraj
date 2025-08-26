@@ -48,9 +48,11 @@ class ExceptionDialogs {
                           const SizedBox(
                             width: 8,
                           ),
-                          Text(
-                            message,
-                            style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.white),
+                          Expanded(
+                            child: Text(
+                              message,
+                              style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.white),
+                            ),
                           ),
                           const Spacer(),
                           GestureDetector(
