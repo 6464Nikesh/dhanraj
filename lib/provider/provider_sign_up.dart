@@ -27,6 +27,7 @@ class ProviderSignUp extends ChangeNotifier with Networking {
   TextEditingController lastName = TextEditingController();
   bool isPasswordShow = true;
   bool isConfirmPasswordShow = true;
+  late BuildContext parentContext;
   SharedPreferences? sp;
 
   setPasswordVisibility() {
@@ -35,6 +36,11 @@ class ProviderSignUp extends ChangeNotifier with Networking {
     } else {
       isPasswordShow = true;
     }
+    notifyListeners();
+  }
+
+  init({required BuildContext context}) {
+    parentContext = context;
     notifyListeners();
   }
 
@@ -48,39 +54,70 @@ class ProviderSignUp extends ChangeNotifier with Networking {
   }
 
   bool validation(BuildContext context) {
-    RegExp? regex = RegExp(Miscellaneous.emailPattern);
+    RegExp regex = RegExp(Miscellaneous.emailPattern);
+
+    // First Name
     if (firstName.text.trim().isEmpty) {
       AppWidget().snackBar(context, "${AppStrings.pleaseEnter} ${AppStrings.firstName}", AppColors.red, Colors.white);
       return false;
-    } else if (lastName.text.trim().isEmpty) {
+    } else if (firstName.text.trim().length < 3) {
+      AppWidget().snackBar(context, "${AppStrings.firstName} must be at least 3 characters", AppColors.red, Colors.white);
+      return false;
+    }
+
+    // Last Name
+    else if (lastName.text.trim().isEmpty) {
       AppWidget().snackBar(context, "${AppStrings.pleaseEnter} ${AppStrings.lastName}", AppColors.red, Colors.white);
       return false;
-    } else if (mobile.text.trim().isEmpty) {
+    } else if (lastName.text.trim().length < 3) {
+      AppWidget().snackBar(context, "${AppStrings.lastName} must be at least 3 characters", AppColors.red, Colors.white);
+      return false;
+    }
+
+    // Mobile
+    else if (mobile.text.trim().isEmpty) {
       AppWidget().snackBar(context, "${AppStrings.pleaseEnter} ${AppStrings.mobileNo}", AppColors.red, Colors.white);
       return false;
-    } else if (email.text.trim().isEmpty) {
+    } else if (mobile.text.trim().length < 10) {
+      AppWidget().snackBar(context, "${AppStrings.mobileNo} must be at least 10 digits", AppColors.red, Colors.white);
+      return false;
+    }
+
+    // Email
+    else if (email.text.trim().isEmpty) {
       AppWidget().snackBar(context, "${AppStrings.pleaseEnter} ${AppStrings.emailId}", AppColors.red, Colors.white);
       return false;
-    } else if (email.text.trim().isNotEmpty && !regex.hasMatch(email.text.trim())) {
+    } else if (!regex.hasMatch(email.text.trim())) {
       AppWidget().snackBar(context, "${AppStrings.pleaseEnter} ${AppStrings.valid} ${AppStrings.emailId}", AppColors.red, Colors.white);
       return false;
-    } else if (password.text.trim().isEmpty) {
+    }
+
+    // Password
+    else if (password.text.trim().isEmpty) {
       AppWidget().snackBar(context, "${AppStrings.pleaseEnter} ${AppStrings.password}", AppColors.red, Colors.white);
       return false;
-    } else if (confirmPassword.text.trim().isEmpty) {
+    } else if (password.text.trim().length < 6) {
+      AppWidget().snackBar(context, "${AppStrings.password} must be at least 6 characters", AppColors.red, Colors.white);
+      return false;
+    }
+
+    // Confirm Password
+    else if (confirmPassword.text.trim().isEmpty) {
       AppWidget().snackBar(context, "${AppStrings.pleaseEnter} ${AppStrings.confirmPassword}", AppColors.red, Colors.white);
       return false;
     } else if (password.text.trim() != confirmPassword.text.trim()) {
       AppWidget().snackBar(context, AppStrings.passwordIsNotMatched, AppColors.red, Colors.white);
       return false;
     }
+
     return true;
   }
 
-  Future<void> sendOtp({required BuildContext context}) async {
-    if (validation(context)) {
+
+  Future<void> sendOtp() async {
+    if (validation(parentContext)) {
       showDialog(
-        context: context,
+        context: parentContext,
         builder: (context) {
           return AppWidget().loader(context);
         },
@@ -93,24 +130,26 @@ class ProviderSignUp extends ChangeNotifier with Networking {
             await FirebaseAuth.instance.signInWithCredential(credential);
           },
           verificationFailed: (FirebaseAuthException e) {
-            Navigator.pop(context);
-            AppWidget().snackBar(context, "Error: ${e.message}", Colors.redAccent, Colors.white);
+            Navigator.pop(parentContext);
+            AppWidget().snackBar(parentContext, "Error: ${e.message}", Colors.redAccent, Colors.white);
           },
           codeSent: (String verificationId, int? resendToken) {
-            Navigator.pop(context);
-            otpVerification(context, verificationId);
+            Navigator.pop(parentContext);
+            otpVerification(verificationId);
           },
           codeAutoRetrievalTimeout: (String verificationId) {},
         );
       } catch (e) {
+        print("Nikesh");
         print(e);
       }
     }
   }
 
-  createNewUser({required BuildContext context}) async {
+  Future<void> createNewUser() async {
+    otp.clear();
     sp = await SharedPreferences.getInstance();
-    if (validation(context)) {
+    if (validation(parentContext)) {
       var postMap = {
         "first_name": firstName.text.trim(),
         "last_name": lastName.text.trim(),
@@ -119,14 +158,14 @@ class ProviderSignUp extends ChangeNotifier with Networking {
         "password": password.text.trim(),
         "confirm_password": confirmPassword.text.trim(),
         "parent_user_id": "1",
-        "initial_balance": 10000
+        "initial_balance": 100000
       };
 
-      post(context: context, mapData: postMap, endPoint: AppApiEndPoint.signUpUser, isLoaderShow: true, fromBottomSheet: false).then(
+      await post(context: parentContext, mapData: postMap, endPoint: AppApiEndPoint.signUpUser, isLoaderShow: true, fromBottomSheet: false).then(
         (value) {
           if (value != null) {
             SignUpModel signUpModel = SignUpModel.fromJson(value);
-            showSuccessBottomSheet(context, signUpModel.message ?? "");
+            showSuccessBottomSheet(signUpModel.message ?? "");
           }
         },
       );
@@ -146,9 +185,9 @@ class ProviderSignUp extends ChangeNotifier with Networking {
     }
   }
 
-  void showSuccessBottomSheet(BuildContext context, String msg) {
+  void showSuccessBottomSheet(String msg) {
     showModalBottomSheet(
-      context: context,
+      context: parentContext,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -215,14 +254,14 @@ class ProviderSignUp extends ChangeNotifier with Networking {
     );
   }
 
-  Future<void> verifyOtp({required BuildContext context, required String verificationId}) async {
+  Future<bool> verifyOtp({required String verificationId}) async {
+    bool returnValue = false;
     if (otp.text.isEmpty || otp.text.length < 6) {
-      AppWidget().snackBarTop(context, "Please enter valid OTP.", AppColors.red, Colors.white);
-      return;
+      AppWidget().snackBarTop(parentContext, "Please enter valid OTP.", AppColors.red, Colors.white);
     }
 
     showDialog(
-      context: context,
+      context: parentContext,
       builder: (context) {
         return AppWidget().loader(context);
       },
@@ -236,93 +275,115 @@ class ProviderSignUp extends ChangeNotifier with Networking {
     try {
       await FirebaseAuth.instance.signInWithCredential(credential).then(
         (value) {
+          Navigator.pop(parentContext);
           if (value.user != null) {
-            createNewUser(context: context);
+            returnValue = true;
           }
         },
       );
-      Navigator.pop(context);
     } catch (e) {
-      Navigator.pop(context);
-      AppWidget().snackBarTop(context, "Invalid OTP: $e", AppColors.red, Colors.white);
+      Navigator.pop(parentContext);
+      AppWidget().snackBarTop(parentContext, "Invalid OTP: $e", AppColors.red, Colors.white);
     }
+    return returnValue;
   }
 
-  void otpVerification(BuildContext context, String verificationId) {
+  void otpVerification(String verificationId) {
     showModalBottomSheet(
-      context: context,
+      context: parentContext,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      isScrollControlled: false,
+      barrierLabel: "barrier",
+      isDismissible: false,
+      isScrollControlled: true,
       builder: (BuildContext context) {
         return Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(
-                Icons.check_circle,
-                color: Colors.green,
-                size: 60,
-              ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: otp,
-                cursorColor: AppColors.grey,
-                textAlign: TextAlign.center,
-                decoration: const InputDecoration(
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: AppColors.grey),
-                  ),
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: AppColors.grey),
-                  ),
-                  hintText: "${AppStrings.enter} ${AppStrings.otp}",
-                  hintStyle: TextStyle(
-                    fontSize: 14,
-                    fontFamily: "roboto",
-                    fontWeight: FontWeight.w400,
-                    color: AppColors.grey,
+          padding: EdgeInsets.only(
+            left: 16,
+            right: 16,
+            top: 16,
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: PopScope(
+            canPop: false,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(
+                  Icons.check_circle,
+                  color: Colors.green,
+                  size: 60,
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: otp,
+                  cursorColor: AppColors.grey,
+                  textAlign: TextAlign.center,
+                  keyboardType: TextInputType.number,
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+                  decoration: const InputDecoration(
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: AppColors.grey),
+                    ),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: AppColors.grey),
+                    ),
+                    hintText: "${AppStrings.enter} ${AppStrings.otp}",
+                    hintStyle: TextStyle(
+                      fontSize: 14,
+                      fontFamily: "roboto",
+                      fontWeight: FontWeight.w400,
+                      color: AppColors.grey,
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 16),
-              Text(
-                "Please, Enter OTP Here!",
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.labelLarge,
-              ),
-              const SizedBox(height: 20),
-              GestureDetector(
-                onTap: () {
-                  verifyOtp(context: context, verificationId: verificationId);
-                },
-                child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(20),
-                      ),
-                      color: AppColors.blue),
-                  child: const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 8),
-                    child: Center(
-                      child: Text(
-                        AppStrings.verify,
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontFamily: "roboto",
-                          color: Colors.white,
-                          fontWeight: FontWeight.w500,
+                const SizedBox(height: 16),
+                Text(
+                  "Please, Enter OTP Here!",
+                  textAlign: TextAlign.center,
+                  style: Theme.of(parentContext).textTheme.labelLarge,
+                ),
+                const SizedBox(height: 20),
+                GestureDetector(
+                  onTap: () async {
+                    await verifyOtp(verificationId: verificationId).then(
+                      (value) async {
+                        if (value == true) {
+                          Navigator.pop(parentContext);
+                          await createNewUser().then(
+                            (value) {},
+                          );
+                        }
+                      },
+                    );
+                  },
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(20),
+                        ),
+                        color: AppColors.blue),
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 8),
+                      child: Center(
+                        child: Text(
+                          AppStrings.verify,
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontFamily: "roboto",
+                            color: Colors.white,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 20),
-            ],
+                const SizedBox(height: 20),
+              ],
+            ),
           ),
         );
       },

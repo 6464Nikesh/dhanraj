@@ -13,6 +13,16 @@ class SignUp extends StatefulWidget {
 
 class _SignUpState extends State<SignUp> {
   @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback(
+      (timeStamp) {
+        Provider.of<ProviderSignUp>(context, listen: false).init(context: context);
+      },
+    );
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -242,7 +252,7 @@ class _SignUpState extends State<SignUp> {
                           SizedBox(
                             height: MediaQuery.of(context).size.height / 40,
                           ),
-                           Column(
+                          Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               const Text(
@@ -260,7 +270,7 @@ class _SignUpState extends State<SignUp> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   GestureDetector(
-                                    onTap: (){
+                                    onTap: () {
                                       ps.openBrowserUrl("https://dhanraj.trading/termsandcondition");
                                     },
                                     child: const Text(
@@ -287,7 +297,7 @@ class _SignUpState extends State<SignUp> {
                                     width: 2,
                                   ),
                                   GestureDetector(
-                                    onTap: (){
+                                    onTap: () {
                                       ps.openBrowserUrl("https://dhanraj.trading/privacy-policy/");
                                     },
                                     child: const Text(
@@ -308,8 +318,8 @@ class _SignUpState extends State<SignUp> {
                           ),
                           GestureDetector(
                             onTap: () {
-                              ps.sendOtp(context: context);
-                             // ps.createNewUser(context: context);
+                              ps.sendOtp();
+                              // ps.createNewUser(context: context);
                             },
                             child: Container(
                               width: MediaQuery.of(context).size.width,

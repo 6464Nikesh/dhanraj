@@ -65,4 +65,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'dhanraj-trading.firebasestorage.app',
     iosBundleId: 'dhanraj.trading',
   );
+
 }
