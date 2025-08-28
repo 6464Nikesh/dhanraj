@@ -30,6 +30,14 @@ class ProviderWatchlist extends ChangeNotifier {
     );
   }
 
+  clear() {
+    watchLists?.clear();
+    items?.clear();
+    name.clear();
+    selectedWatchList = null;
+    notifyListeners();
+  }
+
   String removeTrailingZeros(String value) {
     double val = double.tryParse(value) ?? 0.0;
 
@@ -47,16 +55,18 @@ class ProviderWatchlist extends ChangeNotifier {
           WatchListsModel watchListsModel = WatchListsModel.fromJson(value);
           if (watchListsModel.statusCode == 200) {
             watchLists = watchListsModel.result?.watchLists ?? [];
+            print(selectedWatchList);
+
             if (selectedWatchList == null) {
               if (watchLists?.isNotEmpty ?? false) {
                 selSelectedWatchList(selectedWatchList: watchLists?.first, context: context);
               }
             }
-            notifyListeners();
           }
         }
       },
     );
+    notifyListeners();
   }
 
   Future<void> deleteWatchList({required BuildContext context}) async {

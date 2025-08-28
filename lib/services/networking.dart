@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:dhanraj/pages/dailogs/http_error_dialog.dart';
 import 'package:dhanraj/provider/provider_dashboard.dart';
+import 'package:dhanraj/provider/provider_settings.dart';
 import 'package:dhanraj/utils/app_api_end_point.dart';
 import 'package:dhanraj/utils/app_colors.dart';
 import 'package:dhanraj/utils/preference_key.dart';
@@ -40,6 +41,7 @@ mixin class Networking {
 
     print(sp?.getString(PreferenceKey.token));
     print(url);
+    print(mapData);
 
     try {
       print("Nikesh");
@@ -97,7 +99,7 @@ mixin class Networking {
           onPressed: () {},
         );
 
-        Provider.of<ProviderDashboard>(context, listen: false).logOut(context);
+        Provider.of<ProviderSettings>(context, listen: false).logOut(context);
 
         return null;
       } else if (response.statusCode == 422) {
@@ -297,7 +299,7 @@ mixin class Networking {
             onPressed: () {},
           );
         }
-        Provider.of<ProviderDashboard>(context, listen: false).logOut(context);
+        Provider.of<ProviderSettings>(context, listen: false).logOut(context);
 
         return null;
       } else if (response.statusCode == 422) {
@@ -500,7 +502,7 @@ mixin class Networking {
           message: data["message"] ?? "",
           onPressed: () {},
         );
-        Provider.of<ProviderDashboard>(context, listen: false).logOut(context);
+        Provider.of<ProviderSettings>(context, listen: false).logOut(context);
 
         return null;
       } else if (response.statusCode == 422) {
@@ -699,7 +701,7 @@ mixin class Networking {
           message: data["message"] ?? "",
           onPressed: () {},
         );
-        Provider.of<ProviderDashboard>(context, listen: false).logOut(context);
+        Provider.of<ProviderSettings>(context, listen: false).logOut(context);
 
         return null;
       } else if (response.statusCode == 422) {
@@ -897,7 +899,7 @@ mixin class Networking {
           message: data["message"] ?? "",
           onPressed: () {},
         );
-        Provider.of<ProviderDashboard>(context, listen: false).logOut(context);
+        Provider.of<ProviderSettings>(context, listen: false).logOut(context);
 
         return null;
       } else if (response.statusCode == 422) {
@@ -1075,7 +1077,7 @@ mixin class Networking {
           onPressed: () {},
         );
 
-        Provider.of<ProviderDashboard>(context, listen: false).logOut(context);
+        Provider.of<ProviderSettings>(context, listen: false).logOut(context);
 
         return null;
       } else if (response.statusCode == 422) {

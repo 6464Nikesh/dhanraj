@@ -29,6 +29,7 @@ class ProviderDashboard extends ChangeNotifier {
   ];
 
   getPrefData() async {
+    currentIndex = 0;
     sp = await SharedPreferences.getInstance();
     String data = sp?.getString(PreferenceKey.loginData) ?? "";
 
@@ -36,13 +37,6 @@ class ProviderDashboard extends ChangeNotifier {
 
     customerInitial = loginModel?.result?.user?.userName?[0];
     notifyListeners();
-  }
-
-  logOut(BuildContext context) async {
-    sp = await SharedPreferences.getInstance();
-    sp?.clear();
-    Provider.of<WebSocketService>(context, listen: false).disconnect();
-    Navigator.pushNamedAndRemoveUntil(context, AppRoutes.login, (Route<dynamic> route) => false);
   }
 
   changePages({required int val, required BuildContext context}) {

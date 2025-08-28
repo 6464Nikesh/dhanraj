@@ -1,8 +1,11 @@
 import 'dart:convert';
 
+import 'package:dhanraj/provider/provider_watchlist.dart';
+import 'package:dhanraj/provider/web_socket_service.dart';
 import 'package:dhanraj/utils/app_assets.dart';
 import 'package:dhanraj/utils/app_route.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -66,6 +69,8 @@ class ProviderSettings extends ChangeNotifier {
   logOut(BuildContext context) async {
     sp = await SharedPreferences.getInstance();
     sp?.clear();
+    Provider.of<ProviderWatchlist>(context, listen: false).clear();
+    Provider.of<WebSocketService>(context, listen: false).disconnect();
     Navigator.pushNamedAndRemoveUntil(context, AppRoutes.login, (Route<dynamic> route) => false);
   }
 }
