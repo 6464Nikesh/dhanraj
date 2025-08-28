@@ -19,8 +19,11 @@ class _DashboardState extends State<Dashboard> {
     WidgetsBinding.instance.addPostFrameCallback(
       (timeStamp) {
         Provider.of<ProviderDashboard>(context, listen: false).getPrefData();
-        final webSocketService = Provider.of<WebSocketService>(context, listen: false);
-        webSocketService.connect(context: context);
+
+        Future.microtask(() {
+          final webSocketService = Provider.of<WebSocketService>(context, listen: false);
+          webSocketService.connect(context: context); // Open WebSocket connection here
+        });
       },
     );
 

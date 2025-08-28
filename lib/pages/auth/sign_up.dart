@@ -318,7 +318,7 @@ class _SignUpState extends State<SignUp> {
                           ),
                           GestureDetector(
                             onTap: () {
-                              ps.sendOtp();
+                              ps.sendOtpFirebase();
                               // ps.createNewUser(context: context);
                             },
                             child: Container(

@@ -114,7 +114,7 @@ class ProviderSignUp extends ChangeNotifier with Networking {
   }
 
 
-  Future<void> sendOtp() async {
+  Future<void> sendOtpFirebase() async {
     if (validation(parentContext)) {
       showDialog(
         context: parentContext,
@@ -143,6 +143,12 @@ class ProviderSignUp extends ChangeNotifier with Networking {
         print("Nikesh");
         print(e);
       }
+    }
+  }
+
+  Future<void> sendOtp() async {
+    if (validation(parentContext)) {
+      
     }
   }
 
@@ -254,7 +260,7 @@ class ProviderSignUp extends ChangeNotifier with Networking {
     );
   }
 
-  Future<bool> verifyOtp({required String verificationId}) async {
+  Future<bool> verifyOtpFirebase({required String verificationId}) async {
     bool returnValue = false;
     if (otp.text.isEmpty || otp.text.length < 6) {
       AppWidget().snackBarTop(parentContext, "Please enter valid OTP.", AppColors.red, Colors.white);
@@ -347,7 +353,7 @@ class ProviderSignUp extends ChangeNotifier with Networking {
                 const SizedBox(height: 20),
                 GestureDetector(
                   onTap: () async {
-                    await verifyOtp(verificationId: verificationId).then(
+                    await verifyOtpFirebase(verificationId: verificationId).then(
                       (value) async {
                         if (value == true) {
                           Navigator.pop(parentContext);
