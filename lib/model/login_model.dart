@@ -36,7 +36,13 @@ class Result {
   String? tokenType;
   String? expiryTime;
 
-  Result({this.user, this.token, this.expiresIn, this.tokenType, this.expiryTime});
+  Result({
+    this.user,
+    this.token,
+    this.expiresIn,
+    this.tokenType,
+    this.expiryTime,
+  });
 
   Result.fromJson(Map<String, dynamic> json) {
     user = json['user'] != null ? User.fromJson(json['user']) : null;
@@ -55,6 +61,7 @@ class Result {
     data['expiresIn'] = expiresIn;
     data['tokenType'] = tokenType;
     data['expiryTime'] = expiryTime;
+
     return data;
   }
 }
@@ -67,8 +74,20 @@ class User {
   String? lastName;
   String? roleType;
   String? accountStatus;
+  String? serverName;
+  String? companyName;
 
-  User({this.userId, this.userName, this.emailId, this.firstName, this.lastName, this.roleType, this.accountStatus});
+  User({
+    this.userId,
+    this.userName,
+    this.emailId,
+    this.firstName,
+    this.lastName,
+    this.roleType,
+    this.accountStatus,
+    this.serverName,
+    this.companyName,
+  });
 
   User.fromJson(Map<String, dynamic> json) {
     userId = json['user_id'];
@@ -78,6 +97,8 @@ class User {
     lastName = json['last_name'];
     roleType = json['role_type'];
     accountStatus = json['account_status'];
+    serverName = json['server_name'];
+    companyName = json['company_name'];
   }
 
   Map<String, dynamic> toJson() {
@@ -89,6 +110,8 @@ class User {
     data['last_name'] = lastName;
     data['role_type'] = roleType;
     data['account_status'] = accountStatus;
+    data['server_name'] = serverName;
+    data['company_name'] = companyName;
     return data;
   }
 }

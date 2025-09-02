@@ -26,6 +26,16 @@ class DepositWithdrawalSheet extends StatefulWidget {
 
 class _DepositWithdrawalSheetState extends State<DepositWithdrawalSheet> {
   @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback(
+      (timeStamp) {
+        Provider.of<DepositWithdrawalSheetProvider>(context, listen: false).getPrefData();
+      },
+    );
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Consumer<DepositWithdrawalSheetProvider>(
       builder: (context, dsp, child) {
@@ -134,135 +144,140 @@ class _DepositWithdrawalSheetState extends State<DepositWithdrawalSheet> {
                               ),
                             ),
                             const SizedBox(width: 8),
-                            Expanded(
-                              child: Consumer<ChooseImageProvider>(builder: (context, cip, child) {
-                                return TextField(
-                                  onTap: () {
-                                    cip.showBottomSheetChooseFile(context: context).then(
-                                      (value) {
-                                        if (value != null) {
-                                          dsp.selSelectedFile(value);
-                                        }
-                                      },
-                                    );
-                                  },
-                                  controller: dsp.fileController,
-                                  readOnly: true,
-                                  style: const TextStyle(fontFamily: "roboto", fontSize: 14, color: Colors.grey, fontWeight: FontWeight.w600),
-                                  decoration: InputDecoration(
-                                    filled: true,
-                                    fillColor: Colors.white,
-                                    hintStyle: const TextStyle(fontFamily: "roboto", fontSize: 14, color: Colors.grey, fontWeight: FontWeight.w600),
-                                    contentPadding: const EdgeInsets.symmetric(vertical: 5, horizontal: 8),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(6),
-                                      borderSide: BorderSide(color: AppColors.grey.withOpacity(0.2), width: 1),
-                                    ),
-                                    suffixIcon: dsp.selectedFile != null
-                                        ? GestureDetector(
-                                            onTap: () {
-                                              dsp.removeSelectedFile();
+                            dsp.companyName == "NESTA CAPITAL"
+                                ? Expanded(
+                                    child: Consumer<ChooseImageProvider>(builder: (context, cip, child) {
+                                      return TextField(
+                                        onTap: () {
+                                          cip.showBottomSheetChooseFile(context: context).then(
+                                            (value) {
+                                              if (value != null) {
+                                                dsp.selSelectedFile(value);
+                                              }
                                             },
-                                            child: const Icon(Icons.cancel_outlined))
-                                        : const Icon(Icons.upload),
-                                    counterText: "",
-                                    enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(6),
-                                      borderSide: BorderSide(color: AppColors.grey.withOpacity(0.2), width: 1),
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(6),
-                                      borderSide: BorderSide(color: AppColors.grey.withOpacity(0.2), width: 1),
-                                    ),
-                                  ),
-                                );
-                              }),
-                            ),
+                                          );
+                                        },
+                                        controller: dsp.fileController,
+                                        readOnly: true,
+                                        style: const TextStyle(fontFamily: "roboto", fontSize: 14, color: Colors.grey, fontWeight: FontWeight.w600),
+                                        decoration: InputDecoration(
+                                          filled: true,
+                                          fillColor: Colors.white,
+                                          hintStyle: const TextStyle(fontFamily: "roboto", fontSize: 14, color: Colors.grey, fontWeight: FontWeight.w600),
+                                          contentPadding: const EdgeInsets.symmetric(vertical: 5, horizontal: 8),
+                                          border: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(6),
+                                            borderSide: BorderSide(color: AppColors.grey.withOpacity(0.2), width: 1),
+                                          ),
+                                          suffixIcon: dsp.selectedFile != null
+                                              ? GestureDetector(
+                                                  onTap: () {
+                                                    dsp.removeSelectedFile();
+                                                  },
+                                                  child: const Icon(Icons.cancel_outlined))
+                                              : const Icon(Icons.upload),
+                                          counterText: "",
+                                          enabledBorder: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(6),
+                                            borderSide: BorderSide(color: AppColors.grey.withOpacity(0.2), width: 1),
+                                          ),
+                                          focusedBorder: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(6),
+                                            borderSide: BorderSide(color: AppColors.grey.withOpacity(0.2), width: 1),
+                                          ),
+                                        ),
+                                      );
+                                    }),
+                                  )
+                                : Container(),
                           ],
                         ),
                         const SizedBox(height: 12),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                        (dsp.companyName == "NESTA CAPITAL")
+                            ? Row(
                                 children: [
-                                  const Text("${AppStrings.transactionType} :", style: TextStyle(fontFamily: "roboto", fontSize: 14)),
-                                  const SizedBox(
-                                    height: 8,
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        const Text("${AppStrings.transactionType} :", style: TextStyle(fontFamily: "roboto", fontSize: 14)),
+                                        const SizedBox(
+                                          height: 8,
+                                        ),
+                                        TextField(
+                                          keyboardType: TextInputType.number,
+                                          inputFormatters: [
+                                            FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}')),
+                                          ],
+                                          controller: dsp.transactionTypeController,
+                                          decoration: InputDecoration(
+                                            filled: true,
+                                            fillColor: Colors.white,
+                                            hintText: AppStrings.transactionType,
+                                            hintStyle: const TextStyle(fontFamily: "roboto", fontSize: 14, color: Colors.grey, fontWeight: FontWeight.w600),
+                                            contentPadding: const EdgeInsets.symmetric(vertical: 5, horizontal: 8),
+                                            border: OutlineInputBorder(
+                                              borderRadius: BorderRadius.circular(6),
+                                              borderSide: BorderSide(color: AppColors.grey.withOpacity(0.2), width: 1),
+                                            ),
+                                            counterText: "",
+                                            enabledBorder: OutlineInputBorder(
+                                              borderRadius: BorderRadius.circular(6),
+                                              borderSide: BorderSide(color: AppColors.grey.withOpacity(0.2), width: 1),
+                                            ),
+                                            focusedBorder: OutlineInputBorder(
+                                              borderRadius: BorderRadius.circular(6),
+                                              borderSide: BorderSide(color: AppColors.grey.withOpacity(0.2), width: 1),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                  TextField(
-                                    keyboardType: TextInputType.number,
-                                    inputFormatters: [
-                                      FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}')),
-                                    ],
-                                    controller: dsp.transactionTypeController,
-                                    decoration: InputDecoration(
-                                      filled: true,
-                                      fillColor: Colors.white,
-                                      hintText: AppStrings.transactionType,
-                                      hintStyle: const TextStyle(fontFamily: "roboto", fontSize: 14, color: Colors.grey, fontWeight: FontWeight.w600),
-                                      contentPadding: const EdgeInsets.symmetric(vertical: 5, horizontal: 8),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(6),
-                                        borderSide: BorderSide(color: AppColors.grey.withOpacity(0.2), width: 1),
-                                      ),
-                                      counterText: "",
-                                      enabledBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(6),
-                                        borderSide: BorderSide(color: AppColors.grey.withOpacity(0.2), width: 1),
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(6),
-                                        borderSide: BorderSide(color: AppColors.grey.withOpacity(0.2), width: 1),
-                                      ),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        const Text("${AppStrings.transactionID} :", style: TextStyle(fontFamily: "roboto", fontSize: 14)),
+                                        const SizedBox(
+                                          height: 8,
+                                        ),
+                                        TextField(
+                                          controller: dsp.transactionIdController,
+                                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                                          inputFormatters: [
+                                            FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}')),
+                                          ],
+                                          decoration: InputDecoration(
+                                            filled: true,
+                                            fillColor: Colors.white,
+                                            hintText: AppStrings.transactionID,
+                                            hintStyle: const TextStyle(fontFamily: "roboto", fontSize: 14, color: Colors.grey, fontWeight: FontWeight.w600),
+                                            contentPadding: const EdgeInsets.symmetric(vertical: 5, horizontal: 8),
+                                            border: OutlineInputBorder(
+                                              borderRadius: BorderRadius.circular(6),
+                                              borderSide: BorderSide(color: AppColors.grey.withOpacity(0.2), width: 1),
+                                            ),
+                                            counterText: "",
+                                            enabledBorder: OutlineInputBorder(
+                                              borderRadius: BorderRadius.circular(6),
+                                              borderSide: BorderSide(color: AppColors.grey.withOpacity(0.2), width: 1),
+                                            ),
+                                            focusedBorder: OutlineInputBorder(
+                                              borderRadius: BorderRadius.circular(6),
+                                              borderSide: BorderSide(color: AppColors.grey.withOpacity(0.2), width: 1),
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(height: 8),
+                                      ],
                                     ),
                                   ),
                                 ],
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text("${AppStrings.transactionID} :", style: TextStyle(fontFamily: "roboto", fontSize: 14)),
-                                  const SizedBox(
-                                    height: 8,
-                                  ),
-                                  TextField(
-                                    controller: dsp.transactionIdController,
-                                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                                    inputFormatters: [
-                                      FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}')),
-                                    ],
-                                    decoration: InputDecoration(
-                                      filled: true,
-                                      fillColor: Colors.white,
-                                      hintText: AppStrings.transactionID,
-                                      hintStyle: const TextStyle(fontFamily: "roboto", fontSize: 14, color: Colors.grey, fontWeight: FontWeight.w600),
-                                      contentPadding: const EdgeInsets.symmetric(vertical: 5, horizontal: 8),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(6),
-                                        borderSide: BorderSide(color: AppColors.grey.withOpacity(0.2), width: 1),
-                                      ),
-                                      counterText: "",
-                                      enabledBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(6),
-                                        borderSide: BorderSide(color: AppColors.grey.withOpacity(0.2), width: 1),
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(6),
-                                        borderSide: BorderSide(color: AppColors.grey.withOpacity(0.2), width: 1),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 8),
+                              )
+                            : Container(),
+
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [

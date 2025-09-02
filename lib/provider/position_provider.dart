@@ -1,11 +1,9 @@
 import 'dart:convert';
-
 import 'package:dhanraj/model/login_model.dart';
 import 'package:dhanraj/model/position_model.dart';
 import 'package:dhanraj/provider/web_socket_service.dart';
 import 'package:dhanraj/utils/app_colors.dart';
 import 'package:dhanraj/utils/app_widget.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -23,6 +21,7 @@ class PositionProvider extends ChangeNotifier {
   num latestBalance = 0;
   num margin = 0;
   num totalPnl = 0;
+  String companyName = "";
   final newStopLossController = TextEditingController();
   final newTargetController = TextEditingController();
 
@@ -76,7 +75,14 @@ class PositionProvider extends ChangeNotifier {
         num openPrice = num.parse(trade.openPrice.toString());
 
         num priceDiff = isBuy ? lastPrice - openPrice : openPrice - lastPrice;
-        num pnl = priceDiff * quantity * multiplier;
+
+        num pnl;
+
+        if (companyName == "NESTA CAPITAL") {
+          pnl = (priceDiff * quantity * multiplier) - num.parse(trade.brokerage.toString());
+        } else {
+          pnl = priceDiff * quantity * multiplier;
+        }
 
         newTotalPnl += pnl;
       }
@@ -88,7 +94,10 @@ class PositionProvider extends ChangeNotifier {
   getPrefData({required BuildContext context}) async {
     sp = await SharedPreferences.getInstance();
     String data = sp?.getString(PreferenceKey.loginData) ?? "";
-    loginModel = LoginModel.fromJson(jsonDecode(data));
+    if (data.isNotEmpty) {
+      loginModel = LoginModel.fromJson(jsonDecode(data));
+      companyName = loginModel?.result?.user?.companyName ?? "";
+    }
     notifyListeners();
     initData(context: context);
   }

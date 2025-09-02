@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:dhanraj/provider/provider_funds.dart';
 import 'package:dhanraj/services/networking.dart';
@@ -6,11 +7,19 @@ import 'package:dhanraj/utils/app_colors.dart';
 import 'package:dhanraj/utils/app_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../model/login_model.dart';
+import '../utils/preference_key.dart';
 
 class DepositWithdrawalSheetProvider extends ChangeNotifier {
   String selectedPage = "deposit";
 
   File? selectedFile;
+
+  String companyName = "";
+  SharedPreferences? sp;
+  LoginModel? loginModel;
 
   TextEditingController depositFundsController = TextEditingController();
   TextEditingController fileController = TextEditingController();
@@ -30,6 +39,18 @@ class DepositWithdrawalSheetProvider extends ChangeNotifier {
     depositNoteController.clear();
     withdrawalNoteController.clear();
 
+  }
+
+  getPrefData() async {
+    sp = await SharedPreferences.getInstance();
+    String data = sp?.getString(PreferenceKey.loginData) ?? "";
+
+    if (data.isNotEmpty) {
+      loginModel = LoginModel.fromJson(jsonDecode(data));
+      companyName = loginModel?.result?.user?.companyName ?? "";
+    }
+
+    notifyListeners();
   }
 
   changePage({required String value}) {

@@ -22,9 +22,9 @@ class ProviderWatchlist extends ChangeNotifier {
 
   deleteWatchListItem({required BuildContext context, required String id}) {
     Networking().delete(context: context, endPoint: AppApiEndPoint.itemRemove, id: id, isLoaderShow: true).then(
-      (value) {
+      (value) async {
         if (value != null) {
-          Navigator.pop(context, true);
+          await getSymbolsList(context: context);
         }
       },
     );

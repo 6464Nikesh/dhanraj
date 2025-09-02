@@ -20,6 +20,7 @@ class _FundsState extends State<Funds> {
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback(
       (timeStamp) {
+        Provider.of<ProviderFunds>(context, listen: false).getPrefData();
         Provider.of<ProviderFunds>(context, listen: false).getTransactionHistory(context);
       },
     );
@@ -33,35 +34,37 @@ class _FundsState extends State<Funds> {
         return Scaffold(
           backgroundColor: Colors.white,
           appBar: AppAppbar.appBar(AppStrings.funds),
-          floatingActionButton: FloatingActionButton(
-            shape: const CircleBorder(),
-            onPressed: () {
-              showModalBottomSheet(
-                context: context,
-                enableDrag: true,
-                backgroundColor: Colors.white,
-                isScrollControlled: true,
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.vertical(
-                    top: Radius.circular(16),
+          floatingActionButton: (_.companyName == "DHANRAJ TRADING" || _.companyName == "NESTA CAPITAL")
+              ? FloatingActionButton(
+                  shape: const CircleBorder(),
+                  onPressed: () {
+                    showModalBottomSheet(
+                      context: context,
+                      enableDrag: true,
+                      backgroundColor: Colors.white,
+                      isScrollControlled: true,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(16),
+                        ),
+                      ),
+                      builder: (context) {
+                        return Padding(
+                          padding: EdgeInsets.only(
+                            bottom: MediaQuery.of(context).viewInsets.bottom,
+                          ),
+                          child: const DepositWithdrawalSheet(),
+                        );
+                      },
+                    );
+                  },
+                  backgroundColor: AppColors.darkBlue,
+                  child: const Icon(
+                    Icons.add,
+                    color: Colors.white,
                   ),
-                ),
-                builder: (context) {
-                  return Padding(
-                    padding: EdgeInsets.only(
-                      bottom: MediaQuery.of(context).viewInsets.bottom,
-                    ),
-                    child: const DepositWithdrawalSheet(),
-                  );
-                },
-              );
-            },
-            backgroundColor: AppColors.darkBlue,
-            child: const Icon(
-              Icons.add,
-              color: Colors.white,
-            ),
-          ),
+                )
+              : null,
           body: Padding(
             padding: const EdgeInsets.all(8.0),
             child: ListView.builder(

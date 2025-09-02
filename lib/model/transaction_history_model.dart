@@ -7,15 +7,13 @@ class TransactionHistoryModel {
   Result? result;
   List<Errors>? errors;
 
-  TransactionHistoryModel(
-      {this.status, this.statusCode, this.message, this.result, this.errors});
+  TransactionHistoryModel({this.status, this.statusCode, this.message, this.result, this.errors});
 
   TransactionHistoryModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     statusCode = json['statusCode'];
     message = json['message'];
-    result =
-    json['result'] != null ? Result.fromJson(json['result']) : null;
+    result = json['result'] != null ? Result.fromJson(json['result']) : null;
     if (json['errors'] != null) {
       errors = <Errors>[];
       json['errors'].forEach((v) {
@@ -25,15 +23,15 @@ class TransactionHistoryModel {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['status'] = this.status;
-    data['statusCode'] = this.statusCode;
-    data['message'] = this.message;
-    if (this.result != null) {
-      data['result'] = this.result!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['status'] = status;
+    data['statusCode'] = statusCode;
+    data['message'] = message;
+    if (result != null) {
+      data['result'] = result!.toJson();
     }
-    if (this.errors != null) {
-      data['errors'] = this.errors!.map((v) => v.toJson()).toList();
+    if (errors != null) {
+      data['errors'] = errors!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -52,18 +50,16 @@ class Result {
         transactions!.add(Transactions.fromJson(v));
       });
     }
-    pagination = json['pagination'] != null
-        ? Pagination.fromJson(json['pagination'])
-        : null;
+    pagination = json['pagination'] != null ? Pagination.fromJson(json['pagination']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    if (this.transactions != null) {
-      data['transactions'] = this.transactions!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    if (transactions != null) {
+      data['transactions'] = transactions!.map((v) => v.toJson()).toList();
     }
-    if (this.pagination != null) {
-      data['pagination'] = this.pagination!.toJson();
+    if (pagination != null) {
+      data['pagination'] = pagination!.toJson();
     }
     return data;
   }
@@ -88,20 +84,20 @@ class Transactions {
 
   Transactions(
       {this.transactionId,
-        this.transactionType,
-        this.amount,
-        this.balance,
-        this.paymentMode,
-        this.bankDetails,
-        this.status,
-        this.description,
-        this.withdrawalDetails,
-        this.taxDetails,
-        this.createdAt,
-        this.updatedAt,
-        this.user,
-        this.parent,
-        this.approver});
+      this.transactionType,
+      this.amount,
+      this.balance,
+      this.paymentMode,
+      this.bankDetails,
+      this.status,
+      this.description,
+      this.withdrawalDetails,
+      this.taxDetails,
+      this.createdAt,
+      this.updatedAt,
+      this.user,
+      this.parent,
+      this.approver});
 
   Transactions.fromJson(Map<String, dynamic> json) {
     transactionId = json['transaction_id'];
@@ -109,63 +105,54 @@ class Transactions {
     amount = json['amount'];
     balance = json['balance'];
     paymentMode = json['payment_mode'];
-    bankDetails = json['bank_details'] != null
-        ? BankDetails.fromJson(json['bank_details'])
-        : null;
+    bankDetails = json['bank_details'] != null ? BankDetails.fromJson(json['bank_details']) : null;
     status = json['status'];
     description = json['description'];
-    withdrawalDetails = json['withdrawal_details'] != null
-        ? WithdrawalDetails.fromJson(json['withdrawal_details'])
-        : null;
-    taxDetails = json['tax_details'] != null
-        ? TaxDetails.fromJson(json['tax_details'])
-        : null;
+    withdrawalDetails = json['withdrawal_details'] != null ? WithdrawalDetails.fromJson(json['withdrawal_details']) : null;
+    taxDetails = json['tax_details'] != null ? TaxDetails.fromJson(json['tax_details']) : null;
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
     user = json['user'] != null ? User.fromJson(json['user']) : null;
-    parent =
-    json['parent'] != null ? Parent.fromJson(json['parent']) : null;
-    approver = json['approver'] != null
-        ? Approver.fromJson(json['approver'])
-        : null;
+    parent = json['parent'] != null ? Parent.fromJson(json['parent']) : null;
+    approver = json['approver'] != null ? Approver.fromJson(json['approver']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['transaction_id'] = this.transactionId;
-    data['transaction_type'] = this.transactionType;
-    data['amount'] = this.amount;
-    data['balance'] = this.balance;
-    data['payment_mode'] = this.paymentMode;
-    if (this.bankDetails != null) {
-      data['bank_details'] = this.bankDetails!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['transaction_id'] = transactionId;
+    data['transaction_type'] = transactionType;
+    data['amount'] = amount;
+    data['balance'] = balance;
+    data['payment_mode'] = paymentMode;
+    if (bankDetails != null) {
+      data['bank_details'] = bankDetails!.toJson();
     }
-    data['status'] = this.status;
-    data['description'] = this.description;
-    if (this.withdrawalDetails != null) {
-      data['withdrawal_details'] = this.withdrawalDetails!.toJson();
+    data['status'] = status;
+    data['description'] = description;
+    if (withdrawalDetails != null) {
+      data['withdrawal_details'] = withdrawalDetails!.toJson();
     }
-    if (this.taxDetails != null) {
-      data['tax_details'] = this.taxDetails!.toJson();
+    if (taxDetails != null) {
+      data['tax_details'] = taxDetails!.toJson();
     }
-    data['created_at'] = this.createdAt;
-    data['updated_at'] = this.updatedAt;
-    if (this.user != null) {
-      data['user'] = this.user!.toJson();
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
+    if (user != null) {
+      data['user'] = user!.toJson();
     }
-    if (this.parent != null) {
-      data['parent'] = this.parent!.toJson();
+    if (parent != null) {
+      data['parent'] = parent!.toJson();
     }
-    if (this.approver != null) {
-      data['approver'] = this.approver!.toJson();
+    if (approver != null) {
+      data['approver'] = approver!.toJson();
     }
     return data;
   }
 }
 
 class BankDetails {
-  Null? bankName;
-  Null? bankReference;
+  String? bankName;
+  String? bankReference;
 
   BankDetails({this.bankName, this.bankReference});
 
@@ -175,9 +162,9 @@ class BankDetails {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['bank_name'] = this.bankName;
-    data['bank_reference'] = this.bankReference;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['bank_name'] = bankName;
+    data['bank_reference'] = bankReference;
     return data;
   }
 }
@@ -194,9 +181,9 @@ class WithdrawalDetails {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['request_status'] = this.requestStatus;
-    data['notes'] = this.notes;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['request_status'] = requestStatus;
+    data['notes'] = notes;
     return data;
   }
 }
@@ -211,8 +198,8 @@ class TaxDetails {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['tax_applied'] = this.taxApplied;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['tax_applied'] = taxApplied;
     return data;
   }
 }
@@ -235,12 +222,12 @@ class User {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['user_id'] = this.userId;
-    data['user_name'] = this.userName;
-    data['full_name'] = this.fullName;
-    data['email'] = this.email;
-    data['mobile'] = this.mobile;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['user_id'] = userId;
+    data['user_name'] = userName;
+    data['full_name'] = fullName;
+    data['email'] = email;
+    data['mobile'] = mobile;
     return data;
   }
 }
@@ -259,10 +246,10 @@ class Parent {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['user_id'] = this.userId;
-    data['user_name'] = this.userName;
-    data['full_name'] = this.fullName;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['user_id'] = userId;
+    data['user_name'] = userName;
+    data['full_name'] = fullName;
     return data;
   }
 }
@@ -283,11 +270,11 @@ class Approver {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['user_id'] = this.userId;
-    data['user_name'] = this.userName;
-    data['full_name'] = this.fullName;
-    data['role_type'] = this.roleType;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['user_id'] = userId;
+    data['user_name'] = userName;
+    data['full_name'] = fullName;
+    data['role_type'] = roleType;
     return data;
   }
 }
@@ -308,11 +295,11 @@ class Pagination {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['total'] = this.total;
-    data['total_pages'] = this.totalPages;
-    data['current_page'] = this.currentPage;
-    data['limit'] = this.limit;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['total'] = total;
+    data['total_pages'] = totalPages;
+    data['current_page'] = currentPage;
+    data['limit'] = limit;
     return data;
   }
 }
