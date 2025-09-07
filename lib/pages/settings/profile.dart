@@ -1,7 +1,12 @@
+import 'dart:convert';
+
+import 'package:dhanraj/model/login_model.dart';
 import 'package:dhanraj/utils/app_appbar.dart';
 import 'package:dhanraj/utils/app_colors.dart';
 import 'package:dhanraj/utils/app_strings.dart';
+import 'package:dhanraj/utils/preference_key.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -11,6 +16,30 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  SharedPreferences? sp;
+  LoginModel? loginModel;
+
+  getPrefData() async {
+    sp = await SharedPreferences.getInstance();
+    String data = sp?.getString(PreferenceKey.loginData) ?? "";
+
+    if (data.isNotEmpty) {
+      loginModel = LoginModel.fromJson(jsonDecode(data));
+    }
+
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback(
+      (timeStamp) {
+        getPrefData();
+      },
+    );
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,7 +53,7 @@ class _ProfileState extends State<Profile> {
               color: Colors.white,
               elevation: 4,
               child: Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -34,15 +63,15 @@ class _ProfileState extends State<Profile> {
                     Row(
                       children: [
                         Container(
-                          decoration: const BoxDecoration(
+                          decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color: AppColors.darkBlue,
                           ),
-                          child: const Padding(
+                          child: Padding(
                             padding: EdgeInsets.all(16),
                             child: Center(
                               child: Text(
-                                "D",
+                                loginModel?.result?.user?.firstName?[0].toUpperCase() ?? "",
                                 style: TextStyle(
                                   fontSize: 25,
                                   fontFamily: "roboto",
@@ -57,9 +86,10 @@ class _ProfileState extends State<Profile> {
                           width: 17,
                         ),
                         Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "Devang",
+                              "${loginModel?.result?.user?.firstName ?? ""} ${loginModel?.result?.user?.lastName ?? ""}",
                               style: TextStyle(
                                 fontSize: 25,
                                 fontFamily: "roboto",
@@ -67,27 +97,12 @@ class _ProfileState extends State<Profile> {
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.calendar_month,
-                                  size: 20,
-                                  color: AppColors.grey,
-                                ),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                Text(
-                                  "Aug 2024",
-                                  style: TextStyle(
-                                    fontFamily: "roboto",
-                                    color: Colors.black,
-                                  ),
-                                )
-                              ],
+                            Text(
+                              loginModel?.result?.user?.emailId ?? "",
+                              style: TextStyle(
+                                fontFamily: "roboto",
+                                color: Colors.black,
+                              ),
                             ),
                           ],
                         )
@@ -96,34 +111,34 @@ class _ProfileState extends State<Profile> {
                     SizedBox(
                       height: MediaQuery.of(context).size.height / 33,
                     ),
-                    GestureDetector(
-                      onTap: () {},
-                      child: Container(
-                        width: MediaQuery.of(context).size.width,
-                        decoration: BoxDecoration(
-                            borderRadius: const BorderRadius.all(
-                              Radius.circular(8),
-                            ),
-                            border: Border.all(color: AppColors.blue)),
-                        child: Center(
-                          child: const Padding(
-                            padding: EdgeInsets.symmetric(vertical: 10),
-                            child: Text(
-                              AppStrings.editProfile,
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontFamily: "roboto",
-                                color: AppColors.blue,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height / 33,
-                    ),
+                    // GestureDetector(
+                    //   onTap: () {},
+                    //   child: Container(
+                    //     width: MediaQuery.of(context).size.width,
+                    //     decoration: BoxDecoration(
+                    //         borderRadius: const BorderRadius.all(
+                    //           Radius.circular(8),
+                    //         ),
+                    //         border: Border.all(color: AppColors.blue)),
+                    //     child: Center(
+                    //       child: const Padding(
+                    //         padding: EdgeInsets.symmetric(vertical: 10),
+                    //         child: Text(
+                    //           AppStrings.editProfile,
+                    //           style: TextStyle(
+                    //             fontSize: 18,
+                    //             fontFamily: "roboto",
+                    //             color: AppColors.blue,
+                    //             fontWeight: FontWeight.w700,
+                    //           ),
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
+                    // SizedBox(
+                    //   height: MediaQuery.of(context).size.height / 33,
+                    // ),
                   ],
                 ),
               ),

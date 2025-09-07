@@ -68,7 +68,8 @@ class ProviderSettings extends ChangeNotifier {
 
   logOut(BuildContext context) async {
     sp = await SharedPreferences.getInstance();
-    sp?.clear();
+    sp?.setString(PreferenceKey.token, "");
+    sp?.setString(PreferenceKey.loginData, "");
     Provider.of<ProviderWatchlist>(context, listen: false).clear();
     Provider.of<WebSocketService>(context, listen: false).disconnect();
     Navigator.pushNamedAndRemoveUntil(context, AppRoutes.login, (Route<dynamic> route) => false);

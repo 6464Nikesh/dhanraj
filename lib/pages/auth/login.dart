@@ -2,6 +2,7 @@ import 'package:dhanraj/provider/provider_login.dart';
 import 'package:dhanraj/utils/app_colors.dart';
 import 'package:dhanraj/utils/app_route.dart';
 import 'package:dhanraj/utils/app_strings.dart';
+import 'package:dhanraj/utils/update_checker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -17,6 +18,17 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback(
+      (timeStamp) {
+        UpdateChecker.checkForUpdate(context);
+        Provider.of<ProviderLogin>(context, listen: false).getEmailPassword();
+      },
+    );
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

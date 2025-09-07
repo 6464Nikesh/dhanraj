@@ -28,6 +28,15 @@ class ProviderLogin extends ChangeNotifier with Networking {
     notifyListeners();
   }
 
+  getEmailPassword() async {
+    sp = await SharedPreferences.getInstance();
+    String? un = await sp?.getString(PreferenceKey.userName);
+    String? pd = await sp?.getString(PreferenceKey.password);
+    userName.text = un ?? "";
+    password.text = pd ?? "";
+    notifyListeners();
+  }
+
   bool validation(BuildContext context) {
     if (userName.text.trim().isEmpty) {
       AppWidget().snackBar(context, AppStrings.pleaseEnterUsername, AppColors.red, Colors.white);
@@ -55,6 +64,8 @@ class ProviderLogin extends ChangeNotifier with Networking {
             if (loginModel.result?.user?.roleType == "CLIENT" && loginModel.result?.user?.accountStatus == "ACTIVE") {
               sp?.setString(PreferenceKey.token, loginModel.result?.token ?? "");
               sp?.setString(PreferenceKey.loginData, json.encode(loginModel));
+              sp?.setString(PreferenceKey.userName, userName.text);
+              sp?.setString(PreferenceKey.password, password.text);
               Navigator.pushNamed(context, AppRoutes.dashboard);
             } else {
               AppWidget().snackBar(context, AppStrings.youAreNotAllowedToLogin, AppColors.red, Colors.white);
