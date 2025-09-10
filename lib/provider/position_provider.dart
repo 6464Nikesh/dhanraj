@@ -45,6 +45,7 @@ class PositionProvider extends ChangeNotifier {
 
   Future<void> init({required BuildContext context}) async {
     totalPnl = 0;
+    Provider.of<WebSocketService>(context, listen: false).connect(context: context);
     Provider.of<WebSocketService>(context, listen: false).subscribeToOpenTrades();
     getPrefData(context: context);
     Provider.of<WebSocketService>(context, listen: false).registerContext(context);
